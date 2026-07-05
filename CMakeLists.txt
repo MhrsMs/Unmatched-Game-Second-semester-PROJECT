@@ -11,7 +11,11 @@ add_executable(
 
 add_library(
     MyLibs STATIC 
-    src/
+    src/Hero.cpp
+    src/Dracula.cpp
+    src/Sister.cpp
+    src/Sherlock.cpp
+    src/DrWatson.cpp
 )
 
 
