@@ -1,7 +1,7 @@
 #include "Sister.h"
 using namespace std;
 
-Sister::Sister(): Hero("Sister", 1, 2, "melee") {}
+Sister::Sister(): Hero("SISTER", 1, 2, "melee") {}
 
 void Sister::ability()
 {

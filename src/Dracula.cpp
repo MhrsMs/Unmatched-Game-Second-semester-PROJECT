@@ -1,7 +1,7 @@
 #include "Dracula.h"
 using namespace std;
 
-Dracula::Dracula(): Hero("Dracula", 13, 2, "melee") {}
+Dracula::Dracula(): Hero("DRACULA", 13, 2, "melee") {}
 
 void Dracula::ability()
 {

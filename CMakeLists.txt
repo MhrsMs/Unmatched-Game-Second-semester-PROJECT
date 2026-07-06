@@ -16,6 +16,11 @@ add_library(
     src/Sister.cpp
     src/Sherlock.cpp
     src/DrWatson.cpp
+    src/Card.cpp
+    src/Cell.cpp
+    src/ReadInformation.cpp
+    src/MapManager.cpp
+    src/CardManager.cpp
 )
 
 

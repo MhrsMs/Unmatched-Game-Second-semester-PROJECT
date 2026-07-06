@@ -2,7 +2,7 @@
 using namespace std;
 
 Hero::Hero(string n, int hp, int m, string aT):
-name(n), originalHP(hp), HP(hp), move(m), attackType(aT)
+name(n), original_HP(hp), HP(hp), move(m), attack_type(aT)
 {
     position= 0;
 }
@@ -10,9 +10,9 @@ string Hero::get_name() const
 {
     return name;
 }
-int Hero::get_originalHP() const
+int Hero::get_original_HP() const
 {
-    return originalHP;
+    return original_HP;
 }
 int Hero::get_HP() const
 {
@@ -22,9 +22,9 @@ int Hero::get_move() const
 {
     return move;
 }
-string Hero::get_attackType() const
+string Hero::get_attack_type() const
 {
-    return attackType;
+    return attack_type;
 }
 int Hero::get_position() const
 {
@@ -43,8 +43,8 @@ void Hero::decrease_HP(int damage)
 }
 void Hero::increase_HP(int heal)
 {
-    if((HP + heal)>=originalHP)
-        HP= originalHP;
+    if((HP + heal)>=original_HP)
+        HP= original_HP;
     else
         HP+= heal;
 }
