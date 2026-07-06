@@ -12,7 +12,7 @@ private:
     bool is_passage;
     Hero* hero_inside;
 public:
-    Cell(int n, std::vector<std::string>& col, std::vector<int>& con, bool isp);
+    Cell(int n, std::vector<std::string> col, std::vector<int> con, bool isp);
     int get_number() const;
     std::vector<std::string> get_color() const;
     std::vector<int> get_connections() const;

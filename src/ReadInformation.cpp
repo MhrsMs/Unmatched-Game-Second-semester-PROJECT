@@ -23,7 +23,7 @@ vector <string> ReadInformation::read_data_cell()
 	return s;
 }
 
-vector <string> ReadInformation::read_data_card()
+vector <string> ReadInformation::read_data_card(int a)
 {
 	vector <string> s;
 	ifstream file("card.txt");
@@ -36,17 +36,45 @@ vector <string> ReadInformation::read_data_card()
 		throw runtime_error("File did not open. ");
 	}
 	string line;
-	while (getline(file, line))
+	if (a == 1)
 	{
-		s.emplace_back(line);
+		while (getline(file, line))
+		{
+			bool start = false;
+			if (!start)
+			{
+				if (line.rfind("13", 0) == 0)
+				{
+					start = true;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			s.emplace_back(line);
+		}
+
 	}
+	if (a == 2)
+	{
+		while (getline(file, line))
+		{
+			if (line.rfind("13", 0) == 0)
+			{
+				break;
+			}
+			s.emplace_back(line);
+		}
+	}
+
 	file.close();
 	return s;
 }
 
-vector<Card> ReadInformation::get_card()
+vector<Card> ReadInformation::get_card(int a)
 {
-	vector <string> s = read_data_card();
+	vector <string> s = read_data_card(a);
 	vector<Card> main;
 	for (auto x : s)
 	{
@@ -68,7 +96,14 @@ vector<Card> ReadInformation::get_card()
 		ss >> id >> card_name >> attack_or_defense >> name_of_attacker
 			>> effect_time >> boost >> number >> kind_of_action >> need_location
 			>> need_optional_card >> need_number >> need_team_person >> need_target_person >> need_winner;
-		Card c(); //sakht shei class
+		Needs needs;
+		needs.need_location = need_location;
+		needs.need_number = need_number;
+		needs.need_optional_card = need_optional_card;
+		needs.need_target_person = need_target_person;
+		needs.need_team_person = need_team_person;
+		needs.need_winner = need_winner;
+		Card c(id, card_name, attack_or_defense, name_of_attacker, effect_time, boost, number, kind_of_action, needs);
 		for (int i = number; i > 0; i--)
 		{
 			main.emplace_back(c);
@@ -82,6 +117,10 @@ vector<Cell> ReadInformation::get_cell()
 {
 	vector <string> s = read_data_cell();
 	vector<Cell> main;
+	vector <string> l = {};
+	vector <int> k = {};
+	Cell b(0, l, k, 0);
+	main.push_back(b);
 	for (auto x : s)
 	{
 		stringstream ss(x);
@@ -92,7 +131,7 @@ vector<Cell> ReadInformation::get_cell()
 		ss >> number_of_cell >> passage >> zone[0] >> zone[1] >> zone[2] >> adjacent_cell[0] >> adjacent_cell[1] >> adjacent_cell[2] >> adjacent_cell[3] >> adjacent_cell[4] >> adjacent_cell[5];
 		zone.erase(remove(zone.begin(), zone.end(), "##"), zone.end());
 		adjacent_cell.erase(remove(adjacent_cell.begin(), adjacent_cell.end(), 0), adjacent_cell.end());
-		Cell c(); //sakht shei class
+		Cell c(number_of_cell, zone, adjacent_cell, passage);
 		main.emplace_back(c);
 	}
 	return main;

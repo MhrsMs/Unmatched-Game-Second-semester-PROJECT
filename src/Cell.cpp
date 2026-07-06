@@ -1,7 +1,7 @@
 #include "Cell.h"
 using namespace std;
 
-Cell::Cell(int n, std::vector<std::string>& col, std::vector<int>& con, bool isp):
+Cell::Cell(int n, std::vector<std::string> col, std::vector<int> con, bool isp):
     number(n), color(col), connections(con), is_passage(isp){
         hero_inside= nullptr;
     }
