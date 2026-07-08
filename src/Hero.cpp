@@ -1,14 +1,18 @@
 #include "Hero.h"
 using namespace std;
 
-Hero::Hero(string n, int hp, int m, string aT):
-name(n), original_HP(hp), HP(hp), move(m), attack_type(aT)
+Hero::Hero(string sn, string n, int hp, int m, string aT):
+short_name(sn), name(n), original_HP(hp), HP(hp), move(m), attack_type(aT)
 {
     position= 0;
 }
 string Hero::get_name() const
 {
     return name;
+}
+string Hero::get_short_name() const
+{
+    return short_name;
 }
 int Hero::get_original_HP() const
 {

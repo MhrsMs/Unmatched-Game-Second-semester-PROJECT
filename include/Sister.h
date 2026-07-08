@@ -5,7 +5,7 @@
 class Sister: public Hero
 {
 public:
-    Sister();
+    Sister(std::string short_name);
     void ability() override;
 };
 

@@ -7,14 +7,16 @@ class Hero
 {
 private:
     std::string name;
+    std::string short_name;
     const int original_HP;
     int HP;
     int move;
     std::string attack_type;
     int position;
 public:
-    Hero(std::string n, int hp, int m, std::string aT);
+    Hero(std::string sn, std::string n, int hp, int m, std::string aT);
     std::string get_name() const;
+    std::string get_short_name() const;
     int get_original_HP() const;
     int get_HP() const;
     int get_move() const;

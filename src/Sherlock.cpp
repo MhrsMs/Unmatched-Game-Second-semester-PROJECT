@@ -1,7 +1,7 @@
 #include "Sherlock.h"
 using namespace std;
 
-Sherlock::Sherlock(): Hero("SHERLOCK", 16, 2, "melee") {}
+Sherlock::Sherlock(string short_name): Hero(short_name, "SHERLOCK", 16, 2, "melee") {}
 
 void Sherlock::ability()
 {

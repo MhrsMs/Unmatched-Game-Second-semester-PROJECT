@@ -5,7 +5,7 @@
 class Dracula: public Hero
 {
 public:
-    Dracula();
+    Dracula(std::string short_name);
     void ability() override;
 };
 

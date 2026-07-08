@@ -5,7 +5,7 @@
 class Sherlock: public Hero
 {
 public:
-    Sherlock();
+    Sherlock(std::string short_name);
     void ability() override;
 };
 
