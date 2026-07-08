@@ -15,8 +15,7 @@ public:
     void Shuffle(std::vector<Card>& set);
     bool can_deck_to_hand(int number);
     void deck_to_hand(int number);
-    void hand_to_null_card(int choice);
-    //void pair_card_with_effect()
+    void hand_to_null_card(int id);
 };
 
 #endif

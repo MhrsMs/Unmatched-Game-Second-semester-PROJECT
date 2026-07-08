@@ -32,12 +32,15 @@ void CardManager::deck_to_hand(int number)
         deck.pop_back();
     }
 }
-void CardManager::hand_to_null_card(int choice)
+void CardManager::hand_to_null_card(int id)
 {
-    null_card.push_back(hand[choice]);
-    if(!(hand.empty()))
+    for(size_t i=0; i<hand.size(); i++)
     {
-        hand.erase(hand.begin()+choice);
+        if(hand[i].get_id()==id)
+        {
+            null_card.push_back(hand[i]);
+            hand.erase(hand.begin()+i);
+            break;
+        }
     }
 }
-//void pair_card_with_effect()
