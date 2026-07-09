@@ -150,10 +150,18 @@ vector<string> MapManager::text_inside_cells() const
 
     return text;
 }
-void MapManager::move(int current_position, int chosen_cell)
+void MapManager::move(int chosen_cell, Hero* current_hero)
 {
-    Hero* current_hero= cell[current_position].get_hero_inside();
-    cell[chosen_cell].change_hero_inside(current_hero);
-    current_hero->change_position(chosen_cell);
-    cell[current_position].change_hero_inside(nullptr);
+    int current_position= current_hero->get_position();
+    if(current_position==0)
+    {
+        cell[chosen_cell].change_hero_inside(current_hero);
+        current_hero->change_position(chosen_cell);
+    }
+    else
+    {
+        cell[chosen_cell].change_hero_inside(current_hero);
+        current_hero->change_position(chosen_cell);
+        cell[current_position].change_hero_inside(nullptr);
+    }
 }

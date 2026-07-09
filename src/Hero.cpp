@@ -41,7 +41,10 @@ void Hero::change_position(int currentPosition)
 void Hero::decrease_HP(int damage)
 {
     if(HP<=damage)
+    {
         HP= 0;
+        change_position(0);
+    }
     else
         HP-= damage;
 }

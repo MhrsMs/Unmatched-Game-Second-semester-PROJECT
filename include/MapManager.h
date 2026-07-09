@@ -15,7 +15,7 @@ public:
     std::vector<int> electable_cells(int current_position) const;
     std::vector<Hero*> nearby_heroes(int current_position) const;
     std::vector<std::string> text_inside_cells() const;
-    void move(int current_position, int chosen_cell);
+    void move(int chosen_cell, Hero* current_hero);
 };
 
 #endif
