@@ -21,6 +21,7 @@ add_library(
     src/ReadInformation.cpp
     src/MapManager.cpp
     src/CardManager.cpp
+    src/ConsoleView.cpp
 )
 
 

@@ -100,7 +100,7 @@ vector<int> MapManager::electable_cells(int current_position) const
             suitable_cells.push_back(connections[i]);
     }
 
-    vector<int> passage= {1, 5, 19, 29};
+    vector<int> passage= {1, 6, 16, 28};
     if(cell[current_position].Is_Passage())
     {
         for(size_t j=0; j<passage.size(); j++)
@@ -143,6 +143,8 @@ vector<string> MapManager::text_inside_cells() const
         Hero* hero_inside= cell[i].get_hero_inside();
         if(hero_inside!=nullptr)
             text.push_back(hero_inside->get_short_name());
+        else if(i<10)
+            text.push_back("0"+ to_string(i));
         else
             text.push_back(to_string(i));
         
