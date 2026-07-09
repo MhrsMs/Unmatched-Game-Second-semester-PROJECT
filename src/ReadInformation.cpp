@@ -1,6 +1,7 @@
 #include "ReadInformation.h"
 #include <string>
 #include <sstream>
+#include <algorithm>
 using namespace std;
 vector <string> ReadInformation::read_data_cell()
 {
@@ -127,8 +128,19 @@ vector<Cell> ReadInformation::get_cell()
 		int number_of_cell;
 		vector <string> zone;
 		bool passage;
+		string z1, z2, z3;
+		string a1, a2, a3, a4, a5, a6;
 		vector <int> adjacent_cell;
-		ss >> number_of_cell >> passage >> zone[0] >> zone[1] >> zone[2] >> adjacent_cell[0] >> adjacent_cell[1] >> adjacent_cell[2] >> adjacent_cell[3] >> adjacent_cell[4] >> adjacent_cell[5];
+		ss >> number_of_cell >> passage >> z1 >> z2 >> z3 >> a1 >> a2 >> a3 >> a4 >> a5 >> a6;
+		zone.emplace_back(z1);
+		zone.emplace_back(z2);
+		zone.emplace_back(z3);
+		adjacent_cell.emplace_back(a1);
+		adjacent_cell.emplace_back(a2);
+		adjacent_cell.emplace_back(a3);
+		adjacent_cell.emplace_back(a4);
+		adjacent_cell.emplace_back(a5);
+		adjacent_cell.emplace_back(a6);
 		zone.erase(remove(zone.begin(), zone.end(), "##"), zone.end());
 		adjacent_cell.erase(remove(adjacent_cell.begin(), adjacent_cell.end(), 0), adjacent_cell.end());
 		Cell c(number_of_cell, zone, adjacent_cell, passage);
