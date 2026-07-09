@@ -129,7 +129,7 @@ vector<Cell> ReadInformation::get_cell()
 		vector <string> zone;
 		bool passage;
 		string z1, z2, z3;
-		string a1, a2, a3, a4, a5, a6;
+		int a1, a2, a3, a4, a5, a6;
 		vector <int> adjacent_cell;
 		ss >> number_of_cell >> passage >> z1 >> z2 >> z3 >> a1 >> a2 >> a3 >> a4 >> a5 >> a6;
 		zone.emplace_back(z1);

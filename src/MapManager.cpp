@@ -57,6 +57,8 @@ bool MapManager::is_enemy_inside(int chosen_cell, Hero* current_hero) const
     {
         return false;
     }
+
+    return false;
 }
 bool MapManager::is_ally_inside(int chosen_cell, Hero* current_hero) const
 {
@@ -66,7 +68,7 @@ bool MapManager::is_ally_inside(int chosen_cell, Hero* current_hero) const
     {
         if(hero_inside_this_cell->get_name()=="SHERLOCK" || hero_inside_this_cell->get_name()=="DR.WATSON")
         {
-            if(current_hero->get_name()!="SHERLOCK" || current_hero->get_name()!="DR.WATSON")
+            if(current_hero->get_name()=="SHERLOCK" || current_hero->get_name()=="DR.WATSON")
                 return true;
             else    
                 return false;
@@ -74,7 +76,7 @@ bool MapManager::is_ally_inside(int chosen_cell, Hero* current_hero) const
 
         if(hero_inside_this_cell->get_name()=="DRACULA" || hero_inside_this_cell->get_name()=="SISTER")
         {
-            if(current_hero->get_name()!="DRACULA" || current_hero->get_name()!="SISTER")
+            if(current_hero->get_name()=="DRACULA" || current_hero->get_name()=="SISTER")
                 return true;
             else    
                 return false;
@@ -84,6 +86,8 @@ bool MapManager::is_ally_inside(int chosen_cell, Hero* current_hero) const
     {
         return false;
     }
+
+    return false;
 }
 vector<int> MapManager::electable_cells(int current_position) const
 {
