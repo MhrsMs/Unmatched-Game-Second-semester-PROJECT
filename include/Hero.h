@@ -26,7 +26,8 @@ public:
     void decrease_HP(int damage);
     void increase_HP(int heal);
     bool is_alive() const;
-    virtual void ability()= 0;
+    void change_move(int m);
+    virtual void ability(Hero& hero)= 0;
 };
 
 

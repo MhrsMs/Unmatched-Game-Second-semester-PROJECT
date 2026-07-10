@@ -61,3 +61,7 @@ bool Hero::is_alive() const
         return true;
     return false;
 }
+void Hero::change_move(int m)
+{
+    move = move + m;
+}

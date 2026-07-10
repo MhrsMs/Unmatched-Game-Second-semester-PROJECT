@@ -6,7 +6,7 @@ class DrWatson: public Hero
 {
 public:
     DrWatson(std::string short_name);
-    void ability() override;
+    void ability(Hero& hero) override;
 };
 
 

@@ -3,7 +3,7 @@ using namespace std;
 
 Sister::Sister(string short_name): Hero(short_name, "SISTER", 1, 2, "melee") {}
 
-void Sister::ability()
+void Sister::ability(Hero& hero)
 {
     //No implementation
 }
