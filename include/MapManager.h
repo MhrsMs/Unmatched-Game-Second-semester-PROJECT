@@ -2,6 +2,8 @@
 #define MAPMANAGER_H
 #include "Cell.h"
 
+class Hero;
+
 class MapManager
 {
 private:

@@ -1,7 +1,9 @@
 #ifndef CELL_H
 #define CELL_H
-#include "Hero.h"
 #include <vector>
+#include <string>
+
+class Hero;
 
 class Cell
 {

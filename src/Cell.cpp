@@ -1,4 +1,5 @@
 #include "Cell.h"
+#include "Hero.h"
 using namespace std;
 
 Cell::Cell(int n, std::vector<std::string> col, std::vector<int> con, bool isp):

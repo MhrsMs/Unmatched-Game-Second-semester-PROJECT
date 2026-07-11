@@ -1,4 +1,5 @@
 #include "MapManager.h"
+#include "Hero.h"
 #include "ReadInformation.h"
 using namespace std;
 

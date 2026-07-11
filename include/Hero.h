@@ -2,7 +2,8 @@
 #define HERO_H
 #include <iostream>
 #include <string>
-
+#include "MapManager.h"
+#include "CardManager.h"
 class Hero
 {
 private:
@@ -27,7 +28,7 @@ public:
     void increase_HP(int heal);
     bool is_alive() const;
     void change_move(int m);
-    virtual void ability(Hero& hero)= 0;
+    virtual void ability(Hero& hero, vector <Hero*> heros, CardManager& card) = 0;
 };
 
 

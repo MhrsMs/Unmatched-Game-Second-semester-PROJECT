@@ -2,11 +2,11 @@
 #define SISTER_H
 #include "Hero.h"
 
-class Sister: public Hero
+class Sister : public Hero
 {
 public:
     Sister(std::string short_name);
-    void ability(Hero& hero) override;
+    void ability(Hero& hero, vector <Hero*> heros, CardManager& card) override;
 };
 
 
