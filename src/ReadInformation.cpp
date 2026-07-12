@@ -39,9 +39,10 @@ vector <string> ReadInformation::read_data_card(int a)
 	string line;
 	if (a == 1)
 	{
+		bool start = false;
 		while (getline(file, line))
 		{
-			bool start = false;
+
 			if (!start)
 			{
 				if (line.rfind("13", 0) == 0)
