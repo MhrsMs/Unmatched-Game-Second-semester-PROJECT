@@ -11,11 +11,13 @@ private:
     std::string short_name;
     const int original_HP;
     int HP;
+    int original_move;
     int move;
     std::string attack_type;
     int position;
 public:
     Hero(std::string sn, std::string n, int hp, int m, std::string aT);
+    virtual ~Hero() = default;
     std::string get_name() const;
     std::string get_short_name() const;
     int get_original_HP() const;

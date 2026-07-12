@@ -1,10 +1,10 @@
 #include "Hero.h"
 using namespace std;
 
-Hero::Hero(string sn, string n, int hp, int m, string aT):
-short_name(sn), name(n), original_HP(hp), HP(hp), move(m), attack_type(aT)
+Hero::Hero(string sn, string n, int hp, int m, string aT) :
+    short_name(sn), name(n), original_HP(hp), HP(hp), move(m), attack_type(aT), original_move(m)
 {
-    position= 0;
+    position = 0;
 }
 string Hero::get_name() const
 {
@@ -36,32 +36,41 @@ int Hero::get_position() const
 }
 void Hero::change_position(int currentPosition)
 {
-    position= currentPosition;
+    position = currentPosition;
 }
 void Hero::decrease_HP(int damage)
 {
-    if(HP<=damage)
+    if (HP <= damage)
     {
-        HP= 0;
+        HP = 0;
         change_position(0);
     }
     else
-        HP-= damage;
+        HP -= damage;
 }
 void Hero::increase_HP(int heal)
 {
-    if((HP + heal)>=original_HP)
-        HP= original_HP;
+    if ((HP + heal) >= original_HP)
+        HP = original_HP;
     else
-        HP+= heal;
+        HP += heal;
 }
 bool Hero::is_alive() const
 {
-    if(HP>0)
+    if (HP > 0)
         return true;
     return false;
 }
+
 void Hero::change_move(int m)
 {
-    move = move + m;
+    if (m == 0)
+    {
+        move = original_move;
+    }
+    else
+    {
+        move = move + m;
+    }
+
 }
