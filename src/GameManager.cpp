@@ -82,12 +82,13 @@ void GameManager::maneuver(Player& funplayer1, Player& funplayer2)
 	}
 	while (1)
 	{
-		if (view.print_maneuver() == 1)
+		int m = view.print_maneuver();
+		if (m == 1)
 		{
 			movement(&funplayer1, nullptr);
 			break;
 		}
-		else if (view.print_maneuver() == 2)
+		else if (m == 2)
 		{
 			vector <string> n;
 			for (auto& x : funplayer1.playerHero->heros)
@@ -105,7 +106,7 @@ void GameManager::maneuver(Player& funplayer1, Player& funplayer2)
 			funplayer1.playerHero->cards.hand_to_null_card(id);
 			funplayer1.playerHero->heros[a[1]]->change_move(boost);
 		}
-		else
+		else if (m == 3)
 		{
 			break;
 		}
@@ -117,13 +118,14 @@ void GameManager::maneuver(Player& funplayer1, Player& funplayer2)
 void GameManager::scheme(Player& funplayer1, Player& funplayer2)
 {
 	vector <Card> card;
+	bool found = false;
 	for (auto x : funplayer1.playerHero->cards.hand)
 	{
 		if (x.get_kindOfAction() == "Scheme")
 		{
 			for (auto& y : funplayer1.playerHero->heros)
 			{
-				if (y->is_alive() && (y->get_name() == x.get_nameOfAttacker() || "Any" == x.get_nameOfAttacker()))
+				if (y->is_alive() && (y->get_name() == x.get_nameOfAttacker() || "Any" == x.get_nameOfAttacker()) && !found)
 				{
 					card.emplace_back(x);
 				}
@@ -336,6 +338,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	}
 	if (card1[ca1].get_attackOrDefense() > card2[ca2].get_attackOrDefense())
 	{
+		complet1.targetPerson->decrease_HP(card1[ca1].get_attackOrDefense() - card2[ca2].get_attackOrDefense());
 		if (card1[ca1].get_id() == 24)
 		{
 			vector <string> fullcard;
@@ -350,6 +353,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	}
 	else if (card1[ca1].get_attackOrDefense() < card2[ca2].get_attackOrDefense())
 	{
+		complet2.targetPerson->decrease_HP(card2[ca2].get_attackOrDefense() - card1[ca1].get_attackOrDefense());
 		if (card2[ca2].get_id() == 24)
 		{
 			vector <string> fullcard;
@@ -535,17 +539,17 @@ void GameManager::movement(Player* funplayer1, Hero* hero, int moveMax, int move
 			vector <int> a = view.print_move(d);
 			if (a[1] == 1)
 			{
-				if (!mapmanager.is_enemy_inside(d[a[0]], hero))
+				if (!mapmanager.is_enemy_inside(a[0], hero))
 				{
-					position = d[a[0]];
+					position = a[0];
 					movementnum++;
 				}
 			}
 			else
 			{
-				if (!mapmanager.is_enemy_inside(d[a[0]], hero) && !mapmanager.is_ally_inside(d[a[0]], hero) && movementnum >= moveMin)
+				if (!mapmanager.is_enemy_inside(a[0], hero) && !mapmanager.is_ally_inside(a[0], hero) && movementnum >= moveMin)
 				{
-					mapmanager.move(d[a[0]], hero);
+					mapmanager.move(a[0], hero);
 					break;
 				}
 			}
@@ -567,12 +571,25 @@ void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
 		{
 			while (1)
 			{
-				int p = view.print_intitial_position(x->get_name());
-				if (mapmanager.is_same_zone(22, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+				if (x->get_name() == "SISTER")
 				{
-					mapmanager.move(p, x.get());
-					break;
+					int p = view.print_intitial_position(x->get_name() + " " + x->get_short_name());
+					if (mapmanager.is_same_zone(22, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+					{
+						mapmanager.move(p, x.get());
+						break;
+					}
 				}
+				else
+				{
+					int p = view.print_intitial_position(x->get_name());
+					if (mapmanager.is_same_zone(22, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+					{
+						mapmanager.move(p, x.get());
+						break;
+					}
+				}
+
 			}
 
 		}
@@ -583,12 +600,25 @@ void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
 		{
 			while (1)
 			{
-				int p = view.print_intitial_position(x->get_name());
-				if (mapmanager.is_same_zone(9, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+				if (x->get_name() == "SISTER")
 				{
-					mapmanager.move(p, x.get());
-					break;
+					int p = view.print_intitial_position(x->get_name() + " " + x->get_short_name());
+					if (mapmanager.is_same_zone(9, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+					{
+						mapmanager.move(p, x.get());
+						break;
+					}
 				}
+				else
+				{
+					int p = view.print_intitial_position(x->get_name());
+					if (mapmanager.is_same_zone(9, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+					{
+						mapmanager.move(p, x.get());
+						break;
+					}
+				}
+
 			}
 
 		}
@@ -661,34 +691,37 @@ void GameManager::run()
 					try
 					{
 						do_at_fisrt(player1, player2);
-
-						bool b = view.print_ability();
-						if (b)
-						{
-							vector <Hero*> hero;
-							vector <Hero*> hero1;
-							vector <string> name;
-							for (auto& x : player2.playerHero->heros)
-							{
-								hero.emplace_back(x.get());
-								name.emplace_back(x->get_name());
-							}
-							for (auto& x : player1.playerHero->heros)
-							{
-								hero.emplace_back(x.get());
-								name.emplace_back(x->get_name());
-							}
-							int z = view.print_complet_needs(8, {}, name);
-							player1.playerHero->heros[0]->ability(*hero[z], hero1, player1.playerHero->cards);
-						}
 						for (int i = 0; i < player1.action; i++)
 						{
+							if (player1.playerHero->heros[0]->get_name() == "DRACULA")
+							{
+								bool b = view.print_ability();
+								if (b)
+								{
+									vector <Hero*> hero;
+									vector <Hero*> hero1;
+									vector <string> name;
+									for (auto& x : player2.playerHero->heros)
+									{
+										hero.emplace_back(x.get());
+										name.emplace_back(x->get_name());
+									}
+									for (auto& x : player1.playerHero->heros)
+									{
+										hero1.emplace_back(x.get());
+										hero.emplace_back(x.get());
+										name.emplace_back(x->get_name());
+									}
+									int z = view.print_complet_needs(8, {}, name);
+									player1.playerHero->heros[0]->ability(*hero[z], hero1, player1.playerHero->cards);
+								}
+							}
 							int choice = view.print_action_menu(complet_action_menu(player1));
 							switch (choice)
 							{
 							case 1:maneuver(player1, player2); break;
-							case 2:scheme(player1, player2); break;
-							case 3:attack(player1, player2); break;
+							case 3:scheme(player1, player2); break;
+							case 2:attack(player1, player2); break;
 							}
 							if (choice == 4)
 							{
@@ -697,12 +730,36 @@ void GameManager::run()
 						}
 						for (int i = 0; i < player2.action; i++)
 						{
+							if (player2.playerHero->heros[0]->get_name() == "DRACULA")
+							{
+								bool b = view.print_ability();
+								if (b)
+								{
+									vector <Hero*> hero;
+									vector <Hero*> hero2;
+									vector <string> name;
+									for (auto& x : player2.playerHero->heros)
+									{
+										hero2.emplace_back(x.get());
+										hero.emplace_back(x.get());
+										name.emplace_back(x->get_name());
+									}
+									for (auto& x : player1.playerHero->heros)
+									{
+
+										hero.emplace_back(x.get());
+										name.emplace_back(x->get_name());
+									}
+									int z = view.print_complet_needs(8, {}, name);
+									player2.playerHero->heros[0]->ability(*hero[z], hero2, player2.playerHero->cards);
+								}
+							}
 							int choice = view.print_action_menu(complet_action_menu(player2));
 							switch (choice)
 							{
 							case 1:maneuver(player2, player1); break;
-							case 2:scheme(player2, player1); break;
-							case 3:attack(player2, player1); break;
+							case 3:scheme(player2, player1); break;
+							case 2:attack(player2, player1); break;
 							}
 							if (choice == 4)
 							{

@@ -37,7 +37,7 @@ vector <string> ReadInformation::read_data_card(int a)
 		throw runtime_error("File did not open. ");
 	}
 	string line;
-	if (a == 1)
+	if (a == 2)
 	{
 		bool start = false;
 		while (getline(file, line))
@@ -58,7 +58,7 @@ vector <string> ReadInformation::read_data_card(int a)
 		}
 
 	}
-	if (a == 2)
+	if (a == 1)
 	{
 		while (getline(file, line))
 		{

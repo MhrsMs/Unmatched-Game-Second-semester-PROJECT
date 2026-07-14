@@ -296,6 +296,7 @@ int ConsoleView::print_intitial_position(string name)
     int a;
     while (1)
     {
+
         cout << "Enter the initial position of " << name << endl;
         cin >> a;
         if (a > 0 && a < 33)
@@ -324,9 +325,6 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     {
         cout << "|" << left << setw(9) << s.nameOfHero[i] << " *Health:" << s.health[i] << " *Move:" << s.move[i] << " *CellNumber:" << left << setw(57) << s.cell[i] << "|" << endl;
     }
-    cout << "+=================================================" << "================================================+\n";
-    cout << "|      [MAP]       *DR : Dracula *SH : Sherlock Holmes *DW : DR.Watson *S1,S2,S3 : Sisters        |\n";
-    cout << "+=================================================" << "================================================+\n";
     print_map(s.text);
     cout << "+================================================+" << "================================================+\n";
     cout << "|                       HAND                     |" << "                     ACTION                     |\n";
@@ -391,7 +389,7 @@ vector<int> ConsoleView::print_move(vector <int> cell)
             break;
         }
     }
-    s.emplace_back(c);
+    s.emplace_back(cell[c]);
     while (1)
     {
 
