@@ -246,7 +246,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	vector <string> c2;
 	for (auto x : funplayer1.playerHero->cards.hand)
 	{
-		if ((x.get_kindOfAction() == "Attack" || x.get_kindOfAction() == "AttackOrDefense") && (x.get_nameOfAttacker() == name1[attacker] || x.get_nameOfAttacker() == "Any"))
+		if ((x.get_kindOfAction() == "Attack" || x.get_kindOfAction() == "Attack_Or_Defense") && (x.get_nameOfAttacker() == name1[attacker] || x.get_nameOfAttacker() == "Any"))
 		{
 			card1.emplace_back(x);
 			c1.emplace_back(x.get_cardName());
@@ -258,7 +258,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	}
 	for (auto x : funplayer2.playerHero->cards.hand)
 	{
-		if ((x.get_kindOfAction() == "Defense" || x.get_kindOfAction() == "AttackOrDefense") && (x.get_nameOfAttacker() == name2[defender] || x.get_nameOfAttacker() == "Any"))
+		if ((x.get_kindOfAction() == "Defense" || x.get_kindOfAction() == "Attack_Or_Defense") && (x.get_nameOfAttacker() == name2[defender] || x.get_nameOfAttacker() == "Any"))
 		{
 			card2.emplace_back(x);
 			c2.emplace_back(x.get_cardName());
@@ -527,32 +527,59 @@ void GameManager::movement(Player* funplayer1, Hero* hero, int moveMax, int move
 
 	int movementnum = 0;
 	int position = hero->get_position();
-	while (movementnum <= moveMax)
+	while (movementnum < moveMax)
 	{
-		vector <int> d = mapmanager.electable_cells(position);
+		vector <int> cell = mapmanager.electable_cells(position);
+		vector <int> d;
+		if ((moveMax - movementnum) < 2)
+		{
+			for (auto x : cell)
+			{
+				if (!mapmanager.is_ally_inside(x, hero))
+				{
+					d.emplace_back(x);
+				}
+			}
+		}
+		else
+		{
+			d = cell;
+		}
 		if (d.empty())
 		{
 			throw runtime_error("this hero can not move");
 		}
 		else
 		{
-			vector <int> a = view.print_move(d);
-			if (a[1] == 1)
+			int a = view.print_move1(d);
+			if (a == 0)
 			{
-				if (!mapmanager.is_enemy_inside(a[0], hero))
+				if (movementnum < moveMin)
 				{
-					position = a[0];
-					movementnum++;
+					view.print_move2(3);
 				}
+				else
+				{
+					break;
+				}
+
 			}
 			else
 			{
-				if (!mapmanager.is_enemy_inside(a[0], hero) && !mapmanager.is_ally_inside(a[0], hero) && movementnum >= moveMin)
+				if (mapmanager.is_ally_inside(d[a - 1], hero))
 				{
-					mapmanager.move(a[0], hero);
-					break;
+					view.print_move2(1);
+
 				}
+				else
+				{
+					mapmanager.move(d[a - 1], hero);
+					view.print_map(mapmanager.text_inside_cells());
+				}
+				movementnum++;
+				position = d[a - 1];
 			}
+
 		}
 	}
 
@@ -716,7 +743,20 @@ void GameManager::run()
 									player1.playerHero->heros[0]->ability(*hero[z], hero1, player1.playerHero->cards);
 								}
 							}
-							int choice = view.print_action_menu(complet_action_menu(player1));
+							int choice;
+							while (1)
+							{
+								int choice1 = view.print_action_menu(complet_action_menu(player1));
+								if (choice1 == 5)
+								{
+									view.clear();
+								}
+								else
+								{
+									choice = choice1;
+									break;
+								}
+							}
 							switch (choice)
 							{
 							case 1:maneuver(player1, player2); break;
@@ -754,7 +794,20 @@ void GameManager::run()
 									player2.playerHero->heros[0]->ability(*hero[z], hero2, player2.playerHero->cards);
 								}
 							}
-							int choice = view.print_action_menu(complet_action_menu(player2));
+							int choice;
+							while (1)
+							{
+								int choice1 = view.print_action_menu(complet_action_menu(player2));
+								if (choice1 == 5)
+								{
+									view.clear();
+								}
+								else
+								{
+									choice = choice1;
+									break;
+								}
+							}
 							switch (choice)
 							{
 							case 1:maneuver(player2, player1); break;

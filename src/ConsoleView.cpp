@@ -333,7 +333,8 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     cout << "|" << left << setw(42) << s.card[1] << left << setw(29) << s.kind[1] << "|" << left << setw(19) << "2 = Attack" << "|" << endl;
     cout << "|" << left << setw(42) << s.card[2] << left << setw(29) << s.kind[2] << "|" << left << setw(19) << "3 = Scheme" << "|" << endl;
     cout << "|" << left << setw(42) << s.card[3] << left << setw(29) << s.kind[3] << "|" << left << setw(19) << "4 = Exit" << "|" << endl;
-    if (s.card.size() > 4)
+    cout << "|" << left << setw(42) << s.card[3] << left << setw(29) << s.kind[3] << "|" << left << setw(19) << "5 = Clear Page" << "|" << endl;
+    if (s.card.size() > 5)
     {
         for (int i = 4; i < s.card.size(); i++)
         {
@@ -346,7 +347,7 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     {
         cout << "Which action do you want to play" << endl;
         cin >> r;
-        if (r > 0 && r < 5)
+        if (r > 0 && r < 6)
         {
             break;
         }
@@ -371,15 +372,15 @@ int ConsoleView::print_maneuver()
     return a;
 }
 
-vector<int> ConsoleView::print_move(vector <int> cell)
+int ConsoleView::print_move1(vector <int> cell)
 {
-    int b, c;
-    vector <int> s;
+    cout << "Which house are you going to? 0 = End of move" << endl;
+    int c;
     while (1)
     {
         for (int i = 0; i < cell.size(); i++)
         {
-            cout << i << " = " << cell[i] << " ";
+            cout << i + 1 << " = " << cell[i] << " ";
 
         }
         cout << endl;
@@ -389,21 +390,23 @@ vector<int> ConsoleView::print_move(vector <int> cell)
             break;
         }
     }
-    s.emplace_back(cell[c]);
-    while (1)
-    {
-
-        cout << "Do you want to moving or stay where you are 1 = moving 2 = stay" << endl;
-        cin >> b;
-        if (b == 1 || b == 2)
-        {
-            break;
-        }
-    }
-    s.emplace_back(b);
-    return s;
+    return c;
 }
-
+void ConsoleView::print_move2(int a)
+{
+    if (a == 1)
+    {
+        cout << "Your ally is in this cell.You can't stay here." << endl;
+    }
+    if (a == 2)
+    {
+        cout << "You've run out of moves" << endl;
+    }
+    if (a == 3)
+    {
+        cout << "You must continue your move" << endl;
+    }
+}
 int ConsoleView::print_move_get_name(vector<string> name)
 {
     int a;
@@ -544,4 +547,13 @@ void ConsoleView::show_hand(vector<string> s)
         cout << x << " ";
     }
     cout << endl;
+}
+
+void ConsoleView::clear()
+{
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif 
 }
