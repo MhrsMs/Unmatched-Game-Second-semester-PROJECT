@@ -1,5 +1,4 @@
 #include "MapManager.h"
-#include "Hero.h"
 #include "ReadInformation.h"
 using namespace std;
 
@@ -32,26 +31,33 @@ bool MapManager::is_same_zone(int current_position, int chosen_cell) const
     }
     return false;
 }
-bool MapManager::is_enemy_inside(int chosen_cell, Hero* current_hero) const
+bool MapManager::is_enemy_inside(int chosen_cell, Hero* current_hero)
 {
-    string hero_name= current_hero->get_name();
     Hero* hero_inside_this_cell= cell[chosen_cell].get_hero_inside();
     if(hero_inside_this_cell!=nullptr)
     {
-        if(hero_inside_this_cell->get_name()=="SHERLOCK" || hero_inside_this_cell->get_name()=="DR.WATSON")
+        if(hero_inside_this_cell->is_alive())
         {
-            if(current_hero->get_name()!="SHERLOCK" && current_hero->get_name()!="DR.WATSON")
-                return true;
-            else    
-                return false;
-        }
+            if(hero_inside_this_cell->get_name()=="SHERLOCK" || hero_inside_this_cell->get_name()=="DR.WATSON")
+            {
+                if(current_hero->get_name()!="SHERLOCK" && current_hero->get_name()!="DR.WATSON")
+                    return true;
+                else    
+                    return false;
+            }
 
-        if(hero_inside_this_cell->get_name()=="DRACULA" || hero_inside_this_cell->get_name()=="SISTER")
+            if(hero_inside_this_cell->get_name()=="DRACULA" || hero_inside_this_cell->get_name()=="SISTER")
+            {
+                if(current_hero->get_name()!="DRACULA" && current_hero->get_name()!="SISTER")
+                    return true;
+                else    
+                    return false;
+            }
+        }
+        else
         {
-            if(current_hero->get_name()!="DRACULA" && current_hero->get_name()!="SISTER")
-                return true;
-            else    
-                return false;
+            cell[chosen_cell].change_hero_inside(nullptr);
+            return false;
         }
     }
     else
@@ -61,26 +67,33 @@ bool MapManager::is_enemy_inside(int chosen_cell, Hero* current_hero) const
 
     return false;
 }
-bool MapManager::is_ally_inside(int chosen_cell, Hero* current_hero) const
+bool MapManager::is_ally_inside(int chosen_cell, Hero* current_hero)
 {
-    string hero_name= current_hero->get_name();
     Hero* hero_inside_this_cell= cell[chosen_cell].get_hero_inside();
     if(hero_inside_this_cell!=nullptr)
     {
-        if(hero_inside_this_cell->get_name()=="SHERLOCK" || hero_inside_this_cell->get_name()=="DR.WATSON")
+        if(hero_inside_this_cell->is_alive())
         {
-            if(current_hero->get_name()=="SHERLOCK" || current_hero->get_name()=="DR.WATSON")
-                return true;
-            else    
-                return false;
-        }
+            if(hero_inside_this_cell->get_name()=="SHERLOCK" || hero_inside_this_cell->get_name()=="DR.WATSON")
+            {
+                if(current_hero->get_name()=="SHERLOCK" || current_hero->get_name()=="DR.WATSON")
+                    return true;
+                else    
+                    return false;
+            }
 
-        if(hero_inside_this_cell->get_name()=="DRACULA" || hero_inside_this_cell->get_name()=="SISTER")
+            if(hero_inside_this_cell->get_name()=="DRACULA" || hero_inside_this_cell->get_name()=="SISTER")
+            {
+                if(current_hero->get_name()=="DRACULA" || current_hero->get_name()=="SISTER")
+                    return true;
+                else    
+                    return false;
+            }
+        }
+        else
         {
-            if(current_hero->get_name()=="DRACULA" || current_hero->get_name()=="SISTER")
-                return true;
-            else    
-                return false;
+            cell[chosen_cell].change_hero_inside(nullptr);
+            return false;
         }
     }
     else
@@ -90,7 +103,7 @@ bool MapManager::is_ally_inside(int chosen_cell, Hero* current_hero) const
 
     return false;
 }
-vector<int> MapManager::electable_cells(int current_position) const
+vector<int> MapManager::electable_cells(int current_position)
 {
     vector<int> suitable_cells;
     vector<int> connections= cell[current_position].get_connections();
@@ -121,15 +134,23 @@ vector<int> MapManager::electable_cells(int current_position) const
 
     return suitable_cells;
 }
-vector<Hero*> MapManager::nearby_heroes(int current_position) const
+vector<Hero*> MapManager::nearby_heroes(int current_position)
 {
     vector<Hero*> heroes_around;
     vector<int> connections= cell[current_position].get_connections();
     for(size_t i=0; i<connections.size(); i++)
     {
-        if(cell[connections[i]].get_hero_inside() != nullptr)
+        Hero* hero =cell[connections[i]].get_hero_inside();
+        if(hero != nullptr)
         {
-            heroes_around.push_back(cell[connections[i]].get_hero_inside());
+            if(hero->is_alive())
+            {
+                heroes_around.push_back(hero);
+            }
+            else
+            {
+                cell[connections[i]].change_hero_inside(nullptr);
+            }
         }
     }
 
@@ -142,7 +163,7 @@ vector<string> MapManager::text_inside_cells() const
     for(size_t i=1; i<cell.size(); i++)
     {
         Hero* hero_inside= cell[i].get_hero_inside();
-        if(hero_inside!=nullptr)
+        if(hero_inside!=nullptr && hero_inside->get_position()!=0)
             text.push_back(hero_inside->get_short_name());
         else if(i<10)
             text.push_back("0"+ to_string(i));
