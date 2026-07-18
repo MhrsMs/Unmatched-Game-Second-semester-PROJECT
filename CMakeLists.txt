@@ -22,6 +22,8 @@ add_library(
     src/MapManager.cpp
     src/CardManager.cpp
     src/ConsoleView.cpp
+    src/Effect.cpp
+    src/GameManager.cpp
 )
 
 
