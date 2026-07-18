@@ -1,6 +1,5 @@
 #include "CardManager.h"
 #include "Hero.h"
-#include "ReadInformation.h"
 #include <algorithm>
 #include <random>
 #include <ctime>

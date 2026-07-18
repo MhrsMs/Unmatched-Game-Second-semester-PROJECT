@@ -1,5 +1,4 @@
 #include "MapManager.h"
-#include "ReadInformation.h"
 using namespace std;
 
 MapManager::MapManager()

@@ -6,7 +6,7 @@ using namespace std;
 vector <string> ReadInformation::read_data_cell()
 {
 	vector <string> s;
-	ifstream file("cell.txt");
+	ifstream file("../cell.txt");
 	if (!file.is_open())
 	{
 		return {};
@@ -27,7 +27,7 @@ vector <string> ReadInformation::read_data_cell()
 vector <string> ReadInformation::read_data_card(int a)
 {
 	vector <string> s;
-	ifstream file("card.txt");
+	ifstream file("../card.txt");
 	if (!file.is_open())
 	{
 		return {};

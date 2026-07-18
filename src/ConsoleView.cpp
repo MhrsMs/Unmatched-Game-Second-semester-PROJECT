@@ -333,10 +333,10 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     cout << "|" << left << setw(42) << s.card[1] << left << setw(29) << s.kind[1] << "|" << left << setw(19) << "2 = Attack" << "|" << endl;
     cout << "|" << left << setw(42) << s.card[2] << left << setw(29) << s.kind[2] << "|" << left << setw(19) << "3 = Scheme" << "|" << endl;
     cout << "|" << left << setw(42) << s.card[3] << left << setw(29) << s.kind[3] << "|" << left << setw(19) << "4 = Exit" << "|" << endl;
-    cout << "|" << left << setw(42) << s.card[3] << left << setw(29) << s.kind[3] << "|" << left << setw(19) << "5 = Clear Page" << "|" << endl;
+    cout << "|" << left << setw(42) << s.card[4] << left << setw(29) << s.kind[4] << "|" << left << setw(19) << "5 = Clear Page" << "|" << endl;
     if (s.card.size() > 5)
     {
-        for (int i = 4; i < s.card.size(); i++)
+        for (int i = 5; i < s.card.size(); i++)
         {
             cout << "|" << left << setw(42) << s.card[i] << left << setw(29) << s.kind[i] << "|" << left << setw(19) << " " << "|" << endl;
         }

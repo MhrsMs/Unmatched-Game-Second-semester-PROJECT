@@ -2,6 +2,7 @@
 #define MAPMANAGER_H
 #include "Cell.h"
 #include "Hero.h"
+#include "ReadInformation.h"
 
 class MapManager
 {

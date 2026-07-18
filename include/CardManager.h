@@ -1,6 +1,7 @@
 #ifndef CARDMANAGER_H
 #define CARDMANAGER_H
 #include "Card.h"
+#include "ReadInformation.h"
 #include <vector>
 #include <iostream>
 
