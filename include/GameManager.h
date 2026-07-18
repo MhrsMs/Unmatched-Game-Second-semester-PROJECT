@@ -7,8 +7,10 @@
 #include "Sherlock.h"
 #include "DrWatson.h"
 #include "Effect.h"
-#include <exception>
 #include "ConsoleView.h"
+#include <exception>
+#include <memory>
+
 class GameManager
 {
 private:

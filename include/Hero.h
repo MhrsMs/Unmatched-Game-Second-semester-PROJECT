@@ -2,7 +2,6 @@
 #define HERO_H
 #include <iostream>
 #include <string>
-#include "MapManager.h"
 #include "CardManager.h"
 class Hero
 {
