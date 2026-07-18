@@ -125,7 +125,7 @@ void GameManager::scheme(Player& funplayer1, Player& funplayer2)
 		{
 			for (auto& y : funplayer1.playerHero->heros)
 			{
-				if (y->is_alive() && (y->get_name() == x.get_nameOfAttacker() || "Any" == x.get_nameOfAttacker()) && !found)
+				if (y->is_alive() && (y->get_name() == x.get_nameOfDoer() || "Any" == x.get_nameOfDoer()) && !found)
 				{
 					card.emplace_back(x);
 				}
@@ -148,7 +148,7 @@ void GameManager::scheme(Player& funplayer1, Player& funplayer2)
 	Hero* actor = {};
 	for (auto& x : funplayer1.playerHero->heros)
 	{
-		if (x->get_name() == card[v].get_nameOfAttacker())
+		if (x->get_name() == card[v].get_nameOfDoer())
 		{
 			actor = x.get();
 		}
@@ -246,7 +246,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	vector <string> c2;
 	for (auto x : funplayer1.playerHero->cards.hand)
 	{
-		if ((x.get_kindOfAction() == "Attack" || x.get_kindOfAction() == "Attack_Or_Defense") && (x.get_nameOfAttacker() == name1[attacker] || x.get_nameOfAttacker() == "Any"))
+		if ((x.get_kindOfAction() == "Attack" || x.get_kindOfAction() == "Attack_Or_Defense") && (x.get_nameOfDoer() == name1[attacker] || x.get_nameOfDoer() == "Any"))
 		{
 			card1.emplace_back(x);
 			c1.emplace_back(x.get_cardName());
@@ -258,7 +258,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	}
 	for (auto x : funplayer2.playerHero->cards.hand)
 	{
-		if ((x.get_kindOfAction() == "Defense" || x.get_kindOfAction() == "Attack_Or_Defense") && (x.get_nameOfAttacker() == name2[defender] || x.get_nameOfAttacker() == "Any"))
+		if ((x.get_kindOfAction() == "Defense" || x.get_kindOfAction() == "Attack_Or_Defense") && (x.get_nameOfDoer() == name2[defender] || x.get_nameOfDoer() == "Any"))
 		{
 			card2.emplace_back(x);
 			c2.emplace_back(x.get_cardName());
@@ -291,7 +291,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	{
 		if (card2[ca2].get_id() == 23 || card2[ca2].get_id() == 10)
 		{
-			if (card1[ca1].get_nameOfAttacker() == "Any")
+			if (card1[ca1].get_nameOfDoer() == "Any")
 			{
 				farib2 = 1;
 			}
@@ -307,7 +307,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	}
 	if (card1[ca1].get_id() == 23 || card1[ca1].get_id() == 10)
 	{
-		if (card2[ca2].get_nameOfAttacker() == "Any")
+		if (card2[ca2].get_nameOfDoer() == "Any")
 		{
 			farib2 = 1;
 		}

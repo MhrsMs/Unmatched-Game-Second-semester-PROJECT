@@ -18,7 +18,7 @@ private:
 	int id;
 	string card_name;
 	int attack_or_defense;
-	string name_of_attacker;
+	string name_of_doer;
 	int effect_time;
 	int boost;
 	int number;
@@ -26,11 +26,11 @@ private:
 	Needs needs;
 public:
 
-	Card(int id, string card_name, int attack_or_defense, string name_of_attacker, int effect_time, int boost, int number, string kind_of_action, Needs needs);
+	Card(int id, string card_name, int attack_or_defense, string name_of_doer, int effect_time, int boost, int number, string kind_of_action, Needs needs);
 	int get_id() const;
 	string get_cardName() const;
 	int get_attackOrDefense() const;
-	string get_nameOfAttacker() const;
+	string get_nameOfDoer() const;
 	int get_effectTime() const;
 	int get_boost() const;
 	int get_number() const;
