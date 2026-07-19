@@ -572,15 +572,8 @@ void GameManager::movement(Player* funplayer1, Hero* hero, int moveMax, int move
 }
 void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
 {
-	view.print_map(mapmanager.text_inside_cells());
-	int starting_position1 = view.print_initial_position(funplayer1.playerHero->heros[0].get()->get_name());
-	mapmanager.move(starting_position1, funplayer1.playerHero->heros[0].get());
-	int starting_position2;
-	if(starting_position1 == 9)
-		starting_position2 = 22;
-	else
-		starting_position2 = 9;
-	mapmanager.move(starting_position2, funplayer2.playerHero->heros[0].get());
+	mapmanager.move(22, funplayer1.playerHero->heros[0].get());
+	mapmanager.move(9, funplayer2.playerHero->heros[0].get());
 	view.print_map(mapmanager.text_inside_cells());
 
 	vector <int> p1;
@@ -594,7 +587,7 @@ void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
 				if (x->get_name() == "SISTER")
 				{
 					int p = view.print_initial_position(x->get_name() + " " + x->get_short_name());
-					if (mapmanager.is_same_zone(starting_position1, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+					if (mapmanager.is_same_zone(22, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
 					{
 						mapmanager.move(p, x.get());
 						break;
@@ -603,7 +596,7 @@ void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
 				else
 				{
 					int p = view.print_initial_position(x->get_name());
-					if (mapmanager.is_same_zone(starting_position1, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+					if (mapmanager.is_same_zone(22, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
 					{
 						mapmanager.move(p, x.get());
 						break;
@@ -623,7 +616,7 @@ void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
 				if (x->get_name() == "SISTER")
 				{
 					int p = view.print_initial_position(x->get_name() + " " + x->get_short_name());
-					if (mapmanager.is_same_zone(starting_position2, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+					if (mapmanager.is_same_zone(9, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
 					{
 						mapmanager.move(p, x.get());
 						break;
@@ -632,7 +625,7 @@ void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
 				else
 				{
 					int p = view.print_initial_position(x->get_name());
-					if (mapmanager.is_same_zone(starting_position2, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
+					if (mapmanager.is_same_zone(9, p) && !mapmanager.is_ally_inside(p, x.get()) && !mapmanager.is_enemy_inside(p, x.get()))
 					{
 						mapmanager.move(p, x.get());
 						break;
@@ -815,17 +808,24 @@ void GameManager::run()
 							if (player1.playerHero->heros[0]->get_name() == "DRACULA")
 							{
 								view.print_map(mapmanager.text_inside_cells());
-								bool b = view.print_ability();
+								bool b = view.print_ability(1);
 								if (b)
 								{
 									vector <Hero*> hero = mapmanager.nearby_heroes(player1.playerHero->heros[0]->get_position());
-									vector <Hero*> hero1;
-									for (auto& x : player1.playerHero->heros)
+									if(!hero.empty())
 									{
-										hero1.emplace_back(x.get());
+										vector <Hero*> hero1;
+										for (auto& x : player1.playerHero->heros)
+										{
+											hero1.emplace_back(x.get());
+										}
+										int z = view.print_complet_needs(8, {}, hero_to_name(hero));
+										player1.playerHero->heros[0]->ability(*hero[z], hero1, player1.playerHero->cards);
 									}
-									int z = view.print_complet_needs(8, {}, hero_to_name(hero));
-									player1.playerHero->heros[0]->ability(*hero[z], hero1, player1.playerHero->cards);
+									else
+									{
+										view.print_ability(2);
+									}
 								}
 							}
 							int choice;

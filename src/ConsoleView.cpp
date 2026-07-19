@@ -123,23 +123,33 @@ int ConsoleView::print_main_menu()
     return a;
 }
 
-bool ConsoleView::print_ability()
+bool ConsoleView::print_ability(int a)
 {
-    while (1)
+    if(a == 1)
     {
-        int a;
-        cout << "Do you want to use Dracula's ability? 1 = yes 0 = no" << endl;
-        cin >> a;
-        if (a == 0)
+        while (1)
         {
-            return 0;
-        }
-        if (a == 1)
-        {
-            return 1;
-        }
+            int a;
+            cout << "Do you want to use Dracula's ability? 1 = yes 0 = no" << endl;
+            cin >> a;
+            if (a == 0)
+            {
+                return 0;
+            }
+            if (a == 1)
+            {
+                return 1;
+            }
 
+        }
     }
+    else if(a == 2)
+    {
+        cout<< "There is no hero next to Dracula. He can't use his ability\n";
+        return 0;
+    }
+
+    return 0;
 
 }
 
@@ -275,6 +285,8 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
         }
         return a[s];
     }
+
+    return 0;
 }
 
 vector<string> ConsoleView::get_name()
@@ -338,10 +350,10 @@ vector<string> ConsoleView::get_name()
         if (choice > 0 && choice < 3)
         {
             if(choice==1)
-                cout<< "Player1's hero is DRACULA and Player2's hero is SHERLOCK.\n";
+                cout<< "Player1's hero is DRACULA and Player2's hero is SHERLOCK\n";
             else
-                cout<< "Player1's hero is SHERLOCK and Player2's hero is DRACULA.\n";
-            cout<< "Determine the position of your Heroes and Sidekicks.\n";
+                cout<< "Player1's hero is SHERLOCK and Player2's hero is DRACULA\n";
+            cout<< "Determine the position of your Sidekicks\n";
             break;
         }
     }
@@ -357,35 +369,13 @@ void ConsoleView::print_name(string name)
 int ConsoleView::print_initial_position(string name)
 {
     int initial_position;
-    if(name== "SHERLOCK" || name== "DRACULA")
+    while (1)
     {
         cout << "Enter the initial position of " << name << endl;
-        while (1)
+        cin >> initial_position;
+        if (initial_position > 0 && initial_position < 33)
         {
-            cout << "You can only start from cell 9 or 22-> your choice: ";
-            cin >> initial_position;
-            if (initial_position==9)
-            {
-                cout<< "Player1's hero starts from cell 9 and Player2's hero starts from cell 22.\n"; 
-                break;
-            }
-            else if (initial_position==22)
-            {
-                cout<< "Player1's hero starts from cell 22 and Player2's hero starts from cell 9.\n"; 
-                break;
-            }
-        }
-    }
-    else
-    {
-        while (1)
-        {
-            cout << "Enter the initial position of " << name << endl;
-            cin >> initial_position;
-            if (initial_position > 0 && initial_position < 33)
-            {
-                break;
-            }
+            break;
         }
     }
     return initial_position;

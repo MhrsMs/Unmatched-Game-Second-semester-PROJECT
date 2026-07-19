@@ -27,7 +27,7 @@ public:
 	void print_map(vector<string> text);
 	void print_Help();
 	int print_main_menu();
-	bool print_ability();
+	bool print_ability(int a);
 	int print_complet_needs(int c, vector <int> a = {}, vector <string> b = {});
 	vector <string> get_name();
 	void print_name(string name);
