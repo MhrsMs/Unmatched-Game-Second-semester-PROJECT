@@ -341,7 +341,7 @@ vector<string> ConsoleView::get_name()
                 cout<< "Player1's hero is DRACULA and Player2's hero is SHERLOCK.\n";
             else
                 cout<< "Player1's hero is SHERLOCK and Player2's hero is DRACULA.\n";
-            cout<< "Determine the position of your Sidekicks.\n";
+            cout<< "Determine the position of your Heroes and Sidekicks.\n";
             break;
         }
     }
@@ -354,20 +354,41 @@ void ConsoleView::print_name(string name)
     cout << name << endl;
 }
 
-int ConsoleView::print_intitial_position(string name)
+int ConsoleView::print_initial_position(string name)
 {
-    int a;
-    while (1)
+    int initial_position;
+    if(name== "SHERLOCK" || name== "DRACULA")
     {
-
         cout << "Enter the initial position of " << name << endl;
-        cin >> a;
-        if (a > 0 && a < 33)
+        while (1)
         {
-            break;
+            cout << "You can only start from cell 9 or 22-> your choice: ";
+            cin >> initial_position;
+            if (initial_position==9)
+            {
+                cout<< "Player1's hero starts from cell 9 and Player2's hero starts from cell 22.\n"; 
+                break;
+            }
+            else if (initial_position==22)
+            {
+                cout<< "Player1's hero starts from cell 22 and Player2's hero starts from cell 9.\n"; 
+                break;
+            }
         }
     }
-    return a;
+    else
+    {
+        while (1)
+        {
+            cout << "Enter the initial position of " << name << endl;
+            cin >> initial_position;
+            if (initial_position > 0 && initial_position < 33)
+            {
+                break;
+            }
+        }
+    }
+    return initial_position;
 }
 
 int ConsoleView::print_action_menu(ShowActionMenu s)

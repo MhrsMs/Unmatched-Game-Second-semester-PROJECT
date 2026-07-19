@@ -31,7 +31,7 @@ public:
 	int print_complet_needs(int c, vector <int> a = {}, vector <string> b = {});
 	vector <string> get_name();
 	void print_name(string name);
-	int print_intitial_position(string name);
+	int print_initial_position(string name);
 	int print_action_menu(ShowActionMenu s);
 	int print_maneuver();
 	int print_move1(vector <int> cell);
