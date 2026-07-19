@@ -61,21 +61,21 @@ void Effect::effect2(int b, Data data, Complet_Needs complet_needs)
 	{
 		if (!data.cardsTarget.hand.empty())
 		{
-			int a = rm(1, data.cardsTarget.hand.size());
-			int boost = data.cardsTarget.hand[a].get_boost();
-			data.cardsTarget.hand_to_null_card(data.cardsTarget.hand[a].get_id());
-			*(data.damage) = boost + 2;
+			int a = rm(1, data.cardsTarget.hand.size() - 1);
+			int boost = data.cardsTarget.hand[a - 1].get_boost();
+			data.cardsTarget.hand_to_null_card(data.cardsTarget.hand[a - 1].get_id());
+			data.thiscard->change_attackOrDefense(boost);
 		}
 	}
 	if (b == 2)
 	{
 		int a = complet_needs.optionalCard.size();
-		*(data.damage) = a + 6;
+		data.thiscard->change_attackOrDefense(a);
 	}
 	if (b == 3)
 	{
 		int a = data.targetcard->get_boost();
-		*(data.damage) = a + 1;
+		data.thiscard->change_attackOrDefense(a);
 	}
 	if (b == 4)
 	{
@@ -85,7 +85,7 @@ void Effect::effect2(int b, Data data, Complet_Needs complet_needs)
 			{
 				if (data.mapManager.is_same_zone(complet_needs.targetPerson->get_position(), data.team[i]->get_position()))
 				{
-					data.damage++;
+					data.thiscard->change_attackOrDefense(1);
 				}
 			}
 		}
@@ -142,12 +142,13 @@ void Effect::effect6(Data data, Complet_Needs complet_needs)
 	//teshnegi baray baqa
 	if (complet_needs.heroWin)
 	{
-		data.mapManager.move(complet_needs.location, data.team[1]);
+		data.mapManager.move(complet_needs.location, data.team[0]);
 	}
 }
 void Effect::effect7(Data data, Complet_Needs complet_needs)
 {
 	//ostad taqir chehre
+
 
 	int hPosition = data.team[0]->get_position();
 	int tPosition = complet_needs.targetPerson->get_position();
@@ -175,7 +176,7 @@ void Effect::effect8(Data data, Complet_Needs complet_needs)
 	}
 	else
 	{
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			if (data.cardsTeam.can_deck_to_hand(1))
 			{
@@ -204,7 +205,7 @@ void Effect::effect9(Data data, Complet_Needs complet_needs)
 void Effect::effect10(Data data, Complet_Needs complet_needs)
 {
 	//noqtei sabet dar zamanei moteqaier
-	if ((data.team[0]->get_position()), (data.team[1]->get_position()))
+	if (data.mapManager.is_adjacent(data.team[0]->get_position(), data.team[1]->get_position()))
 	{
 		data.team[0]->increase_HP(1);
 		data.team[1]->increase_HP(1);
@@ -227,5 +228,5 @@ void Effect::effect12(Data data, Complet_Needs complet_needs)
 void Effect::effect13(Data data, Complet_Needs complet_needs)
 {
 	//stentag sterategik
-	*(data.damage) = data.targetcard->get_boost();
+	data.targetcard->change_attackOrDefense(-data.targetcard->get_attackOrDefense() + data.targetcard->get_boost());
 }

@@ -10,8 +10,9 @@ struct Data
 	CardManager& cardsTarget;
 	MapManager& mapManager;
 	Hero& actor;
-	int* damage = nullptr;
+	Card* thiscard = nullptr;
 	Card* targetcard = nullptr;
+
 };
 struct Complet_Needs
 {
