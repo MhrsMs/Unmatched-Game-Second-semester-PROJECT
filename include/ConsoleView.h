@@ -4,6 +4,10 @@
 using namespace std;
 struct ShowActionMenu
 {
+	bool attack;
+	bool scheme;
+	string attackReason;
+	string schemeReason;
 	string name;
 	vector <string> nameOfHero;
 	vector <int> health;
@@ -12,6 +16,8 @@ struct ShowActionMenu
 	vector <string> text;
 	vector <string> card;
 	vector <string> kind;
+	vector <string> nameofEnemy;
+	vector <int> healthEnemy;
 };
 class ConsoleView
 {
@@ -35,6 +41,7 @@ public:
 	int print_scheme(vector <string> s);
 	int print_attack1(vector <string> s);
 	int print_attack2(vector <string> s);
+	void print_error_attack(int a);
 	void end_of_game(string a);
 	void show_hand(vector <string> s);
 	void clear();

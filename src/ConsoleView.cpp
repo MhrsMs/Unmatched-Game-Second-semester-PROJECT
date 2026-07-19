@@ -153,18 +153,14 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
         {
 
             cout << "Enter the number of the cell where you want sister to return :" << endl;
-            for (int i = 0; i < a.size(); i++)
-            {
-                cout << i << " = " << a[i] << " ";
-            }
-            cout << endl;
+            cout << "You must choose a cell in dracula's zone" << endl;
             cin >> s;
-            if (s >= 0 && s < a.size())
+            if (s > 0 && s < 33)
             {
                 break;
             }
         }
-        return a[s];
+        return s;
     }
     case 2:
     {
@@ -224,7 +220,7 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
             }
             cout << endl;
             cin >> s;
-            if (s >= 1 && s <= b.size() + 1)
+            if (s >= 0 && s <= b.size() + 1)
             {
                 break;
             }
@@ -259,30 +255,65 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
         }
         return s;
     }
+    case 9:
+        int s;
+        while (1)
+        {
+
+            cout << "Enter the number of the cell where you want DRwatson to be placed:" << endl;
+            for (int i = 0; i < a.size(); i++)
+            {
+                cout << i << " = " << a[i] << " ";
+            }
+            cout << endl;
+            cin >> s;
+            if (s >= 0 && s < a.size())
+            {
+                break;
+            }
+        }
+        return a[s];
     }
 }
 
 vector<string> ConsoleView::get_name()
 {
     vector <string> name;
+    int a1, a2;
     string n1, n2;
-    int a;
-    cout << "Please enter the name of the younger player" << endl;
+    int c;
+    cout << "Please enter the name of the first player" << endl;
     cin >> n1;
-    name.emplace_back(n1);
-    cout << "Please enter the name of the older player" << endl;
+    cout << "Please enter the age of the first player" << endl;
+    cin >> a1;
+
+    cout << "Please enter the name of the second player" << endl;
     cin >> n2;
-    name.emplace_back(n2);
+    cout << "Please enter the age of the second player" << endl;
+    cin >> a2;
+    string younger;
+    if (a2 < a1)
+    {
+        name.emplace_back(n2);
+        name.emplace_back(n1);
+        younger = n2;
+    }
+    else
+    {
+        name.emplace_back(n1);
+        name.emplace_back(n2);
+        younger = n1;
+    }
     while (1)
     {
-        cout << n1 << " Which one do you choose? 1 = DRACULA 2 = HOLMES" << endl;
-        cin >> a;
-        if (a > 0 && a < 3)
+        cout << younger << " Which one do you choose? 1 = DRACULA 2 = HOLMES" << endl;
+        cin >> c;
+        if (c > 0 && c < 3)
         {
             break;
         }
     }
-    name.emplace_back(to_string(a));
+    name.emplace_back(to_string(c));
     return name;
 }
 
@@ -309,9 +340,18 @@ int ConsoleView::print_intitial_position(string name)
 
 int ConsoleView::print_action_menu(ShowActionMenu s)
 {
-    if (s.card.size() < 5)
+    int num = 3;
+    if (s.attack)
     {
-        for (int i = s.card.size() - 1; i < 5; i++)
+        num++;
+    }
+    if (s.scheme)
+    {
+        num++;
+    }
+    if (s.card.size() < num)
+    {
+        for (int i = s.card.size() - 1; i < num; i++)
         {
             s.card.emplace_back(" ");
             s.kind.emplace_back(" ");
@@ -323,26 +363,44 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     cout << "+===========================================================================================+\n";
     for (int i = 0; i < s.nameOfHero.size(); i++)
     {
-        cout << "|" << left << setw(10) << s.nameOfHero[i] << " *Health:" << left << setw(2) << s.health[i] << " *Move:" << left << setw(2) << s.move[i] << " *CellNumber:" << left << setw(48) << s.cell[i] << "|" << endl;
+        cout << "|" << left << setw(10) << s.nameOfHero[i] << " * Health:" << left << setw(2) << s.health[i] << " * Move : " << left << setw(2) << s.move[i] << " * CellNumber : " << s.cell[i] << endl;
+    }
+    for (int i = 0; i < s.nameofEnemy.size(); i++)
+    {
+        cout << "|" << left << setw(10) << s.nameofEnemy[i] << " * Health:" << s.healthEnemy[i] << endl;
     }
     print_map(s.text);
     cout << "+=======================================================================+===================+\n";
     cout << "|                              [HAND]                                   |      [ACTION]     |\n";
     cout << "+=======================================================================+===================+\n";
-    cout << "|" << left << setw(42) << s.card[0] << left << setw(29) << s.kind[0] << "|" << left << setw(19) << "1 = Maneuver" << "|" << endl;
-    cout << "|" << left << setw(42) << s.card[1] << left << setw(29) << s.kind[1] << "|" << left << setw(19) << "2 = Attack" << "|" << endl;
-    cout << "|" << left << setw(42) << s.card[2] << left << setw(29) << s.kind[2] << "|" << left << setw(19) << "3 = Scheme" << "|" << endl;
-    cout << "|" << left << setw(42) << s.card[3] << left << setw(29) << s.kind[3] << "|" << left << setw(19) << "4 = Exit" << "|" << endl;
-    cout << "|" << left << setw(42) << s.card[4] << left << setw(29) << s.kind[4] << "|" << left << setw(19) << "5 = Clear Page" << "|" << endl;
-    if (s.card.size() > 5)
+    cout << "|" << left << setw(42) << s.card[0] << left << setw(29) << s.kind[0] << "|" << left << setw(19) << "1 = Exit" << "|" << endl;
+    cout << "|" << left << setw(42) << s.card[1] << left << setw(29) << s.kind[1] << "|" << left << setw(19) << "2 = Clear Page" << "|" << endl;
+    cout << "|" << left << setw(42) << s.card[2] << left << setw(29) << s.kind[2] << "|" << left << setw(19) << "3 = Maneuver" << "|" << endl;
+    if (s.scheme)
     {
-        for (int i = 5; i < s.card.size(); i++)
+        cout << "|" << left << setw(42) << s.card[3] << left << setw(29) << s.kind[3] << "|" << left << setw(19) << "4 = Scheme" << "|" << endl;
+    }
+    if (s.attack)
+    {
+        cout << "|" << left << setw(42) << s.card[4] << left << setw(29) << s.kind[4] << "|" << left << setw(19) << "5 = Attack" << "|" << endl;
+    }
+
+    if (s.card.size() > num)
+    {
+        for (int i = num; i < s.card.size(); i++)
         {
             cout << "|" << left << setw(42) << s.card[i] << left << setw(29) << s.kind[i] << "|" << left << setw(19) << " " << "|" << endl;
         }
     }
     cout << "+=======================================================================+===================+\n";
-
+    if (!s.scheme)
+    {
+        cout << "SCHEME UNAVAILAVLE- " << s.schemeReason << endl;
+    }
+    if (!s.attack)
+    {
+        cout << "ATTACK UNAVAILAVLE- " << s.attackReason << endl;
+    }
     while (1)
     {
         cout << "Which action do you want to play" << endl;
@@ -532,6 +590,18 @@ int ConsoleView::print_attack2(vector<string> s)
         }
     }
     return r;
+}
+
+void ConsoleView::print_error_attack(int a)
+{
+    if (a == 1)
+    {
+        cout << "This hero cannot access the other characters. Please select another hero" << endl;
+    }
+    if (a == 2)
+    {
+        cout << "This hero has no active card. Please select another hero" << endl;
+    }
 }
 
 void ConsoleView::end_of_game(string a)
