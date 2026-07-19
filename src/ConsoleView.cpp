@@ -1,6 +1,7 @@
 #include "ConsoleView.h"
 #include <iostream>
 #include <iomanip>
+#include <stdexcept>
 void ConsoleView::print_error(string what)
 {
     cout << what << endl;
@@ -279,41 +280,72 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
 vector<string> ConsoleView::get_name()
 {
     vector <string> name;
-    int a1, a2;
-    string n1, n2;
-    int c;
-    cout << "Please enter the name of the first player" << endl;
-    cin >> n1;
-    cout << "Please enter the age of the first player" << endl;
-    cin >> a1;
-
-    cout << "Please enter the name of the second player" << endl;
-    cin >> n2;
-    cout << "Please enter the age of the second player" << endl;
-    cin >> a2;
-    string younger;
-    if (a2 < a1)
+    int age1, age2;
+    string name1, name2;
+    int choice;
+    for(size_t i=1; i<=2; i++)
     {
-        name.emplace_back(n2);
-        name.emplace_back(n1);
-        younger = n2;
+        cout << "Please enter the name of the player"<< i<< ": ";
+        if(i==1)
+            cin>> name1;
+        else
+            cin>> name2;
+
+        bool valid= false;
+        string temporary_age;
+        while(!valid)
+        {
+            cout << "Please enter the age of the player"<< i<< ": ";
+            cin >> temporary_age;
+
+            try
+            {
+                size_t last_index;
+                if(i==1)
+                    age1= stoi(temporary_age, &last_index);
+                else
+                    age2= stoi(temporary_age, &last_index);
+
+                if(last_index== temporary_age.length())
+                    valid= true;
+                else
+                    cerr<< "Invalid input! The number you entered for age contains letters and symbols.\n";
+            }
+            catch(const exception& e)
+            {
+                cerr<< "Invalid input! Please enter numbers only.\n";
+            }
+        }        
+    }
+    string younger;
+    if (age2 < age1)
+    {
+        name.emplace_back(name2);
+        name.emplace_back(name1);
+        younger = name2;
     }
     else
     {
-        name.emplace_back(n1);
-        name.emplace_back(n2);
-        younger = n1;
+        name.emplace_back(name1);
+        name.emplace_back(name2);
+        younger = name1;
     }
+    cout<< younger<< " is younger, so starts first-->\n";
     while (1)
     {
-        cout << younger << " Which one do you choose? 1 = DRACULA 2 = HOLMES" << endl;
-        cin >> c;
-        if (c > 0 && c < 3)
+        cout << younger << " Which one do you choose? 1 = DRACULA 2 = SHERLOCK" << endl;
+        cin >> choice;
+        if (choice > 0 && choice < 3)
         {
+            if(choice==1)
+                cout<< "Player1's hero is DRACULA and Player2's hero is SHERLOCK.\n";
+            else
+                cout<< "Player1's hero is SHERLOCK and Player2's hero is DRACULA.\n";
+            cout<< "Determine the position of your Sidekicks.\n";
             break;
         }
     }
-    name.emplace_back(to_string(c));
+    name.emplace_back(to_string(choice));
     return name;
 }
 
