@@ -23,6 +23,7 @@ class ConsoleView
 {
 
 public:
+	bool just_numeric_input(string input);
 	void print_error(string what);
 	void print_map(vector<string> text);
 	void print_Help();

@@ -2,6 +2,29 @@
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
+
+bool ConsoleView::just_numeric_input(string input)
+{
+    try
+    {
+        size_t last_index;
+        int to_number = stoi(input, &last_index);
+
+        if(last_index== input.length())
+            return true;
+        else
+        {
+            cerr<< "Invalid input! The number you entered contains letters and symbols...Try Again\n";
+            return false;
+        }
+    }
+    catch(const exception& e)
+    {
+        cerr<< "Invalid input! Please enter numbers only...Try Again\n";
+        return false;
+    }
+}
+
 void ConsoleView::print_error(string what)
 {
     cout << what << endl;
@@ -25,6 +48,7 @@ void ConsoleView::print_map(vector<string> text)
     cout << "\033[38;2;221;160;221m(" << text[28] << ")\033[0m-\033[38;2;221;160;221m(" << text[29] << ")\033[0m-\033[38;2;221;160;221m(" << text[30] << ")\033[0m------\033[38;2;221;160;221m(" << text[31] << ")\033[0m                \033[38;2;221;160;221m(" << text[32] << ")\033[0m" << endl << endl;
     cout << "cells 1, 6, 16, and 28 are secret passages\n";
 }
+
 void ConsoleView::print_Help()
 {
     cout << "=========================================================================\n";
@@ -110,11 +134,16 @@ void ConsoleView::print_Help()
 
 int ConsoleView::print_main_menu()
 {
+    string temporary_input;
     int a;
     while (1)
     {
-        cout << "1 = PLAY GAME 2 = HELP 3 = EXIT" << endl;
-        cin >> a;
+        do
+        {
+            cout << "1 = PLAY GAME 2 = HELP 3 = EXIT" << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        a = stoi(temporary_input);
         if (a > 0 && a < 4)
         {
             break;
@@ -129,9 +158,14 @@ bool ConsoleView::print_ability(int a)
     {
         while (1)
         {
+            string temporary_input;
             int a;
-            cout << "Do you want to use Dracula's ability? 1 = yes 0 = no" << endl;
-            cin >> a;
+            do
+            {
+                cout << "Do you want to use Dracula's ability? 1 = yes 0 = no" << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            a = stoi(temporary_input);
             if (a == 0)
             {
                 return 0;
@@ -159,13 +193,17 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
     {
     case 1:
     {
+        string temporary_input;
         int s;
         while (1)
         {
-
-            cout << "Enter the number of the cell where you want sister to return :" << endl;
-            cout << "You must choose a cell in dracula's zone" << endl;
-            cin >> s;
+            do
+            {
+                cout << "Enter the number of the cell where you want sister to return :" << endl;
+                cout << "You must choose a cell in dracula's zone" << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            s = stoi(temporary_input);
             if (s > 0 && s < 33)
             {
                 break;
@@ -175,12 +213,16 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
     }
     case 2:
     {
+        string temporary_input;
         int s;
         while (1)
         {
-
-            cout << "Enter the number of the cell where you want Dracula to be placed:" << endl;
-            cin >> s;
+            do
+            {
+                cout << "Enter the number of the cell where you want Dracula to be placed:" << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            s = stoi(temporary_input);
             if (s >= 0 && s < 33)
             {
                 break;
@@ -195,17 +237,21 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
     }
     case 4:
     {
+        string temporary_input;
         int s;
         while (1)
         {
-
-            cout << "Enter the number of the cell where you want Dracula to be placed:" << endl;
-            for (int i = 0; i < a.size(); i++)
+            do
             {
-                cout << i << " = " << a[i] << " ";
-            }
-            cout << endl;
-            cin >> s;
+                cout << "Enter the number of the cell where you want Dracula to be placed:" << endl;
+                for (int i = 0; i < a.size(); i++)
+                {
+                    cout << i << " = " << a[i] << " ";
+                }
+                cout << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            s = stoi(temporary_input);
             if (s >= 0 && s < a.size())
             {
                 break;
@@ -220,17 +266,22 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
     }
     case 6:
     {
+        string temporary_input;
         cout << "Which card do you want to discard? 0 = none " << endl;
         int s;
         while (1)
         {
-            for (int i = 0; i < b.size(); i++)
+            do
             {
-                cout << i + 1 << " = " << b[i] << " ";
+                for (int i = 0; i < b.size(); i++)
+                {
+                    cout << i + 1 << " = " << b[i] << " ";
 
-            }
-            cout << endl;
-            cin >> s;
+                }
+                cout << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            s = stoi(temporary_input);
             if (s >= 0 && s <= b.size() + 1)
             {
                 break;
@@ -240,24 +291,34 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
     }
     case 7:
     {
+        string temporary_input;
         int s;
-        cout << "Enter number : " << endl;
-        cin >> s;
+        do
+        {
+            cout << "Enter number : " << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        s = stoi(temporary_input);
         return s;
     }
     case 8:
     {
+        string temporary_input;
         int s;
         while (1)
         {
-            cout << "Select the hero you want to target:" << endl;
-            for (int i = 0; i < b.size(); i++)
+            do
             {
-                cout << i << " = " << b[i] << " ";
+                cout << "Select the hero you want to target:" << endl;
+                for (int i = 0; i < b.size(); i++)
+                {
+                    cout << i << " = " << b[i] << " ";
 
-            }
-            cout << endl;
-            cin >> s;
+                }
+                cout << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            s = stoi(temporary_input);
             if (s >= 0 && s < b.size() + 1)
             {
                 break;
@@ -268,17 +329,21 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
     }
     case 9:
     {
+        string temporary_input;
         int s;
         while (1)
         {
-
-            cout << "Enter the number of the cell where you want DRwatson to be placed:" << endl;
-            for (int i = 0; i < a.size(); i++)
+            do
             {
-                cout << i << " = " << a[i] << " ";
-            }
-            cout << endl;
-            cin >> s;
+                cout << "Enter the number of the cell where you want Dr.Watson to be placed:" << endl;
+                for (int i = 0; i < a.size(); i++)
+                {
+                    cout << i << " = " << a[i] << " ";
+                }
+                cout << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            s = stoi(temporary_input);
             if (s >= 0 && s < a.size())
             {
                 break;
@@ -302,39 +367,25 @@ vector<string> ConsoleView::get_name()
     int age1, age2;
     string name1, name2;
     int choice;
-    for (size_t i = 1; i <= 2; i++)
+    for(size_t i=1; i<=2; i++)
     {
-        cout << "Please enter the name of the player" << i << ": ";
-        if (i == 1)
-            cin >> name1;
+        cout << "Please enter the name of the player"<< i<< ": ";
+        if(i==1)
+            cin>> name1;
         else
-            cin >> name2;
+            cin>> name2;
 
-        bool valid = false;
-        string temporary_age;
-        while (!valid)
+        string temporary_input;
+        do
         {
-            cout << "Please enter the age of the player" << i << ": ";
-            cin >> temporary_age;
+            cout << "Please enter the age of the player"<< i<< ": ";
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
 
-            try
-            {
-                size_t last_index;
-                if (i == 1)
-                    age1 = stoi(temporary_age, &last_index);
-                else
-                    age2 = stoi(temporary_age, &last_index);
-
-                if (last_index == temporary_age.length())
-                    valid = true;
-                else
-                    cerr << "Invalid input! The number you entered for age contains letters and symbols.\n";
-            }
-            catch (const exception& e)
-            {
-                cerr << "Invalid input! Please enter numbers only.\n";
-            }
-        }
+        if(i==1)
+            age1= stoi(temporary_input);
+        else
+            age2= stoi(temporary_input);     
     }
     string younger;
     if (age2 < age1)
@@ -349,18 +400,18 @@ vector<string> ConsoleView::get_name()
         name.emplace_back(name2);
         younger = name1;
     }
-    cout << younger << " is younger, so starts first-->\n";
+    cout<< younger<< " is younger, so starts first-->\n";
     while (1)
     {
         cout << younger << " Which one do you choose? 1 = DRACULA 2 = SHERLOCK" << endl;
         cin >> choice;
         if (choice > 0 && choice < 3)
         {
-            if (choice == 1)
-                cout << "Player1's hero is DRACULA and Player2's hero is SHERLOCK\n";
+            if(choice==1)
+                cout<< "Player1's hero is DRACULA and Player2's hero is SHERLOCK\n";
             else
-                cout << "Player1's hero is SHERLOCK and Player2's hero is DRACULA\n";
-            cout << "Determine the position of your Sidekicks\n";
+                cout<< "Player1's hero is SHERLOCK and Player2's hero is DRACULA\n";
+            cout<< "Determine the position of your Sidekicks\n";
             break;
         }
     }
@@ -375,11 +426,16 @@ void ConsoleView::print_name(string name)
 
 int ConsoleView::print_initial_position(string name)
 {
+    string temporary_input;
     int initial_position;
     while (1)
     {
-        cout << "Enter the initial position of " << name << endl;
-        cin >> initial_position;
+        do
+        {
+            cout << "Enter the initial position of " << name << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        initial_position = stoi(temporary_input);
         if (initial_position > 0 && initial_position < 33)
         {
             break;
@@ -407,7 +463,6 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
             s.kind.emplace_back(" ");
         }
     }
-    int r;
     cout << "+===========================================================================================+\n";
     cout << "|" << "PLAYER: " << left << setw(83) << s.name << "|" << endl;
     cout << "+===========================================================================================+\n";
@@ -417,44 +472,50 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     }
     for (int i = 0; i < s.nameofEnemy.size(); i++)
     {
-        cout << "|" << left << setw(10) << s.nameofEnemy[i] << " * Health:" << s.healthEnemy[i] << endl;
+        cout << "\033[91m|" << left << setw(10) << s.nameofEnemy[i] << " * Health:" << s.healthEnemy[i] << "\033[0m" << endl;
     }
     print_map(s.text);
     cout << "+=======================================================================+===================+\n";
     cout << "|                              [HAND]                                   |      [ACTION]     |\n";
     cout << "+=======================================================================+===================+\n";
-    cout << "|" << left << setw(42) << s.card[0] << left << setw(29) << s.kind[0] << "|" << left << setw(19) << "1 = Exit" << "|" << endl;
-    cout << "|" << left << setw(42) << s.card[1] << left << setw(29) << s.kind[1] << "|" << left << setw(19) << "2 = Clear Page" << "|" << endl;
-    cout << "|" << left << setw(42) << s.card[2] << left << setw(29) << s.kind[2] << "|" << left << setw(19) << "3 = Maneuver" << "|" << endl;
+    cout << "|" << left << setw(39) << s.card[0] << left << setw(20) << s.kind[0] << left << setw(10) << "#" << "|" << left << setw(19) << "1 = Exit" << "|" << endl;
+    cout << "|" << left << setw(39) << s.card[1] << left << setw(20) << s.kind[1] << left << setw(10) << "#" << "|" << left << setw(19) << "2 = Clear Page" << "|" << endl;
+    cout << "|" << left << setw(39) << s.card[2] << left << setw(20) << s.kind[2] << left << setw(10) << "#" << "|" << left << setw(19) << "3 = Maneuver" << "|" << endl;
     if (s.scheme)
     {
-        cout << "|" << left << setw(42) << s.card[3] << left << setw(29) << s.kind[3] << "|" << left << setw(19) << "4 = Scheme" << "|" << endl;
+        cout << "|" << left << setw(39) << s.card[3] << left << setw(20) << s.kind[3] << left << setw(10) << "#" << "|" << left << setw(19) << "4 = Scheme" << "|" << endl;
     }
     if (s.attack)
     {
-        cout << "|" << left << setw(42) << s.card[4] << left << setw(29) << s.kind[4] << "|" << left << setw(19) << "5 = Attack" << "|" << endl;
+        cout << "|" << left << setw(39) << s.card[4] << left << setw(20) << s.kind[4] << left << setw(10) << "#" << "|" << left << setw(19) << "5 = Attack" << "|" << endl;
     }
 
     if (s.card.size() > num)
     {
         for (int i = num; i < s.card.size(); i++)
         {
-            cout << "|" << left << setw(42) << s.card[i] << left << setw(29) << s.kind[i] << "|" << left << setw(19) << " " << "|" << endl;
+            cout << "|" << left << setw(39) << s.card[i] << left << setw(20) << s.kind[i] << left << setw(10) << "#" << "|" << left << setw(19) << " " << "|" << endl;
         }
     }
     cout << "+=======================================================================+===================+\n";
     if (!s.scheme)
     {
-        cout << "SCHEME UNAVAILAVLE- " << s.schemeReason << endl;
+        cout << "\033[91mSCHEME UNAVAILAVLE- " << s.schemeReason << "\033[0m" << endl;
     }
     if (!s.attack)
     {
-        cout << "ATTACK UNAVAILAVLE- " << s.attackReason << endl;
+        cout << "\033[91mATTACK UNAVAILAVLE- " << s.attackReason << "\033[0m" << endl;
     }
+    string temporary_input;
+    int r;
     while (1)
     {
-        cout << "Which action do you want to play" << endl;
-        cin >> r;
+        do
+        {
+            cout << "Which action do you want to play" << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        r = stoi(temporary_input);
         if (r > 0 && r < 6)
         {
             break;
@@ -466,12 +527,17 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
 
 int ConsoleView::print_maneuver()
 {
+    string temporary_input;
     int a;
     cout << "MANEUVER : " << endl;
     while (1)
     {
-        cout << "1 = Move 2 = Discarding Cards 3 = none" << endl;
-        cin >> a;
+        do
+        {
+            cout << "1 = Move 2 = Discarding Cards 3 = none" << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        a = stoi(temporary_input);
         if (a > 0 && a < 4)
         {
             break;
@@ -484,15 +550,20 @@ int ConsoleView::print_move1(vector <int> cell)
 {
     cout << "Which house are you going to? 0 = End of move" << endl;
     int c;
+    string temporary_input;
     while (1)
     {
-        for (int i = 0; i < cell.size(); i++)
+        do
         {
-            cout << i + 1 << " = " << cell[i] << " ";
+            for (int i = 0; i < cell.size(); i++)
+            {
+                cout << i + 1 << " = " << cell[i] << " ";
 
-        }
-        cout << endl;
-        cin >> c;
+            }
+            cout << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        c = stoi(temporary_input);
         if (c >= 0 && c < cell.size() + 1)
         {
             break;
@@ -500,6 +571,7 @@ int ConsoleView::print_move1(vector <int> cell)
     }
     return c;
 }
+
 void ConsoleView::print_move2(int a)
 {
     if (a == 1)
@@ -515,19 +587,24 @@ void ConsoleView::print_move2(int a)
         cout << "You must continue your move" << endl;
     }
 }
+
 int ConsoleView::print_move_get_name(vector<string> name)
 {
     int a;
+    string temporary_input;
     cout << "which player do you want to move" << endl;
     while (1)
     {
-        for (int i = 0; i < name.size(); i++)
+        do
         {
-            cout << i << " = " << name[i] << " ";
-
-        }
-        cout << endl;
-        cin >> a;
+            for (int i = 0; i < name.size(); i++)
+            {
+                cout << i << " = " << name[i] << " ";
+            }
+            cout << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        a = stoi(temporary_input);
         if (a >= 0 && a < name.size() + 1)
         {
             break;
@@ -540,17 +617,22 @@ vector <int> ConsoleView::print_discarding(vector<string> card, vector<string> n
 {
 
     int a, b;
+    string temporary_input;
     vector <int > r;
     while (1)
     {
-        cout << "Which card do you want to discard?" << endl;
-        for (int i = 0; i < card.size(); i++)
+        do
         {
-            cout << i << " = " << card[i] << " ";
+            cout << "Which card do you want to discard?" << endl;
+            for (int i = 0; i < card.size(); i++)
+            {
+                cout << i << " = " << card[i] << " ";
 
-        }
-        cout << endl;
-        cin >> a;
+            }
+            cout << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        a = stoi(temporary_input);
         if (a >= 0 && a < card.size() + 1)
         {
             break;
@@ -560,14 +642,18 @@ vector <int> ConsoleView::print_discarding(vector<string> card, vector<string> n
 
     while (1)
     {
-        cout << "which player should receive the boost?" << endl;
-        for (int i = 0; i < name.size(); i++)
+        do
         {
-            cout << i << " = " << name[i] << " ";
+            cout << "which player should receive the boost?" << endl;
+            for (int i = 0; i < name.size(); i++)
+            {
+                cout << i << " = " << name[i] << " ";
 
-        }
-        cout << endl;
-        cin >> b;
+            }
+            cout << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        b = stoi(temporary_input);
         if (b >= 0 && b < name.size() + 1)
         {
             break;
@@ -581,15 +667,20 @@ int ConsoleView::print_scheme(vector<string> s)
 {
     cout << "which card do you want to play?" << endl;
     int b;
+    string temporary_input;
     while (1)
     {
-        for (int i = 0; i < s.size(); i++)
+        do
         {
-            cout << i << " = " << s[i] << " ";
+            for (int i = 0; i < s.size(); i++)
+            {
+                cout << i << " = " << s[i] << " ";
 
-        }
-        cout << endl;
-        cin >> b;
+            }
+            cout << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        b = stoi(temporary_input);
         if (b >= 0 && b < s.size())
         {
             break;
@@ -601,28 +692,30 @@ int ConsoleView::print_scheme(vector<string> s)
 int ConsoleView::print_attack1(vector<string> s, int a)
 {
     int r;
+    string temporary_input;
     while (1)
     {
-        if (a == 1)
+        do
         {
-            cout << "which hero do you want to fight with?" << endl;
-        }
-        else
-        {
-            cout << "which hero do you want to attack?" << endl;
-        }
-        {
+            if (a == 1)
+            {
+                cout << "which hero do you want to fight with?" << endl;
+            }
+            else
+            {
+                cout << "which hero do you want to attack?" << endl;
+            }
             for (int i = 0; i < s.size(); i++)
             {
                 cout << i << " = " << s[i] << " ";
             }
             cout << endl;
-            cin >> r;
-            if (r >= 0 && r < s.size())
-            {
-                break;
-            }
-
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        r = stoi(temporary_input);
+        if (r >= 0 && r < s.size())
+        {
+            break;
         }
     }
     return r;
@@ -634,21 +727,23 @@ int ConsoleView::print_attack2(vector<string> s, int a)
     if (a == 1)
     {
         int r;
+        string temporary_input;
         while (1)
         {
-            cout << "which card do you want to play for attack?" << endl;
+            do
             {
+                cout << "which card do you want to play for attack?" << endl;
                 for (int i = 0; i < s.size(); i++)
                 {
                     cout << i << " = " << s[i] << " ";
                 }
                 cout << endl;
-                cin >> r;
-                if (r >= 0 && r < s.size())
-                {
-                    break;
-                }
-
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            r = stoi(temporary_input);
+            if (r >= 0 && r < s.size())
+            {
+                break;
             }
         }
         return r;
@@ -656,21 +751,23 @@ int ConsoleView::print_attack2(vector<string> s, int a)
     else if (a == 2)
     {
         int r;
+        string temporary_input;
         while (1)
         {
-            cout << "which card do you want to play for defense? 0 = none" << endl;
+            do
             {
+                cout << "which card do you want to play for defense? 0 = none" << endl;
                 for (int i = 0; i < s.size(); i++)
                 {
                     cout << i + 1 << " = " << s[i] << " ";
                 }
                 cout << endl;
-                cin >> r;
-                if (r >= 0 && r < s.size() + 1)
-                {
-                    break;
-                }
-
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            r = stoi(temporary_input);
+            if (r >= 0 && r < s.size() + 1)
+            {
+                break;
             }
         }
         return r;
@@ -678,21 +775,23 @@ int ConsoleView::print_attack2(vector<string> s, int a)
     else if (a == 3)
     {
         int r;
+        string temporary_input;
         while (1)
         {
-            cout << "which card do you want to play for?" << endl;
+            do
             {
+                cout << "which card do you want to play for?" << endl;
                 for (int i = 0; i < s.size(); i++)
                 {
                     cout << i << " = " << s[i] << " ";
                 }
                 cout << endl;
-                cin >> r;
-                if (r >= 0 && r < s.size())
-                {
-                    break;
-                }
-
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            r = stoi(temporary_input);
+            if (r >= 0 && r < s.size())
+            {
+                break;
             }
         }
         return r;
