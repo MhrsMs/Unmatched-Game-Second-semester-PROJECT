@@ -125,7 +125,7 @@ int ConsoleView::print_main_menu()
 
 bool ConsoleView::print_ability(int a)
 {
-    if(a == 1)
+    if (a == 1)
     {
         while (1)
         {
@@ -143,9 +143,9 @@ bool ConsoleView::print_ability(int a)
 
         }
     }
-    else if(a == 2)
+    else if (a == 2)
     {
-        cout<< "There is no hero next to Dracula. He can't use his ability\n";
+        cout << "There is no hero next to Dracula. He can't use his ability\n";
         return 0;
     }
 
@@ -250,7 +250,7 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
         int s;
         while (1)
         {
-            cout << "Choose a hero :" << endl;
+            cout << "Select the hero you want to target:" << endl;
             for (int i = 0; i < b.size(); i++)
             {
                 cout << i << " = " << b[i] << " ";
@@ -267,6 +267,7 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
         return s;
     }
     case 9:
+    {
         int s;
         while (1)
         {
@@ -285,6 +286,12 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
         }
         return a[s];
     }
+    case 10:
+    {
+        cout << "You must move the Dracula 3 cells" << endl;
+        return 0;
+    }
+    }
 
     return 0;
 }
@@ -295,39 +302,39 @@ vector<string> ConsoleView::get_name()
     int age1, age2;
     string name1, name2;
     int choice;
-    for(size_t i=1; i<=2; i++)
+    for (size_t i = 1; i <= 2; i++)
     {
-        cout << "Please enter the name of the player"<< i<< ": ";
-        if(i==1)
-            cin>> name1;
+        cout << "Please enter the name of the player" << i << ": ";
+        if (i == 1)
+            cin >> name1;
         else
-            cin>> name2;
+            cin >> name2;
 
-        bool valid= false;
+        bool valid = false;
         string temporary_age;
-        while(!valid)
+        while (!valid)
         {
-            cout << "Please enter the age of the player"<< i<< ": ";
+            cout << "Please enter the age of the player" << i << ": ";
             cin >> temporary_age;
 
             try
             {
                 size_t last_index;
-                if(i==1)
-                    age1= stoi(temporary_age, &last_index);
+                if (i == 1)
+                    age1 = stoi(temporary_age, &last_index);
                 else
-                    age2= stoi(temporary_age, &last_index);
+                    age2 = stoi(temporary_age, &last_index);
 
-                if(last_index== temporary_age.length())
-                    valid= true;
+                if (last_index == temporary_age.length())
+                    valid = true;
                 else
-                    cerr<< "Invalid input! The number you entered for age contains letters and symbols.\n";
+                    cerr << "Invalid input! The number you entered for age contains letters and symbols.\n";
             }
-            catch(const exception& e)
+            catch (const exception& e)
             {
-                cerr<< "Invalid input! Please enter numbers only.\n";
+                cerr << "Invalid input! Please enter numbers only.\n";
             }
-        }        
+        }
     }
     string younger;
     if (age2 < age1)
@@ -342,18 +349,18 @@ vector<string> ConsoleView::get_name()
         name.emplace_back(name2);
         younger = name1;
     }
-    cout<< younger<< " is younger, so starts first-->\n";
+    cout << younger << " is younger, so starts first-->\n";
     while (1)
     {
         cout << younger << " Which one do you choose? 1 = DRACULA 2 = SHERLOCK" << endl;
         cin >> choice;
         if (choice > 0 && choice < 3)
         {
-            if(choice==1)
-                cout<< "Player1's hero is DRACULA and Player2's hero is SHERLOCK\n";
+            if (choice == 1)
+                cout << "Player1's hero is DRACULA and Player2's hero is SHERLOCK\n";
             else
-                cout<< "Player1's hero is SHERLOCK and Player2's hero is DRACULA\n";
-            cout<< "Determine the position of your Sidekicks\n";
+                cout << "Player1's hero is SHERLOCK and Player2's hero is DRACULA\n";
+            cout << "Determine the position of your Sidekicks\n";
             break;
         }
     }
@@ -531,11 +538,12 @@ int ConsoleView::print_move_get_name(vector<string> name)
 
 vector <int> ConsoleView::print_discarding(vector<string> card, vector<string> name)
 {
-    cout << "Which card do you want to discard?" << endl;
+
     int a, b;
     vector <int > r;
     while (1)
     {
+        cout << "Which card do you want to discard?" << endl;
         for (int i = 0; i < card.size(); i++)
         {
             cout << i << " = " << card[i] << " ";
@@ -549,9 +557,10 @@ vector <int> ConsoleView::print_discarding(vector<string> card, vector<string> n
         }
     }
     r.emplace_back(a);
-    cout << "which player should receive the boost?" << endl;
+
     while (1)
     {
+        cout << "which player should receive the boost?" << endl;
         for (int i = 0; i < name.size(); i++)
         {
             cout << i << " = " << name[i] << " ";
@@ -589,12 +598,19 @@ int ConsoleView::print_scheme(vector<string> s)
     return b;
 }
 
-int ConsoleView::print_attack1(vector<string> s)
+int ConsoleView::print_attack1(vector<string> s, int a)
 {
     int r;
     while (1)
     {
-        cout << "which hero do you want to play?" << endl;
+        if (a == 1)
+        {
+            cout << "which hero do you want to fight with?" << endl;
+        }
+        else
+        {
+            cout << "which hero do you want to attack?" << endl;
+        }
         {
             for (int i = 0; i < s.size(); i++)
             {
@@ -610,29 +626,78 @@ int ConsoleView::print_attack1(vector<string> s)
         }
     }
     return r;
+
 }
 
-int ConsoleView::print_attack2(vector<string> s)
+int ConsoleView::print_attack2(vector<string> s, int a)
 {
-    int r;
-    while (1)
+    if (a == 1)
     {
-        cout << "which card do you want to play?" << endl;
+        int r;
+        while (1)
         {
-            for (int i = 0; i < s.size(); i++)
+            cout << "which card do you want to play for attack?" << endl;
             {
-                cout << i << " = " << s[i] << " ";
-            }
-            cout << endl;
-            cin >> r;
-            if (r >= 0 && r < s.size())
-            {
-                break;
-            }
+                for (int i = 0; i < s.size(); i++)
+                {
+                    cout << i << " = " << s[i] << " ";
+                }
+                cout << endl;
+                cin >> r;
+                if (r >= 0 && r < s.size())
+                {
+                    break;
+                }
 
+            }
         }
+        return r;
     }
-    return r;
+    else if (a == 2)
+    {
+        int r;
+        while (1)
+        {
+            cout << "which card do you want to play for defense? 0 = none" << endl;
+            {
+                for (int i = 0; i < s.size(); i++)
+                {
+                    cout << i + 1 << " = " << s[i] << " ";
+                }
+                cout << endl;
+                cin >> r;
+                if (r >= 0 && r < s.size() + 1)
+                {
+                    break;
+                }
+
+            }
+        }
+        return r;
+    }
+    else if (a == 3)
+    {
+        int r;
+        while (1)
+        {
+            cout << "which card do you want to play for?" << endl;
+            {
+                for (int i = 0; i < s.size(); i++)
+                {
+                    cout << i << " = " << s[i] << " ";
+                }
+                cout << endl;
+                cin >> r;
+                if (r >= 0 && r < s.size())
+                {
+                    break;
+                }
+
+            }
+        }
+        return r;
+    }
+
 }
 
 void ConsoleView::print_error_attack(int a)
@@ -660,6 +725,18 @@ void ConsoleView::show_hand(vector<string> s)
         cout << x << " ";
     }
     cout << endl;
+}
+
+void ConsoleView::print_combat_result(int a, string name)
+{
+    if (a == 1)
+    {
+        cout << name << "You won the combat!" << endl;
+    }
+    if (a == 2)
+    {
+        cout << "The combat ended in a draw." << endl;
+    }
 }
 
 void ConsoleView::clear()

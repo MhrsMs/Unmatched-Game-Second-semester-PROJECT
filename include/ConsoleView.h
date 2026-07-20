@@ -39,10 +39,11 @@ public:
 	int print_move_get_name(vector <string> name);
 	vector <int> print_discarding(vector <string> card, vector<string> name);
 	int print_scheme(vector <string> s);
-	int print_attack1(vector <string> s);
-	int print_attack2(vector <string> s);
+	int print_attack1(vector <string> s, int a);
+	int print_attack2(vector <string> s, int a);
 	void print_error_attack(int a);
 	void end_of_game(string a);
 	void show_hand(vector <string> s);
+	void print_combat_result(int a, string name = "");
 	void clear();
 };
