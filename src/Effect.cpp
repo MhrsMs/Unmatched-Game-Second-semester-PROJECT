@@ -1,7 +1,7 @@
 #include "Effect.h"
 #include <random>
 
-void Effect::apply_effect(int id, Data data, Complet_Needs complet_needs)
+void Effect::apply_effect(int id, Data& data, Complet_Needs complet_needs)
 {
 	switch (id)
 	{
@@ -60,9 +60,9 @@ void Effect::effect2(int b, Data data, Complet_Needs complet_needs)
 	{
 		if (!data.cardsTarget.hand.empty())
 		{
-			int a = rm(1, data.cardsTarget.hand.size() - 1);
-			int boost = data.cardsTarget.hand[a - 1].get_boost();
-			data.cardsTarget.hand_to_null_card(data.cardsTarget.hand[a - 1].get_id());
+			int a = rm(0, data.cardsTarget.hand.size() - 1);
+			int boost = data.cardsTarget.hand[a].get_boost();
+			data.cardsTarget.hand_to_null_card(data.cardsTarget.hand[a].get_id());
 			data.thiscard->change_attackOrDefense(boost);
 		}
 	}
@@ -112,14 +112,14 @@ void Effect::effect3(Data data, Complet_Needs complet_needs)
 void Effect::effect4(Data data, Complet_Needs complet_needs)
 {
 	//qosle khon 
-	data.actor.increase_HP(2);
+	data.team[0]->increase_HP(2);
 	bool found = false;
-	for (auto& x : data.team)
+	for (int i = 1; i < data.team.size(); i++)
 	{
-		if (!x->is_alive() && !found)
+		if (!data.team[i]->is_alive() && !found)
 		{
-			x->increase_HP(x->get_original_HP());
-			data.mapManager.move(complet_needs.location, x);
+			data.team[i]->increase_HP(data.team[i]->get_original_HP());
+			data.mapManager.move(complet_needs.location, data.team[i]);
 			found = true;
 		}
 	}
@@ -148,7 +148,7 @@ void Effect::effect7(Data data, Complet_Needs complet_needs)
 	int tPosition = complet_needs.targetPerson->get_position();
 	data.mapManager.move(0, data.team[0]);
 	data.mapManager.move(hPosition, complet_needs.targetPerson);
-	data.mapManager.move(tPosition, data.team[1]);
+	data.mapManager.move(tPosition, data.team[0]);
 	complet_needs.targetPerson->decrease_HP(1);
 }
 void Effect::effect8(Data data, Complet_Needs complet_needs)
@@ -223,8 +223,12 @@ void Effect::effect11(Data data, Complet_Needs complet_needs)
 void Effect::effect12(Data data, Complet_Needs complet_needs)
 {
 	//hazfe namomken ha
-	int id = complet_needs.optionalCard[0].get_id();
-	data.cardsTarget.hand_to_null_card(id);
+	if (!complet_needs.optionalCard.empty())
+	{
+		int id = complet_needs.optionalCard[0].get_id();
+		data.cardsTarget.hand_to_null_card(id);
+	}
+
 }
 
 void Effect::effect13(Data data, Complet_Needs complet_needs)

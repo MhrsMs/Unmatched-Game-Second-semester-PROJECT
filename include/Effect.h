@@ -27,7 +27,7 @@ class Effect
 {
 public:
 
-	void apply_effect(int id, Data data, Complet_Needs complet_needs);
+	void apply_effect(int id, Data& data, Complet_Needs complet_needs);
 	int rm(int min, int max);
 	void effect1(int a, Data data, Complet_Needs complet_needs);
 	void effect2(int a, Data data, Complet_Needs complet_needs);

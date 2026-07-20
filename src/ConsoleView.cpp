@@ -859,3 +859,5 @@ void ConsoleView::clear()
     system("clear");
 #endif 
 }
+
+
