@@ -11,7 +11,6 @@ void Effect::apply_effect(int id, Data data, Complet_Needs complet_needs)
 	case 4:effect3(data, complet_needs); break;
 	case 5:effect2(1, data, complet_needs); break;
 	case 6:effect2(4, data, complet_needs); break;
-	case 7:effect6(data, complet_needs); break;
 	case 8:effect2(2, data, complet_needs); break;
 	case 11:effect2(3, data, complet_needs); break;
 	case 12:effect1(1, data, complet_needs); break;
@@ -38,7 +37,7 @@ void Effect::effect1(int a, Data data, Complet_Needs complet_needs)
 	//1=bahre bardari 2 = emdad resani
 	if (a == 2)
 	{
-		data.mapManager.move(complet_needs.location, data.team[1]);
+		data.mapManager.move(complet_needs.location, &data.actor);
 	}
 	if (data.cardsTeam.can_deck_to_hand(1))
 	{
@@ -71,6 +70,10 @@ void Effect::effect2(int b, Data data, Complet_Needs complet_needs)
 	{
 		int a = complet_needs.optionalCard.size();
 		data.thiscard->change_attackOrDefense(a);
+		for (auto x : complet_needs.optionalCard)
+		{
+			data.cardsTeam.hand_to_null_card(x.get_id());
+		}
 	}
 	if (b == 3)
 	{
@@ -79,11 +82,11 @@ void Effect::effect2(int b, Data data, Complet_Needs complet_needs)
 	}
 	if (b == 4)
 	{
-		for (int i = 1; i < 4; i++)
+		for (auto& x : data.team)
 		{
-			if (data.team[i]->is_alive())
+			if (x->get_name() == "SISTER" && x->is_alive())
 			{
-				if (data.mapManager.is_same_zone(complet_needs.targetPerson->get_position(), data.team[i]->get_position()))
+				if (data.mapManager.is_same_zone(complet_needs.targetPerson->get_position(), x->get_position()))
 				{
 					data.thiscard->change_attackOrDefense(1);
 				}
@@ -111,7 +114,7 @@ void Effect::effect4(Data data, Complet_Needs complet_needs)
 	//qosle khon 
 	data.actor.increase_HP(2);
 	bool found = false;
-	for (auto x : data.team)
+	for (auto& x : data.team)
 	{
 		if (!x->is_alive() && !found)
 		{
@@ -136,15 +139,6 @@ void Effect::effect5(Data data, Complet_Needs complet_needs)
 	}
 }
 
-
-void Effect::effect6(Data data, Complet_Needs complet_needs)
-{
-	//teshnegi baray baqa
-	if (complet_needs.heroWin)
-	{
-		data.mapManager.move(complet_needs.location, data.team[0]);
-	}
-}
 void Effect::effect7(Data data, Complet_Needs complet_needs)
 {
 	//ostad taqir chehre
@@ -197,19 +191,27 @@ void Effect::effect8(Data data, Complet_Needs complet_needs)
 void Effect::effect9(Data data, Complet_Needs complet_needs)
 {
 	//zed hamle
-	if (data.mapManager.is_adjacent(data.team[0]->get_position(), complet_needs.targetPerson->get_position()))
+	if (data.team[0]->is_alive())
 	{
-		complet_needs.targetPerson->decrease_HP(2);
+		if (data.mapManager.is_adjacent(data.team[0]->get_position(), complet_needs.targetPerson->get_position()))
+		{
+			complet_needs.targetPerson->decrease_HP(2);
+		}
 	}
+
 }
 void Effect::effect10(Data data, Complet_Needs complet_needs)
 {
 	//noqtei sabet dar zamanei moteqaier
-	if (data.mapManager.is_adjacent(data.team[0]->get_position(), data.team[1]->get_position()))
+	if (data.team[1]->is_alive())
 	{
-		data.team[0]->increase_HP(1);
-		data.team[1]->increase_HP(1);
+		if (data.mapManager.is_adjacent(data.team[0]->get_position(), data.team[1]->get_position()))
+		{
+			data.team[0]->increase_HP(1);
+			data.team[1]->increase_HP(1);
+		}
 	}
+
 }
 
 void Effect::effect11(Data data, Complet_Needs complet_needs)
@@ -228,5 +230,10 @@ void Effect::effect12(Data data, Complet_Needs complet_needs)
 void Effect::effect13(Data data, Complet_Needs complet_needs)
 {
 	//stentag sterategik
-	data.targetcard->change_attackOrDefense(-data.targetcard->get_attackOrDefense() + data.targetcard->get_boost());
+	if (data.targetcard != nullptr)
+	{
+		data.targetcard->change_attackOrDefense(-data.targetcard->get_attackOrDefense());
+		data.targetcard->change_attackOrDefense(data.targetcard->get_boost());
+	}
+
 }

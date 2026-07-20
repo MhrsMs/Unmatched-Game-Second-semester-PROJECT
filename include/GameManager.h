@@ -10,7 +10,7 @@
 #include "ConsoleView.h"
 #include <exception>
 #include <memory>
-
+#include <algorithm>
 class GameManager
 {
 private:
@@ -58,10 +58,11 @@ public:
 	void maneuver(Player& player1, Player& player2);
 	void scheme(Player& player1, Player& player2);
 	void attack(Player& player1, Player& player2);
-	Complet_Needs take_needs(Player& player1, Player& funplayer2, Card& card, Hero* heroteam = nullptr, Hero* herotarget = nullptr);
-	void movement(Player* funplayer1, Hero* hero, int moveMax = 0, int moveMin = 0);
-	void initial_position(Player& funplayer1, Player& funplayer2);
-	ShowActionMenu complet_action_menu(Player& funplayer1, Player& funplayer2);
+	void dracula_ability(Player& player1);
+	Complet_Needs take_needs(Player& player1, Player& player2, Card& card, Hero* heroteam = nullptr, Hero* herotarget = nullptr);
+	void movement(Player* player1, Hero* hero, int moveMax = 0, int moveMin = 0);
+	void initial_position(Player& player1, Player& player2);
+	ShowActionMenu complet_action_menu(Player& player1, Player& player2);
 	int can_scheme(Player& player1, Player& player2);
 	int can_attack(Player& player1, Player& player2);
 	vector <string> hero_to_name(vector <Hero*> hero);

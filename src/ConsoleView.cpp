@@ -10,17 +10,17 @@ bool ConsoleView::just_numeric_input(string input)
         size_t last_index;
         int to_number = stoi(input, &last_index);
 
-        if(last_index== input.length())
+        if (last_index == input.length())
             return true;
         else
         {
-            cerr<< "Invalid input! The number you entered contains letters and symbols...Try Again\n";
+            cerr << "Invalid input! The number you entered contains letters and symbols...Try Again\n";
             return false;
         }
     }
-    catch(const exception& e)
+    catch (const exception& e)
     {
-        cerr<< "Invalid input! Please enter numbers only...Try Again\n";
+        cerr << "Invalid input! Please enter numbers only...Try Again\n";
         return false;
     }
 }
@@ -367,25 +367,25 @@ vector<string> ConsoleView::get_name()
     int age1, age2;
     string name1, name2;
     int choice;
-    for(size_t i=1; i<=2; i++)
+    for (size_t i = 1; i <= 2; i++)
     {
-        cout << "Please enter the name of the player"<< i<< ": ";
-        if(i==1)
-            cin>> name1;
+        cout << "Please enter the name of the player" << i << ": ";
+        if (i == 1)
+            cin >> name1;
         else
-            cin>> name2;
+            cin >> name2;
 
         string temporary_input;
         do
         {
-            cout << "Please enter the age of the player"<< i<< ": ";
+            cout << "Please enter the age of the player" << i << ": ";
             cin >> temporary_input;
         } while (!just_numeric_input(temporary_input));
 
-        if(i==1)
-            age1= stoi(temporary_input);
+        if (i == 1)
+            age1 = stoi(temporary_input);
         else
-            age2= stoi(temporary_input);     
+            age2 = stoi(temporary_input);
     }
     string younger;
     if (age2 < age1)
@@ -400,18 +400,18 @@ vector<string> ConsoleView::get_name()
         name.emplace_back(name2);
         younger = name1;
     }
-    cout<< younger<< " is younger, so starts first-->\n";
+    cout << younger << " is younger, so starts first-->\n";
     while (1)
     {
         cout << younger << " Which one do you choose? 1 = DRACULA 2 = SHERLOCK" << endl;
         cin >> choice;
         if (choice > 0 && choice < 3)
         {
-            if(choice==1)
-                cout<< "Player1's hero is DRACULA and Player2's hero is SHERLOCK\n";
+            if (choice == 1)
+                cout << "Player1's hero is DRACULA and Player2's hero is SHERLOCK\n";
             else
-                cout<< "Player1's hero is SHERLOCK and Player2's hero is DRACULA\n";
-            cout<< "Determine the position of your Sidekicks\n";
+                cout << "Player1's hero is SHERLOCK and Player2's hero is DRACULA\n";
+            cout << "Determine the position of your Sidekicks\n";
             break;
         }
     }
@@ -461,6 +461,7 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
         {
             s.card.emplace_back(" ");
             s.kind.emplace_back(" ");
+            s.nameOfDoer.emplace_back(" ");
         }
     }
     cout << "+===========================================================================================+\n";
@@ -478,23 +479,25 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     cout << "+=======================================================================+===================+\n";
     cout << "|                              [HAND]                                   |      [ACTION]     |\n";
     cout << "+=======================================================================+===================+\n";
-    cout << "|" << left << setw(39) << s.card[0] << left << setw(20) << s.kind[0] << left << setw(10) << "#" << "|" << left << setw(19) << "1 = Exit" << "|" << endl;
-    cout << "|" << left << setw(39) << s.card[1] << left << setw(20) << s.kind[1] << left << setw(10) << "#" << "|" << left << setw(19) << "2 = Clear Page" << "|" << endl;
-    cout << "|" << left << setw(39) << s.card[2] << left << setw(20) << s.kind[2] << left << setw(10) << "#" << "|" << left << setw(19) << "3 = Maneuver" << "|" << endl;
+    cout << "|" << left << setw(39) << s.card[0] << left << setw(20) << s.kind[0] << left << setw(12) << s.nameOfDoer[0] << "|" << left << setw(19) << "1 = Exit" << "|" << endl;
+    cout << "|" << left << setw(39) << s.card[1] << left << setw(20) << s.kind[1] << left << setw(12) << s.nameOfDoer[1] << "|" << left << setw(19) << "2 = Clear Page" << "|" << endl;
+    cout << "|" << left << setw(39) << s.card[2] << left << setw(20) << s.kind[2] << left << setw(12) << s.nameOfDoer[2] << "|" << left << setw(19) << "3 = Maneuver" << "|" << endl;
+    int m = 3;
     if (s.scheme)
     {
-        cout << "|" << left << setw(39) << s.card[3] << left << setw(20) << s.kind[3] << left << setw(10) << "#" << "|" << left << setw(19) << "4 = Scheme" << "|" << endl;
+        cout << "|" << left << setw(39) << s.card[m] << left << setw(20) << s.kind[m] << left << setw(12) << s.nameOfDoer[m] << "|" << left << setw(19) << "4 = Scheme" << "|" << endl;
+        m++;
     }
     if (s.attack)
     {
-        cout << "|" << left << setw(39) << s.card[4] << left << setw(20) << s.kind[4] << left << setw(10) << "#" << "|" << left << setw(19) << "5 = Attack" << "|" << endl;
+        cout << "|" << left << setw(39) << s.card[m] << left << setw(20) << s.kind[m] << left << setw(12) << s.nameOfDoer[m] << "|" << left << setw(19) << "5 = Attack" << "|" << endl;
     }
 
     if (s.card.size() > num)
     {
         for (int i = num; i < s.card.size(); i++)
         {
-            cout << "|" << left << setw(39) << s.card[i] << left << setw(20) << s.kind[i] << left << setw(10) << "#" << "|" << left << setw(19) << " " << "|" << endl;
+            cout << "|" << left << setw(39) << s.card[i] << left << setw(20) << s.kind[i] << left << setw(12) << s.nameOfDoer[i] << "|" << left << setw(19) << " " << "|" << endl;
         }
     }
     cout << "+=======================================================================+===================+\n";
@@ -826,16 +829,21 @@ void ConsoleView::show_hand(vector<string> s)
     cout << endl;
 }
 
-void ConsoleView::print_combat_result(int a, string name)
+void ConsoleView::print_combat_result(int a, int attack)
 {
     if (a == 1)
     {
-        cout << name << "You won the combat!" << endl;
+        cout << "Attack successful ! Damage to enemy : " << attack << endl;
     }
     if (a == 2)
     {
-        cout << "The combat ended in a draw." << endl;
+        cout << "Defense successful !" << endl;
     }
+}
+
+void ConsoleView::print_movenumber(int a)
+{
+    cout << "Allowed moves : " << a << endl;
 }
 
 void ConsoleView::clear()

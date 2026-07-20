@@ -83,43 +83,27 @@ int GameManager::do_at_end(Player& player1, Player& player2)
 		view.end_of_game(player1.name);
 		return 2;
 	}
-	for (size_t i = 1; i < player1.playerHero->heros.size();)
-	{
-		if (!player1.playerHero->heros[i]->is_alive())
+	auto& heros1 = player1.playerHero->heros;
+	stable_partition(heros1.begin() + 1, heros1.end(), [](const auto& hero)
 		{
-			auto hero = move(player1.playerHero->heros[i]);
-			player1.playerHero->heros.erase(player1.playerHero->heros.begin() + i);
-			player1.playerHero->heros.push_back(move(hero));
-		}
-		else
+			return hero && hero->is_alive();
+		});
+	auto& heros2 = player2.playerHero->heros;
+	stable_partition(heros2.begin() + 1, heros2.end(), [](const auto& hero)
 		{
-			i++;
-		}
-	}
-	for (size_t i = 1; i < player2.playerHero->heros.size();)
-	{
-		if (!player2.playerHero->heros[i]->is_alive())
-		{
-			auto hero = move(player2.playerHero->heros[i]);
-			player2.playerHero->heros.erase(player2.playerHero->heros.begin() + i);
-			player2.playerHero->heros.push_back(move(hero));
-		}
-		else
-		{
-			i++;
-		}
-	}
+			return hero && hero->is_alive();
+		});
 	return 0;
 }
-void GameManager::maneuver(Player& funplayer1, Player& funplayer2)
+void GameManager::maneuver(Player& player1, Player& player2)
 {
-	if (funplayer1.playerHero->cards.can_deck_to_hand(1))
+	if (player1.playerHero->cards.can_deck_to_hand(1))
 	{
-		funplayer1.playerHero->cards.deck_to_hand(1);
+		player1.playerHero->cards.deck_to_hand(1);
 	}
 	else
 	{
-		for (auto& x : funplayer1.playerHero->heros)
+		for (auto& x : player1.playerHero->heros)
 		{
 			x->decrease_HP(2);
 		}
@@ -129,16 +113,17 @@ void GameManager::maneuver(Player& funplayer1, Player& funplayer2)
 		int m = view.print_maneuver();
 		if (m == 1)
 		{
-			movement(&funplayer1, nullptr);
+			movement(&player1, nullptr);
 			break;
 		}
 		else if (m == 2)
 		{
-			vector <int> a = view.print_discarding(hero_to_name(unique_to_hero(funplayer1)), card_to_name(funplayer1.playerHero->cards.hand));
-			int boost = funplayer1.playerHero->cards.hand[a[0]].get_boost();
-			int id = funplayer1.playerHero->cards.hand[a[0]].get_id();
-			funplayer1.playerHero->cards.hand_to_null_card(id);
-			funplayer1.playerHero->heros[a[1]]->change_move(boost);
+			vector <int> a = view.print_discarding(card_to_name(player1.playerHero->cards.hand), hero_to_name(unique_to_hero(player1)));
+			int boost = player1.playerHero->cards.hand[a[0]].get_boost();
+			int id = player1.playerHero->cards.hand[a[0]].get_id();
+			player1.playerHero->cards.hand_to_null_card(id);
+			player1.playerHero->heros[a[1]]->change_move(boost);
+			view.print_movenumber(player1.playerHero->heros[a[1]]->get_move());
 		}
 		else if (m == 3)
 		{
@@ -146,12 +131,12 @@ void GameManager::maneuver(Player& funplayer1, Player& funplayer2)
 		}
 	}
 }
-void GameManager::scheme(Player& funplayer1, Player& funplayer2)
+void GameManager::scheme(Player& player1, Player& player2)
 {
-	vector <Card> firstCard = funplayer1.playerHero->cards.get_cards_by_action(1);
+	vector <Card> firstCard = player1.playerHero->cards.get_cards_by_action(1);
 	vector <Card> secondCard;
 	bool found = false;
-	if (funplayer1.playerHero->heros[1]->is_alive())
+	if (player1.playerHero->heros[1]->is_alive())
 	{
 		secondCard = firstCard;
 	}
@@ -159,7 +144,7 @@ void GameManager::scheme(Player& funplayer1, Player& funplayer2)
 	{
 		for (auto x : firstCard)
 		{
-			if (x.get_nameOfDoer() != funplayer1.playerHero->heros[1]->get_name())
+			if (x.get_nameOfDoer() != player1.playerHero->heros[1]->get_name())
 			{
 				secondCard.emplace_back(x);
 			}
@@ -167,25 +152,25 @@ void GameManager::scheme(Player& funplayer1, Player& funplayer2)
 	}
 	int v = view.print_scheme(card_to_name(secondCard));
 	Hero* actor = {};
-	for (auto x : unique_to_hero(funplayer1))
+	for (auto x : unique_to_hero(player1))
 	{
 		if (x->get_name() == secondCard[v].get_nameOfDoer())
 		{
 			actor = x;
 		}
 	}
-	Complet_Needs complet = take_needs(funplayer1, funplayer2, secondCard[v]);
-	Data data{ unique_to_hero(funplayer1),unique_to_hero(funplayer2),funplayer1.playerHero->cards,funplayer2.playerHero->cards,mapmanager,*actor,&secondCard[v] };
+	Complet_Needs complet = take_needs(player1, player2, secondCard[v]);
+	Data data{ unique_to_hero(player1),unique_to_hero(player2),player1.playerHero->cards,player2.playerHero->cards,mapmanager,*actor,&secondCard[v] };
 	Effect effect;
 	effect.apply_effect(secondCard[v].get_id(), data, complet);
 	if (secondCard[v].get_id() == 2)
 	{
-		funplayer1.action++;
+		player1.action++;
 	}
 	if (secondCard[v].get_id() == 16)
 	{
 		vector <Card> card1;
-		for (auto x : funplayer2.playerHero->cards.hand)
+		for (auto x : player2.playerHero->cards.hand)
 		{
 			if (x.get_attackOrDefense() == complet.number)
 			{
@@ -194,26 +179,26 @@ void GameManager::scheme(Player& funplayer1, Player& funplayer2)
 		}
 		if (card1.empty())
 		{
-			view.show_hand(card_to_name(funplayer2.playerHero->cards.hand));
+			view.show_hand(card_to_name(player2.playerHero->cards.hand));
 		}
 		else
 		{
-			int c = view.print_attack2(card_to_name(card1));
+			int c = view.print_attack2(card_to_name(card1), 3);
 			complet.targetPerson->decrease_HP(card1[c].get_boost());
 		}
 	}
-	funplayer1.playerHero->cards.hand_to_null_card(secondCard[v].get_id());
+	player1.playerHero->cards.hand_to_null_card(secondCard[v].get_id());
 }
-void GameManager::attack(Player& funplayer1, Player& funplayer2)
+void GameManager::attack(Player& player1, Player& player2)
 {
-	vector <Hero*> hero1 = unique_to_hero(funplayer1);
+	vector <Hero*> hero1 = unique_to_hero(player1);
 	int attacker;
 	vector <Hero*> hero2;
 	vector <Card> card1;
 	while (1)
 	{
-		attacker = view.print_attack1(hero_to_name(hero1));
-		for (auto& x : funplayer2.playerHero->heros)
+		attacker = view.print_attack1(hero_to_name(hero1), 1);
+		for (auto& x : player2.playerHero->heros)
 		{
 			if (hero1[attacker]->get_attack_type() == "melee")
 			{
@@ -224,7 +209,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 			}
 			else
 			{
-				if (mapmanager.is_same_zone(hero1[attacker]->get_position(), x->get_position()))
+				if (mapmanager.is_same_zone(hero1[attacker]->get_position(), x->get_position()) || mapmanager.is_adjacent(hero1[attacker]->get_position(), x->get_position()))
 				{
 					hero2.emplace_back(x.get());
 				}
@@ -236,7 +221,7 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 		}
 		else
 		{
-			card1 = funplayer1.playerHero->cards.get_cards_by_action(2, hero1[attacker]);
+			card1 = player1.playerHero->cards.get_cards_by_action(2, hero1[attacker]);
 			if (card1.empty())
 			{
 				view.print_error_attack(2);
@@ -247,10 +232,9 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 			}
 		}
 	}
-	view.print_name(funplayer2.name);
-	int defender = view.print_attack1(hero_to_name(hero2));
-	int ca1 = view.print_attack2(card_to_name(card1));
-	vector <Card> card2 = funplayer2.playerHero->cards.get_cards_by_action(3, hero2[defender]);
+	int defender = view.print_attack1(hero_to_name(hero2), 2);
+	int ca1 = view.print_attack2(card_to_name(card1), 1);
+	vector <Card> card2 = player2.playerHero->cards.get_cards_by_action(3, hero2[defender]);
 	bool df = 1;
 	int ca2;
 	if (card2.empty())
@@ -259,14 +243,21 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	}
 	else
 	{
-		view.print_name(funplayer2.name);
-		ca2 = view.print_attack2(card_to_name(card2));
+		view.print_name(player2.name);
+		ca2 = view.print_attack2(card_to_name(card2), 2);
+		if (ca2 == 0)
+		{
+			df = 0;
+		}
+		else
+		{
+			ca2 = ca2 - 1;
+		}
 	}
-
-	Complet_Needs complet1 = take_needs(funplayer1, funplayer2, card1[ca1], hero1[attacker], hero2[defender]);
-	Complet_Needs complet2 = take_needs(funplayer1, funplayer2, card2[ca1], hero2[defender], hero1[attacker]);
-	Data data1{ hero1,unique_to_hero(funplayer2),funplayer1.playerHero->cards,funplayer2.playerHero->cards,mapmanager,*hero1[attacker],&card1[ca1],&card2[ca2] };
-	Data data2{ unique_to_hero(funplayer2),hero1,funplayer2.playerHero->cards,funplayer1.playerHero->cards,mapmanager,*hero2[defender],&card2[ca2],&card1[ca1] };
+	Complet_Needs complet1 = take_needs(player1, player2, card1[ca1], hero1[attacker], hero2[defender]);
+	Complet_Needs complet2 = take_needs(player1, player2, card2[ca1], hero2[defender], hero1[attacker]);
+	Data data1{ hero1,unique_to_hero(player2),player1.playerHero->cards,player2.playerHero->cards,mapmanager,*hero1[attacker],&card1[ca1],&card2[ca2] };
+	Data data2{ unique_to_hero(player2),hero1,player2.playerHero->cards,player1.playerHero->cards,mapmanager,*hero2[defender],&card2[ca2],&card1[ca1] };
 	Effect effect;
 	bool farib1 = 0;
 	bool farib2 = 0;
@@ -320,67 +311,123 @@ void GameManager::attack(Player& funplayer1, Player& funplayer2)
 	{
 		effect.apply_effect(card1[ca1].get_id(), data1, complet1);
 	}
-	if (card1[ca1].get_attackOrDefense() > card2[ca2].get_attackOrDefense())
+	int defensenumber = 0;
+	if (df)
 	{
-		hero2[defender]->decrease_HP(card1[ca1].get_attackOrDefense() - card2[ca2].get_attackOrDefense());
+		defensenumber = card2[ca2].get_attackOrDefense();
+	}
+	if (card1[ca1].get_attackOrDefense() > defensenumber)
+	{
+		int damage = card1[ca1].get_attackOrDefense() - defensenumber;
+		hero2[defender]->decrease_HP(damage);
 		if (card1[ca1].get_id() == 24)
 		{
-			view.show_hand(card_to_name(funplayer2.playerHero->cards.hand));
+			view.show_hand(card_to_name(player2.playerHero->cards.hand));
 		}
 		complet1.heroWin = 1;
 		complet2.heroWin = 0;
-	}
-	else if (card1[ca1].get_attackOrDefense() < card2[ca2].get_attackOrDefense())
-	{
-		hero1[attacker]->decrease_HP(card2[ca2].get_attackOrDefense() - card1[ca1].get_attackOrDefense());
-		if (card2[ca2].get_id() == 24)
-		{
-			view.show_hand(card_to_name(funplayer1.playerHero->cards.hand));
-		}
-		complet1.heroWin = 0;
-		complet2.heroWin = 1;
+		view.print_combat_result(1, damage);
 	}
 	else
 	{
+		if (card2[ca2].get_id() == 24)
+		{
+			view.show_hand(card_to_name(player1.playerHero->cards.hand));
+		}
 		complet1.heroWin = 0;
-		complet2.heroWin = 0;
+		complet2.heroWin = 1;
+		view.print_combat_result(2);
 	}
 	if (df)
 	{
 		if (card2[ca2].get_effectTime() == 3 && !farib1)
 		{
 			effect.apply_effect(card2[ca2].get_id(), data2, complet2);
+			if (card2[ca2].get_id() == 9)
+			{
+				if (hero2[defender]->is_alive())
+				{
+					view.print_complet_needs(5);
+					movement(nullptr, hero2[defender], 3, 3);
+				}
+			}
 		}
 	}
-
 	if (card1[ca1].get_effectTime() == 3 && !farib2)
 	{
 		effect.apply_effect(card1[ca1].get_id(), data1, complet1);
+		if (card1[ca1].get_id() == 9 || card1[ca1].get_id() == 18)
+		{
+			if (hero1[attacker]->is_alive())
+			{
+				view.print_complet_needs(5);
+				movement(nullptr, hero1[attacker], 3, 3);
+			}
+		}
+		if (card1[ca1].get_id() == 7)
+		{
+			{
+				vector <int> first = mapmanager.electable_cells(hero2[defender]->get_position());
+				vector <int> second;
+				for (auto x : first)
+				{
+					if (!mapmanager.is_ally_inside(x, hero2[defender]))
+					{
+						second.emplace_back(x);
+					}
+				}
+				int k = view.print_complet_needs(4, second);
+				mapmanager.move(second[k], player1.playerHero->heros[0].get());
+			}
+		}
 	}
-	funplayer1.playerHero->cards.hand_to_null_card(card1[ca1].get_id());
+	player1.playerHero->cards.hand_to_null_card(card1[ca1].get_id());
 	if (df)
 	{
-		funplayer2.playerHero->cards.hand_to_null_card(card2[ca2].get_id());
+		player2.playerHero->cards.hand_to_null_card(card2[ca2].get_id());
 	}
 }
-Complet_Needs GameManager::take_needs(Player& funplayer1, Player& funplayer2, Card& card, Hero* heroteam, Hero* herotarget)
+void GameManager::dracula_ability(Player& player1)
+{
+	view.print_map(mapmanager.text_inside_cells());
+	bool b = view.print_ability(1);
+	if (b)
+	{
+		vector <Hero*> hero = mapmanager.nearby_heroes(player1.playerHero->heros[0]->get_position());
+		if (!hero.empty())
+		{
+			vector <Hero*> hero1;
+			for (auto& x : player1.playerHero->heros)
+			{
+				hero1.emplace_back(x.get());
+			}
+			int z = view.print_complet_needs(8, {}, hero_to_name(hero));
+			player1.playerHero->heros[0]->ability(*hero[z], hero1, player1.playerHero->cards);
+		}
+		else
+		{
+			view.print_ability(2);
+		}
+	}
+}
+Complet_Needs GameManager::take_needs(Player& player1, Player& player2, Card& card, Hero* heroTeam, Hero* heroTarget)
 {
 	Complet_Needs complet_needs;
 	Needs needs = card.get_Needs();
 	if (card.get_kindOfAction() == "Attack" || card.get_kindOfAction() == "Attack_Or_Defense")
 	{
-		complet_needs.targetPerson = herotarget;
+		complet_needs.targetPerson = heroTarget;
 	}
 	if (needs.need_target_person)
 	{
 		if (card.get_id() == 4)
 		{
 			vector <Hero*> thishero;
-			for (auto& x : funplayer2.playerHero->heros)
+			for (auto& x : player2.playerHero->heros)
 			{
 				thishero.emplace_back(x.get());
 			}
-			for (auto& x : funplayer1.playerHero->heros)
+			for (auto& x : player1.playerHero->heros)
 			{
 				thishero.emplace_back(x.get());
 			}
@@ -389,8 +436,8 @@ Complet_Needs GameManager::take_needs(Player& funplayer1, Player& funplayer2, Ca
 		}
 		else
 		{
-			int z = view.print_complet_needs(8, {}, hero_to_name(unique_to_hero(funplayer2)));
-			complet_needs.targetPerson = funplayer2.playerHero->heros[z].get();
+			int z = view.print_complet_needs(8, {}, hero_to_name(unique_to_hero(player2)));
+			complet_needs.targetPerson = player2.playerHero->heros[z].get();
 		}
 
 	}
@@ -398,16 +445,27 @@ Complet_Needs GameManager::take_needs(Player& funplayer1, Player& funplayer2, Ca
 	{
 		if (card.get_id() == 1)
 		{
-			int choice;
-			while (1)
+			bool dead = false;
+			for (auto& x : player1.playerHero->heros)
 			{
-				choice = view.print_complet_needs(1);
-				if (mapmanager.is_same_zone(funplayer1.playerHero->heros[0]->get_position(), choice))
+				if (x->get_name() == "SISTER" && !x->is_alive())
 				{
-					break;
+					dead = true;
 				}
 			}
-			complet_needs.location = choice;
+			if (dead)
+			{
+				int choice;
+				while (1)
+				{
+					choice = view.print_complet_needs(1);
+					if (mapmanager.is_same_zone(player1.playerHero->heros[0]->get_position(), choice))
+					{
+						break;
+					}
+				}
+				complet_needs.location = choice;
+			}
 		}
 		if (card.get_id() == 2)
 		{
@@ -415,7 +473,7 @@ Complet_Needs GameManager::take_needs(Player& funplayer1, Player& funplayer2, Ca
 			while (1)
 			{
 				cell = view.print_complet_needs(2);
-				if (!mapmanager.is_ally_inside(cell, funplayer1.playerHero->heros[0].get()), !mapmanager.is_enemy_inside(cell, funplayer1.playerHero->heros[0].get()))
+				if (!mapmanager.is_ally_inside(cell, player1.playerHero->heros[0].get()), !mapmanager.is_enemy_inside(cell, player1.playerHero->heros[0].get()))
 				{
 					break;
 				}
@@ -427,32 +485,13 @@ Complet_Needs GameManager::take_needs(Player& funplayer1, Player& funplayer2, Ca
 			view.print_complet_needs(3);
 			movement(nullptr, complet_needs.targetPerson, 2, 2);
 		}
-		if (card.get_id() == 7)
-		{
-			vector <int> first = mapmanager.electable_cells(complet_needs.targetPerson->get_position());
-			vector <int> second;
-			for (auto x : first)
-			{
-				if (!mapmanager.is_ally_inside(x, complet_needs.targetPerson))
-				{
-					second.emplace_back(x);
-				}
-			}
-			int k = view.print_complet_needs(4, second);
-			complet_needs.location = second[k];
-		}
-		if (card.get_id() == 9)
-		{
-			view.print_complet_needs(5);
-			movement(nullptr, heroteam, 3, 3);
-		}
 		if (card.get_id() == 15)
 		{
-			vector <int> first = mapmanager.electable_cells(funplayer1.playerHero->heros[0]->get_position());
+			vector <int> first = mapmanager.electable_cells(player1.playerHero->heros[0]->get_position());
 			vector <int> second;
 			for (auto x : first)
 			{
-				if (!mapmanager.is_ally_inside(x, funplayer1.playerHero->heros[0].get()))
+				if (!mapmanager.is_ally_inside(x, player1.playerHero->heros[0].get()))
 				{
 					second.emplace_back(x);
 				}
@@ -472,14 +511,22 @@ Complet_Needs GameManager::take_needs(Player& funplayer1, Player& funplayer2, Ca
 		if (card.get_id() == 8)
 		{
 			int s;
+			vector <Card> cards;
+			for (auto x : player1.playerHero->cards.hand)
+			{
+				if (x.get_cardName() != card.get_cardName())
+				{
+					cards.emplace_back(x);
+				}
+			}
 			while (1)
 			{
-				s = view.print_complet_needs(6, {}, card_to_name(funplayer1.playerHero->cards.hand));
+				s = view.print_complet_needs(6, {}, card_to_name(cards));
 				if (s == 0)
 				{
 					break;
 				}
-				optionalcard.emplace_back(funplayer1.playerHero->cards.hand[s - 1]);
+				optionalcard.emplace_back(cards[s - 1]);
 			}
 			complet_needs.optionalCard = optionalcard;
 		}
@@ -489,10 +536,10 @@ Complet_Needs GameManager::take_needs(Player& funplayer1, Player& funplayer2, Ca
 			int s;
 			while (1)
 			{
-				s = view.print_complet_needs(6, {}, card_to_name(funplayer2.playerHero->cards.hand));
+				s = view.print_complet_needs(6, {}, card_to_name(player2.playerHero->cards.hand));
 				if (s != 0)
 				{
-					optionalcard.emplace_back(funplayer2.playerHero->cards.hand[s - 1]);
+					optionalcard.emplace_back(player2.playerHero->cards.hand[s - 1]);
 					break;
 				}
 			}
@@ -501,14 +548,13 @@ Complet_Needs GameManager::take_needs(Player& funplayer1, Player& funplayer2, Ca
 	}
 	return complet_needs;
 }
-void GameManager::movement(Player* funplayer1, Hero* hero, int moveMax, int moveMin)
+void GameManager::movement(Player* player1, Hero* hero, int moveMax, int moveMin)
 {
 	if (hero == nullptr)
 	{
-		int b = view.print_move_get_name(hero_to_name(unique_to_hero(*funplayer1)));
-		hero = funplayer1->playerHero->heros[b].get();
+		int b = view.print_move_get_name(hero_to_name(unique_to_hero(*player1)));
+		hero = player1->playerHero->heros[b].get();
 	}
-
 	if (moveMax == 0)
 	{
 		moveMax = hero->get_move();
@@ -570,15 +616,15 @@ void GameManager::movement(Player* funplayer1, Hero* hero, int moveMax, int move
 		}
 	}
 }
-void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
+void GameManager::initial_position(Player& player1, Player& player2)
 {
-	mapmanager.move(22, funplayer1.playerHero->heros[0].get());
-	mapmanager.move(9, funplayer2.playerHero->heros[0].get());
+	mapmanager.move(22, player1.playerHero->heros[0].get());
+	mapmanager.move(9, player2.playerHero->heros[0].get());
 	view.print_map(mapmanager.text_inside_cells());
 
 	vector <int> p1;
 	vector <int> p2;
-	for (auto& x : funplayer1.playerHero->heros)
+	for (auto& x : player1.playerHero->heros)
 	{
 		if (x->get_position() == 0)
 		{
@@ -607,7 +653,7 @@ void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
 
 		}
 	}
-	for (auto& x : funplayer2.playerHero->heros)
+	for (auto& x : player2.playerHero->heros)
 	{
 		if (x->get_position() == 0)
 		{
@@ -638,10 +684,10 @@ void GameManager::initial_position(Player& funplayer1, Player& funplayer2)
 	}
 
 }
-ShowActionMenu GameManager::complet_action_menu(Player& funplayer1, Player& funplayer2)
+ShowActionMenu GameManager::complet_action_menu(Player& player1, Player& player2)
 {
 	ShowActionMenu show;
-	int attack = can_attack(funplayer1, funplayer2);
+	int attack = can_attack(player1, player2);
 	if (attack == 0)
 	{
 		show.attack = false;
@@ -656,7 +702,7 @@ ShowActionMenu GameManager::complet_action_menu(Player& funplayer1, Player& funp
 		show.attack = false;
 		show.attackReason = "No enemy available for attack";
 	}
-	int scheme = can_scheme(funplayer1, funplayer2);
+	int scheme = can_scheme(player1, player2);
 	if (scheme == 2)
 	{
 		show.scheme = false;
@@ -671,24 +717,26 @@ ShowActionMenu GameManager::complet_action_menu(Player& funplayer1, Player& funp
 		show.scheme = false;
 		show.schemeReason = "No cards have a living owner for scheme";
 	}
-	for (auto& x : funplayer1.playerHero->heros)
+	for (auto& x : player1.playerHero->heros)
 	{
 		show.nameOfHero.emplace_back(x->get_name());
 		show.health.emplace_back(x->get_HP());
 		show.move.emplace_back(x->get_move());
 		show.cell.emplace_back(x->get_position());
 	}
-	for (auto x : funplayer1.playerHero->cards.hand)
+	for (auto x : player1.playerHero->cards.hand)
 	{
 		show.card.emplace_back(x.get_cardName());
 		show.kind.emplace_back(x.get_kindOfAction());
+		show.nameOfDoer.emplace_back(x.get_nameOfDoer());
 	}
-	for (auto& x : funplayer2.playerHero->heros)
+	for (auto& x : player2.playerHero->heros)
 	{
 		show.nameofEnemy.emplace_back(x->get_name());
 		show.healthEnemy.emplace_back(x->get_HP());
 	}
-	show.name = funplayer1.name;
+
+	show.name = player1.name;
 	show.text = mapmanager.text_inside_cells();;
 	return show;
 }
@@ -758,7 +806,7 @@ int GameManager::can_attack(Player& player1, Player& player2)
 				{
 					if (x->is_alive())
 					{
-						if (mapmanager.is_same_zone(x->get_position(), player1.playerHero->heros[i]->get_position()))
+						if (mapmanager.is_same_zone(x->get_position(), player1.playerHero->heros[i]->get_position()) || mapmanager.is_adjacent(x->get_position(), player1.playerHero->heros[i]->get_position()))
 						{
 							hero.emplace_back(x.get());
 						}
@@ -802,32 +850,14 @@ void GameManager::run()
 				{
 					try
 					{
+						bool exit = false;
 						do_at_fisrt(player1, player2);
+						if (player1.playerHero->heros[0]->get_name() == "DRACULA")
+						{
+							dracula_ability(player1);
+						}
 						for (int i = 0; i < player1.action; i++)
 						{
-							if (player1.playerHero->heros[0]->get_name() == "DRACULA")
-							{
-								view.print_map(mapmanager.text_inside_cells());
-								bool b = view.print_ability(1);
-								if (b)
-								{
-									vector <Hero*> hero = mapmanager.nearby_heroes(player1.playerHero->heros[0]->get_position());
-									if(!hero.empty())
-									{
-										vector <Hero*> hero1;
-										for (auto& x : player1.playerHero->heros)
-										{
-											hero1.emplace_back(x.get());
-										}
-										int z = view.print_complet_needs(8, {}, hero_to_name(hero));
-										player1.playerHero->heros[0]->ability(*hero[z], hero1, player1.playerHero->cards);
-									}
-									else
-									{
-										view.print_ability(2);
-									}
-								}
-							}
 							int choice;
 							while (1)
 							{
@@ -842,21 +872,27 @@ void GameManager::run()
 									break;
 								}
 							}
+							if (choice == 1)
+							{
+								exit = true;
+								break;
+							}
 							switch (choice)
 							{
 							case 3:maneuver(player1, player2); break;
 							case 4:scheme(player1, player2); break;
 							case 5:attack(player1, player2); break;
 							}
-							if (choice == 1)
-							{
-								break;
-							}
 							int x = do_at_end(player1, player2);
 							if (x != 0)
 							{
 								break;
 							}
+
+						}
+						if (exit)
+						{
+							break;
 						}
 						Player player = player1;
 						player1 = player2;

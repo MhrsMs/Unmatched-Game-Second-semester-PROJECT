@@ -52,5 +52,5 @@ Needs Card::get_Needs() const
 
 void Card::change_attackOrDefense(int num)
 {
-    attack_or_defense = num;
+    attack_or_defense = +num;
 }

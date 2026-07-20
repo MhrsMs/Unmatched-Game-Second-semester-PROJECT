@@ -18,6 +18,7 @@ struct ShowActionMenu
 	vector <string> kind;
 	vector <string> nameofEnemy;
 	vector <int> healthEnemy;
+	vector <string> nameOfDoer;
 };
 class ConsoleView
 {
@@ -45,6 +46,7 @@ public:
 	void print_error_attack(int a);
 	void end_of_game(string a);
 	void show_hand(vector <string> s);
-	void print_combat_result(int a, string name = "");
+	void print_combat_result(int a, int attack = 0);
+	void print_movenumber(int a);
 	void clear();
 };
