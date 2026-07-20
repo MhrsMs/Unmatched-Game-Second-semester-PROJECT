@@ -255,9 +255,15 @@ void GameManager::attack(Player& player1, Player& player2)
 		}
 	}
 	Complet_Needs complet1 = take_needs(player1, player2, card1[ca1], hero1[attacker], hero2[defender]);
-	Complet_Needs complet2 = take_needs(player1, player2, card2[ca1], hero2[defender], hero1[attacker]);
-	Data data1{ hero1,unique_to_hero(player2),player1.playerHero->cards,player2.playerHero->cards,mapmanager,*hero1[attacker],&card1[ca1],&card2[ca2] };
-	Data data2{ unique_to_hero(player2),hero1,player2.playerHero->cards,player1.playerHero->cards,mapmanager,*hero2[defender],&card2[ca2],&card1[ca1] };
+	Complet_Needs complet2;
+	Data data1{ hero1,unique_to_hero(player2),player1.playerHero->cards,player2.playerHero->cards,mapmanager,*hero1[attacker],&card1[ca1],nullptr };
+	Data data2{ unique_to_hero(player2),hero1,player2.playerHero->cards,player1.playerHero->cards,mapmanager,*hero2[defender],nullptr,&card1[ca1] };
+	if (df)
+	{
+		complet2 = take_needs(player1, player2, card2[ca1], hero2[defender], hero1[attacker]);
+		data1.targetcard = &card2[ca2];
+		data2.thiscard = &card2[ca2];
+	}
 	Effect effect;
 	bool farib1 = 0;
 	bool farib2 = 0;
@@ -414,7 +420,7 @@ Complet_Needs GameManager::take_needs(Player& player1, Player& player2, Card& ca
 {
 	Complet_Needs complet_needs;
 	Needs needs = card.get_Needs();
-	if (card.get_kindOfAction() == "Attack" || card.get_kindOfAction() == "Attack_Or_Defense")
+	if (card.get_kindOfAction() != "Scheme")
 	{
 		complet_needs.targetPerson = heroTarget;
 	}
@@ -558,8 +564,8 @@ void GameManager::movement(Player* player1, Hero* hero, int moveMax, int moveMin
 	if (moveMax == 0)
 	{
 		moveMax = hero->get_move();
+		view.print_movenumber(moveMax);
 	}
-
 	int movementnum = 0;
 	int position = hero->get_position();
 	while (movementnum < moveMax)
