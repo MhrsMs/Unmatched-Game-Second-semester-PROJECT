@@ -324,7 +324,7 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
                 break;
             }
         }
-        return a[s];
+        return s;
     }
     case 10:
     {

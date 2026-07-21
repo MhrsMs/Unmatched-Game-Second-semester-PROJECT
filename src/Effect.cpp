@@ -31,7 +31,7 @@ int Effect::rm(int min, int max)
 		dist(min, max);
 	return dist(gen);
 }
-void Effect::effect1(int a, Data data, Complet_Needs complet_needs)
+void Effect::effect1(int a, Data& data, Complet_Needs& complet_needs)
 {
 	//1=bahre bardari 2 = emdad resani
 	if (a == 2)
@@ -51,7 +51,7 @@ void Effect::effect1(int a, Data data, Complet_Needs complet_needs)
 		}
 	}
 }
-void Effect::effect2(int b, Data data, Complet_Needs complet_needs)
+void Effect::effect2(int b, Data& data, Complet_Needs& complet_needs)
 {
 	//1 = kamin 2 =form hayola 3=be cheshmanam negah kon 4 = atash khon
 	int id;
@@ -96,7 +96,7 @@ void Effect::effect2(int b, Data data, Complet_Needs complet_needs)
 }
 
 
-void Effect::effect3(Data data, Complet_Needs complet_needs)
+void Effect::effect3(Data& data, Complet_Needs& complet_needs)
 {
 	//eqvay siri napazir
 	vector <Hero*> h = data.mapManager.nearby_heroes(complet_needs.targetPerson->get_position());
@@ -110,7 +110,7 @@ void Effect::effect3(Data data, Complet_Needs complet_needs)
 
 }
 
-void Effect::effect5(Data data, Complet_Needs complet_needs)
+void Effect::effect5(Data& data, Complet_Needs& complet_needs)
 {
 	//shekar kon
 	vector <Hero*> h = data.mapManager.nearby_heroes(data.actor.get_position());
@@ -124,7 +124,7 @@ void Effect::effect5(Data data, Complet_Needs complet_needs)
 	}
 }
 
-void Effect::effect7(Data data, Complet_Needs complet_needs)
+void Effect::effect7(Data& data, Complet_Needs& complet_needs)
 {
 	//ostad taqir chehre
 
@@ -147,7 +147,7 @@ void Effect::effect7(Data data, Complet_Needs complet_needs)
 	data.mapManager.move(tPosition, data.team[0]);
 	complet_needs.targetPerson->decrease_HP(1);
 }
-void Effect::effect8(Data data, Complet_Needs complet_needs)
+void Effect::effect8(Data& data, Complet_Needs& complet_needs)
 {
 	//amozesh hargez payan nadarad
 	if (complet_needs.heroWin)
@@ -184,7 +184,7 @@ void Effect::effect8(Data data, Complet_Needs complet_needs)
 	}
 }
 
-void Effect::effect9(Data data, Complet_Needs complet_needs)
+void Effect::effect9(Data& data, Complet_Needs& complet_needs)
 {
 	//zed hamle
 	if (data.team[0]->is_alive())
@@ -196,7 +196,7 @@ void Effect::effect9(Data data, Complet_Needs complet_needs)
 	}
 
 }
-void Effect::effect10(Data data, Complet_Needs complet_needs)
+void Effect::effect10(Data& data, Complet_Needs& complet_needs)
 {
 	//noqtei sabet dar zamanei moteqaier
 	if (data.team[1]->is_alive())
@@ -210,13 +210,13 @@ void Effect::effect10(Data data, Complet_Needs complet_needs)
 
 }
 
-void Effect::effect11(Data data, Complet_Needs complet_needs)
+void Effect::effect11(Data& data, Complet_Needs& complet_needs)
 {
 	//form meh
 	data.mapManager.move(complet_needs.location, data.team[0]);
 }
 
-void Effect::effect12(Data data, Complet_Needs complet_needs)
+void Effect::effect12(Data& data, Complet_Needs& complet_needs)
 {
 	//hazfe namomken ha
 	if (!complet_needs.optionalCard.empty())
@@ -227,7 +227,7 @@ void Effect::effect12(Data data, Complet_Needs complet_needs)
 
 }
 
-void Effect::effect13(Data data, Complet_Needs complet_needs)
+void Effect::effect13(Data& data, Complet_Needs& complet_needs)
 {
 	//stentag sterategik
 	if (data.targetcard != nullptr)

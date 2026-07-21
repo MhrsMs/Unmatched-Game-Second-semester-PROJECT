@@ -29,16 +29,16 @@ public:
 
 	void apply_effect(int id, Data& data, Complet_Needs complet_needs);
 	int rm(int min, int max);
-	void effect1(int a, Data data, Complet_Needs complet_needs);
-	void effect2(int a, Data data, Complet_Needs complet_needs);
-	void effect3(Data data, Complet_Needs complet_needs);
-	void effect5(Data data, Complet_Needs complet_needs);
-	void effect7(Data data, Complet_Needs complet_needs);
-	void effect8(Data data, Complet_Needs complet_needs);
-	void effect9(Data data, Complet_Needs complet_needs);
-	void effect10(Data data, Complet_Needs complet_needs);
-	void effect11(Data data, Complet_Needs complet_needs);
-	void effect12(Data data, Complet_Needs complet_needs);
-	void effect13(Data data, Complet_Needs complet_needs);
+	void effect1(int a, Data& data, Complet_Needs& complet_needs);
+	void effect2(int a, Data& data, Complet_Needs& complet_needs);
+	void effect3(Data& data, Complet_Needs& complet_needs);
+	void effect5(Data& data, Complet_Needs& complet_needs);
+	void effect7(Data& data, Complet_Needs& complet_needs);
+	void effect8(Data& data, Complet_Needs& complet_needs);
+	void effect9(Data& data, Complet_Needs& complet_needs);
+	void effect10(Data& data, Complet_Needs& complet_needs);
+	void effect11(Data& data, Complet_Needs& complet_needs);
+	void effect12(Data& data, Complet_Needs& complet_needs);
+	void effect13(Data& data, Complet_Needs& complet_needs);
 };
 

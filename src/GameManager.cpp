@@ -797,7 +797,7 @@ int GameManager::can_attack(Player& player1, Player& player2)
 	{
 		otherhero = player1.playerHero->cards.get_cards_by_action(2, player1.playerHero->heros[1].get());
 	}
-	if (mainhero.empty() || otherhero.empty())
+	if (mainhero.empty() && otherhero.empty())
 	{
 		return 0;
 	}
