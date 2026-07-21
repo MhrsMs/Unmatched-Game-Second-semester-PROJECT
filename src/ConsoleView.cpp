@@ -264,31 +264,6 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
         cout << "You must move the Hero 3 cells" << endl;
         return 0;
     }
-    case 6:
-    {
-        string temporary_input;
-        cout << "Which card do you want to discard? 0 = none " << endl;
-        int s;
-        while (1)
-        {
-            do
-            {
-                for (int i = 0; i < b.size(); i++)
-                {
-                    cout << i + 1 << " = " << b[i] << " ";
-
-                }
-                cout << endl;
-                cin >> temporary_input;
-            } while (!just_numeric_input(temporary_input));
-            s = stoi(temporary_input);
-            if (s >= 0 && s <= b.size() + 1)
-            {
-                break;
-            }
-        }
-        return s;
-    }
     case 7:
     {
         string temporary_input;
@@ -449,6 +424,16 @@ int ConsoleView::print_initial_position(string name)
     return initial_position;
 }
 
+void ConsoleView::print_hand_cards(vector <string> card)
+{
+    cout << "SHOW-HAND" << endl;
+    for (auto x : card)
+    {
+        cout << " " << x << " /";
+    }
+    cout << endl;
+}
+
 int ConsoleView::print_action_menu(ShowActionMenu s)
 {
     int num = 3;
@@ -490,12 +475,12 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     int m = 3;
     if (s.scheme)
     {
-        cout << "|" << left << setw(39) << s.card[m] << left << setw(20) << s.kind[m] << left << setw(12) << s.nameOfDoer[m] << "|" << left << setw(19) << "4 = Scheme" << "|" << endl;
+        cout << "|" << left << setw(39) << s.card[m] << left << setw(20) << s.kind[m] << left << setw(12) << s.nameOfDoer[m] << "|" << left << setw(1) << m + 1 << left << setw(18) << " = Scheme" << "|" << endl;
         m++;
     }
     if (s.attack)
     {
-        cout << "|" << left << setw(39) << s.card[m] << left << setw(20) << s.kind[m] << left << setw(12) << s.nameOfDoer[m] << "|" << left << setw(19) << "5 = Attack" << "|" << endl;
+        cout << "|" << left << setw(39) << s.card[m] << left << setw(20) << s.kind[m] << left << setw(12) << s.nameOfDoer[m] << "|" << left << setw(1) << m + 1 << left << setw(18) << " = Attack" << "|" << endl;
     }
 
     if (s.card.size() > num)
@@ -524,7 +509,7 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
             cin >> temporary_input;
         } while (!just_numeric_input(temporary_input));
         r = stoi(temporary_input);
-        if (r > 0 && r < 6)
+        if (r > 0 && r < num)
         {
             break;
         }
@@ -621,53 +606,29 @@ int ConsoleView::print_move_get_name(vector<string> name)
     return a;
 }
 
-vector <int> ConsoleView::print_discarding(vector<string> card, vector<string> name)
+int ConsoleView::print_discarding(vector<string> card)
 {
-
-    int a, b;
+    int r;
     string temporary_input;
-    vector <int > r;
     while (1)
     {
         do
         {
-            cout << "Which card do you want to discard?" << endl;
+            cout << "Which card do you want to discard? 0 = none" << endl;
             for (int i = 0; i < card.size(); i++)
             {
-                cout << i << " = " << card[i] << " ";
+                cout << i + 1 << " = " << card[i] << " ";
 
             }
             cout << endl;
             cin >> temporary_input;
         } while (!just_numeric_input(temporary_input));
-        a = stoi(temporary_input);
-        if (a >= 0 && a < card.size() + 1)
+        r = stoi(temporary_input);
+        if (r >= 0 && r < card.size() + 1)
         {
             break;
         }
     }
-    r.emplace_back(a);
-
-    while (1)
-    {
-        do
-        {
-            cout << "which player should receive the boost?" << endl;
-            for (int i = 0; i < name.size(); i++)
-            {
-                cout << i << " = " << name[i] << " ";
-
-            }
-            cout << endl;
-            cin >> temporary_input;
-        } while (!just_numeric_input(temporary_input));
-        b = stoi(temporary_input);
-        if (b >= 0 && b < name.size() + 1)
-        {
-            break;
-        }
-    }
-    r.emplace_back(b);
     return r;
 }
 
@@ -859,5 +820,3 @@ void ConsoleView::clear()
     system("clear");
 #endif 
 }
-
-

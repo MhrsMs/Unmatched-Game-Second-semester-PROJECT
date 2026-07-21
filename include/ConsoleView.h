@@ -34,12 +34,13 @@ public:
 	vector <string> get_name();
 	void print_name(string name);
 	int print_initial_position(string name);
+	void print_hand_cards(vector <string> card);
 	int print_action_menu(ShowActionMenu s);
 	int print_maneuver();
 	int print_move1(vector <int> cell);
 	void print_move2(int a);
 	int print_move_get_name(vector <string> name);
-	vector <int> print_discarding(vector <string> card, vector<string> name);
+	int print_discarding(vector <string> card);
 	int print_scheme(vector <string> s);
 	int print_attack1(vector <string> s, int a);
 	int print_attack2(vector <string> s, int a);

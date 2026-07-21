@@ -5,7 +5,6 @@ void Effect::apply_effect(int id, Data& data, Complet_Needs complet_needs)
 {
 	switch (id)
 	{
-	case 1:effect4(data, complet_needs); break;
 	case 2:effect11(data, complet_needs); break;
 	case 3:effect5(data, complet_needs); break;
 	case 4:effect3(data, complet_needs); break;
@@ -109,21 +108,6 @@ void Effect::effect3(Data data, Complet_Needs complet_needs)
 	}
 
 }
-void Effect::effect4(Data data, Complet_Needs complet_needs)
-{
-	//qosle khon 
-	data.team[0]->increase_HP(2);
-	bool found = false;
-	for (int i = 1; i < data.team.size(); i++)
-	{
-		if (!data.team[i]->is_alive() && !found)
-		{
-			data.team[i]->increase_HP(data.team[i]->get_original_HP());
-			data.mapManager.move(complet_needs.location, data.team[i]);
-			found = true;
-		}
-	}
-}
 
 void Effect::effect5(Data data, Complet_Needs complet_needs)
 {
@@ -146,7 +130,18 @@ void Effect::effect7(Data data, Complet_Needs complet_needs)
 
 	int hPosition = data.team[0]->get_position();
 	int tPosition = complet_needs.targetPerson->get_position();
-	data.mapManager.move(0, data.team[0]);
+	int empty;
+	bool found = false;
+	for (int i = 1; i < 33 && !found; i++)
+	{
+		if (!data.mapManager.is_ally_inside(i, data.team[0]) && !data.mapManager.is_enemy_inside(i, data.team[0]))
+		{
+			empty = i;
+			found = true;
+
+		}
+	}
+	data.mapManager.move(empty, data.team[0]);
 	data.mapManager.move(hPosition, complet_needs.targetPerson);
 	data.mapManager.move(tPosition, data.team[0]);
 	complet_needs.targetPerson->decrease_HP(1);

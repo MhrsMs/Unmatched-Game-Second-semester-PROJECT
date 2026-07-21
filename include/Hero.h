@@ -28,7 +28,6 @@ public:
     void decrease_HP(int damage);
     void increase_HP(int heal);
     bool is_alive() const;
-    void change_move(int m);
     virtual void ability(Hero& hero, vector <Hero*> heros, CardManager& card) = 0;
 };
 

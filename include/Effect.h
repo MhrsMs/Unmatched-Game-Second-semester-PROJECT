@@ -32,7 +32,6 @@ public:
 	void effect1(int a, Data data, Complet_Needs complet_needs);
 	void effect2(int a, Data data, Complet_Needs complet_needs);
 	void effect3(Data data, Complet_Needs complet_needs);
-	void effect4(Data data, Complet_Needs complet_needs);
 	void effect5(Data data, Complet_Needs complet_needs);
 	void effect7(Data data, Complet_Needs complet_needs);
 	void effect8(Data data, Complet_Needs complet_needs);
