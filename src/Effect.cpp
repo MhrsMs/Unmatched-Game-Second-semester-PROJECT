@@ -36,7 +36,8 @@ void Effect::effect1(int a, Data data, Complet_Needs complet_needs)
 	//1=bahre bardari 2 = emdad resani
 	if (a == 2)
 	{
-		data.mapManager.move(complet_needs.location, &data.actor);
+		data.mapManager.move(complet_needs.location, data.team[1]);
+		data.team[0]->increase_HP(1);
 	}
 	if (data.cardsTeam.can_deck_to_hand(1))
 	{
@@ -44,7 +45,7 @@ void Effect::effect1(int a, Data data, Complet_Needs complet_needs)
 	}
 	else
 	{
-		for (auto x : data.team)
+		for (auto& x : data.team)
 		{
 			x->decrease_HP(2);
 		}
@@ -99,7 +100,7 @@ void Effect::effect3(Data data, Complet_Needs complet_needs)
 {
 	//eqvay siri napazir
 	vector <Hero*> h = data.mapManager.nearby_heroes(complet_needs.targetPerson->get_position());
-	for (auto x : h)
+	for (auto& x : h)
 	{
 		if (x->get_name() == "SISTER")
 		{
@@ -113,7 +114,7 @@ void Effect::effect5(Data data, Complet_Needs complet_needs)
 {
 	//shekar kon
 	vector <Hero*> h = data.mapManager.nearby_heroes(data.actor.get_position());
-	for (auto x : h)
+	for (auto& x : h)
 	{
 		if (x->get_name() == "SHERLOCK" || x->get_name() == "DR.WATSON")
 		{
@@ -157,7 +158,7 @@ void Effect::effect8(Data data, Complet_Needs complet_needs)
 		}
 		else
 		{
-			for (auto x : data.target)
+			for (auto& x : data.target)
 			{
 				x->decrease_HP(2);
 			}
@@ -173,7 +174,7 @@ void Effect::effect8(Data data, Complet_Needs complet_needs)
 			}
 			else
 			{
-				for (auto x : data.team)
+				for (auto& x : data.team)
 				{
 					x->decrease_HP(2);
 				}

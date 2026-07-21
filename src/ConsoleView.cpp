@@ -782,7 +782,7 @@ void ConsoleView::print_error_attack(int a)
 
 void ConsoleView::end_of_game(string a)
 {
-    cout << a << "YOU WIN!!!!!!!!" << endl;
+    cout << a << " YOU WIN!!!!!!!!" << endl;
 }
 
 void ConsoleView::show_hand(vector<string> s)

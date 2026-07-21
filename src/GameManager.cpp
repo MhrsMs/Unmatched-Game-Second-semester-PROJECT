@@ -266,7 +266,7 @@ void GameManager::attack(Player& player1, Player& player2)
 	{
 		if (card2[ca2].get_id() == 23 || card2[ca2].get_id() == 10)
 		{
-			if (card1[ca1].get_nameOfDoer() == "Any" || card1[ca1].get_nameOfDoer() == "DRAUCLA" || card1[ca1].get_nameOfDoer() == "SISTER")
+			if (card1[ca1].get_nameOfDoer() != "SHERLOCK" && card1[ca1].get_nameOfDoer() != "DR.WATSON")
 			{
 				farib2 = 1;
 			}
@@ -285,7 +285,7 @@ void GameManager::attack(Player& player1, Player& player2)
 	{
 		if (df)
 		{
-			if (card2[ca2].get_nameOfDoer() == "Any" || card2[ca2].get_nameOfDoer() == "SISTER" || card2[ca2].get_nameOfDoer() == "DRACULA")
+			if (card2[ca2].get_nameOfDoer() != "SHERLOCK" && card2[ca2].get_nameOfDoer() != "DR.WATSON")
 			{
 				farib1 = 1;
 			}
@@ -912,6 +912,7 @@ void GameManager::run()
 							if (x != 0)
 							{
 								break;
+								exit = true;
 							}
 
 						}
