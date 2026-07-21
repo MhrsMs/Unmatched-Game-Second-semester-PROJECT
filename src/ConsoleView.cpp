@@ -509,7 +509,7 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
             cin >> temporary_input;
         } while (!just_numeric_input(temporary_input));
         r = stoi(temporary_input);
-        if (r > 0 && r < num)
+        if (r > 0 && r < num + 1)
         {
             break;
         }
