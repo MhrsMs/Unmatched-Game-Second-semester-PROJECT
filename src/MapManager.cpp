@@ -127,7 +127,11 @@ vector<int> MapManager::electable_cells(int current_position)
 
         for(size_t k=0; k<passage.size(); k++)
         {
-            suitable_cells.push_back(passage[k]);
+            if (!(is_enemy_inside(passage[k], current_hero)))
+            {
+                suitable_cells.push_back(passage[k]);
+            }
+            
         }
     }
 

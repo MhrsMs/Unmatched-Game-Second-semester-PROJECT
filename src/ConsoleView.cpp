@@ -11,7 +11,17 @@ bool ConsoleView::just_numeric_input(string input)
         int to_number = stoi(input, &last_index);
 
         if (last_index == input.length())
-            return true;
+        {
+            if (to_number < 0)
+            {
+                cerr << "Invalid input! The number you entered is negative..Try Again\n";
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
         else
         {
             cerr << "Invalid input! The number you entered contains letters and symbols...Try Again\n";
@@ -514,7 +524,10 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
             break;
         }
     }
-
+    if (!s.scheme && r == 4)
+    {
+        return 5;
+    }
     return r;
 }
 

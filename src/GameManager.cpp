@@ -441,11 +441,17 @@ Complet_Needs GameManager::take_needs(Player& player1, Player& player2, Card& ca
 			vector <Hero*> thishero;
 			for (auto& x : player2.playerHero->heros)
 			{
-				thishero.emplace_back(x.get());
+				if (x->is_alive())
+				{
+					thishero.emplace_back(x.get());
+				}
 			}
 			for (auto& x : player1.playerHero->heros)
 			{
-				thishero.emplace_back(x.get());
+				if (x->is_alive())
+				{
+					thishero.emplace_back(x.get());
+				}
 			}
 			int z = view.print_complet_needs(8, {}, hero_to_name(thishero));
 			complet_needs.targetPerson = thishero[z];
@@ -527,6 +533,7 @@ Complet_Needs GameManager::take_needs(Player& player1, Player& player2, Card& ca
 		{
 			int s;
 			vector <Card> cards;
+			vector <int> c;
 			for (auto x : player1.playerHero->cards.hand)
 			{
 				if (x.get_cardName() != card.get_cardName())
@@ -536,12 +543,20 @@ Complet_Needs GameManager::take_needs(Player& player1, Player& player2, Card& ca
 			}
 			while (1)
 			{
-				s = view.print_discarding(card_to_name(player1.playerHero->cards.hand));
+				s = view.print_discarding(card_to_name(cards));
 				if (s == 0)
 				{
 					break;
 				}
+				for (auto x : c)
+				{
+					if (x == s)
+					{
+						continue;
+					}
+				}
 				optionalcard.emplace_back(cards[s - 1]);
+				c.emplace_back(s);
 			}
 			complet_needs.optionalCard = optionalcard;
 		}
@@ -551,7 +566,7 @@ Complet_Needs GameManager::take_needs(Player& player1, Player& player2, Card& ca
 			int s;
 			while (1)
 			{
-				if (!player1.playerHero->cards.hand.empty())
+				if (!player2.playerHero->cards.hand.empty())
 				{
 					s = view.print_discarding(card_to_name(player2.playerHero->cards.hand));
 					if (s != 0)
@@ -559,6 +574,10 @@ Complet_Needs GameManager::take_needs(Player& player1, Player& player2, Card& ca
 						optionalcard.emplace_back(player2.playerHero->cards.hand[s - 1]);
 						break;
 					}
+				}
+				else
+				{
+					break;
 				}
 			}
 			complet_needs.optionalCard = optionalcard;
