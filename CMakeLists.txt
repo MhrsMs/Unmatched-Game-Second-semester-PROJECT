@@ -24,6 +24,12 @@ add_library(
     src/ConsoleView.cpp
     src/Effect.cpp
     src/GameManager.cpp
+    src/Action.cpp
+    src/Attack.cpp
+    src/Maneuver.cpp
+    src/PlayerInformation.cpp
+    src/Scheme.cpp
+
 )
 
 
