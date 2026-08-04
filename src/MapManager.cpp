@@ -6,6 +6,10 @@ MapManager::MapManager()
     ReadInformation rdi;
     cell= rdi.get_cell();
 }
+Cell* MapManager::get_cell(int number)
+{
+    return &cell[number];
+}
 bool MapManager::is_adjacent(int current_position, int chosen_cell) const
 {
     vector<int> current_connections= cell[current_position].get_connections();
@@ -50,6 +54,14 @@ bool MapManager::is_enemy_inside(int chosen_cell, Hero* current_hero)
                 if(current_hero->get_name()!="DRACULA" && current_hero->get_name()!="SISTER")
                     return true;
                 else    
+                    return false;
+            }
+
+            if(hero_inside_this_cell->get_name()=="INVISIBLE_MAN")
+            {
+                if(current_hero->get_name()!= "INVISIBLE_MAN")
+                    return true;
+                else
                     return false;
             }
         }
@@ -135,6 +147,18 @@ vector<int> MapManager::electable_cells(int current_position)
         }
     }
 
+    if(current_hero->get_name()== "INVISIBLE_MAN")
+    {
+        vector<int> foggy_teleport= get_foggy_cells();
+        for(size_t j=0; j<foggy_teleport.size(); j++)
+        {
+            if (!(is_enemy_inside(foggy_teleport[j], current_hero)))
+            {
+                suitable_cells.push_back(foggy_teleport[j]);
+            }
+        }
+    }
+
     return suitable_cells;
 }
 vector<Hero*> MapManager::nearby_heroes(int current_position)
@@ -191,4 +215,34 @@ void MapManager::move(int chosen_cell, Hero* current_hero)
         current_hero->change_position(chosen_cell);
         cell[current_position].change_hero_inside(nullptr);
     }
+}
+bool MapManager::is_foggy(int position) const
+{
+    if(cell[position].get_fog())
+        return true;
+    return false;
+}
+void MapManager::set_foggy(int chosen_cell, int current_cell)
+{
+    if(current_cell==0)
+        cell[chosen_cell].change_fog(true);
+    else
+    {
+        cell[chosen_cell].change_fog(true);
+        cell[current_cell].change_fog(false);
+    }
+}
+vector<int> MapManager::get_foggy_cells() const
+{
+    vector<int> foggy_cells;
+    for(size_t i=1; i<cell.size(); i++)
+    {
+        if(cell[i].get_fog())
+            foggy_cells.push_back(i);
+    }
+    return foggy_cells;
+}
+vector<int> MapManager::all_adjacent_cells(int position) const
+{
+    return cell[position].get_connections();
 }

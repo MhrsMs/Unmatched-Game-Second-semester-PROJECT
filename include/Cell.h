@@ -13,6 +13,7 @@ private:
     std::vector<int> connections;
     bool is_passage;
     Hero* hero_inside;
+    bool fog;
 public:
     Cell(int n, std::vector<std::string> col, std::vector<int> con, bool isp);
     int get_number() const;
@@ -21,6 +22,8 @@ public:
     bool Is_Passage() const;
     Hero* get_hero_inside() const;
     void change_hero_inside(Hero* current_hero_inside);
+    bool get_fog() const;
+    void change_fog(bool fogg);
 };
 
 #endif
