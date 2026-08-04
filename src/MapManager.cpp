@@ -147,14 +147,26 @@ vector<int> MapManager::electable_cells(int current_position)
         }
     }
 
-    if(current_hero->get_name()== "INVISIBLE_MAN")
+    if(cell[current_position].get_fog())
     {
-        vector<int> foggy_teleport= get_foggy_cells();
-        for(size_t j=0; j<foggy_teleport.size(); j++)
+        if(current_hero->get_name()== "INVISIBLE_MAN")
         {
-            if (!(is_enemy_inside(foggy_teleport[j], current_hero)))
+            vector<int> foggy_teleport= get_foggy_cells();
+            for(size_t i=0; i<foggy_teleport.size(); i++)
             {
-                suitable_cells.push_back(foggy_teleport[j]);
+                if(foggy_teleport[i]==cell[current_position].get_number())
+                {
+                    foggy_teleport.erase(foggy_teleport.begin()+i);
+                    break;
+                }
+            }
+
+            for(size_t j=0; j<foggy_teleport.size(); j++)
+            {
+                if (!(is_enemy_inside(foggy_teleport[j], current_hero)))
+                {
+                    suitable_cells.push_back(foggy_teleport[j]);
+                }
             }
         }
     }
@@ -183,19 +195,40 @@ vector<Hero*> MapManager::nearby_heroes(int current_position)
 
     return heroes_around;
 }
-vector<string> MapManager::text_inside_cells() const
+vector<string> MapManager::text_inside_cells()
 {
     vector<string> text;
     text.push_back("");
     for(size_t i=1; i<cell.size(); i++)
     {
+        bool push_back_hero= false;
         Hero* hero_inside= cell[i].get_hero_inside();
-        if(hero_inside!=nullptr && hero_inside->get_position()!=0)
-            text.push_back(hero_inside->get_short_name());
-        else if(i<10)
-            text.push_back("0"+ to_string(i));
-        else
-            text.push_back(to_string(i));
+        if(hero_inside!=nullptr)
+        {
+            if(hero_inside->is_alive())
+            {
+                if(hero_inside->get_position()!=0)
+                {
+                    text.push_back(hero_inside->get_short_name());
+                    push_back_hero= true;
+                }
+                else
+                {
+                    cell[i].change_hero_inside(nullptr);
+                }
+            }
+            else
+            {
+                cell[i].change_hero_inside(nullptr);
+            }
+        }
+        if(!push_back_hero)
+        {
+            if(i<10)
+                text.push_back("0"+ to_string(i));
+            else
+                text.push_back(to_string(i));
+        }
         
     }
 

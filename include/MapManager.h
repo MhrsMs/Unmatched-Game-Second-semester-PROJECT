@@ -17,7 +17,7 @@ public:
     bool is_ally_inside(int chosen_cell, Hero* current_hero);
     std::vector<int> electable_cells(int current_position);
     std::vector<Hero*> nearby_heroes(int current_position);
-    std::vector<std::string> text_inside_cells() const;
+    std::vector<std::string> text_inside_cells();
     void move(int chosen_cell, Hero* current_hero);
     bool is_foggy(int position) const;
     void set_foggy(int chosen_cell, int current_cell=0);
