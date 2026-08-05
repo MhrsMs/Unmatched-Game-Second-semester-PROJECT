@@ -40,7 +40,7 @@ void ConsoleView::print_error(string what)
     cout << what << endl;
 }
 
-void ConsoleView::print_map(vector<string> text)
+void ConsoleView::print_map(vector<string> text, vector <int> fog)
 {
     cout << "+===========================================================================================+\n";
     cout << "|     [MAP]      *DR : Dracula *SH : Sherlock Holmes *DW : DR.Watson *S1,S2,S3 : Sisters    |\n";
@@ -56,6 +56,7 @@ void ConsoleView::print_map(vector<string> text)
     cout << "  |            \033[32m(\033[0m\033[38;2;221;160;221m" << text[24] << "\033[0m\033[32m)\033[0m------\033[38;2;221;160;221m(" << text[25] << ")\033[0m------\033[38;2;221;160;221m(" << text[26] << ")\033[0m------\033[38;2;128;0;255m(\033[0m\033[38;2;221;160;221m" << text[27] << "\033[0m\033[38;2;128;0;255m)\033[0m" << endl;
     cout << "  |           /    \\    /              \\    /" << endl;
     cout << "\033[38;2;221;160;221m(" << text[28] << ")\033[0m-\033[38;2;221;160;221m(" << text[29] << ")\033[0m-\033[38;2;221;160;221m(" << text[30] << ")\033[0m------\033[38;2;221;160;221m(" << text[31] << ")\033[0m                \033[38;2;221;160;221m(" << text[32] << ")\033[0m" << endl << endl;
+    cout << "There is fog in cells " << fog[0] << " ," << fog[1] << " and " << fog[2] << endl;
     cout << "cells 1, 6, 16, and 28 are secret passages\n";
 }
 
@@ -351,7 +352,8 @@ vector<string> ConsoleView::get_name()
     vector <string> name;
     int age1, age2;
     string name1, name2;
-    int choice;
+    int choice1;
+    int choice2;
     for (size_t i = 1; i <= 2; i++)
     {
         cout << "Please enter the name of the player" << i << ": ";
@@ -373,17 +375,20 @@ vector<string> ConsoleView::get_name()
             age2 = stoi(temporary_input);
     }
     string younger;
+    string older;
     if (age2 < age1)
     {
         name.emplace_back(name2);
         name.emplace_back(name1);
         younger = name2;
+        older = name1;
     }
     else
     {
         name.emplace_back(name1);
         name.emplace_back(name2);
         younger = name1;
+        older = name2;
     }
     cout << younger << " is younger, so starts first-->\n";
     while (1)
@@ -391,21 +396,38 @@ vector<string> ConsoleView::get_name()
         string temporary_input;
         do
         {
-            cout << younger << " Which one do you choose? 1 = DRACULA 2 = SHERLOCK" << endl;
+            cout << younger << " Which one do you choose? 1 = DRACULA 2 = SHERLOCK 3 = INVISIBLE_MAN" << endl;
             cin >> temporary_input;
         } while (!just_numeric_input(temporary_input));
-        choice = stoi(temporary_input);
-        if (choice > 0 && choice < 3)
+        choice1 = stoi(temporary_input);
+        if (choice1 > 0 && choice1 < 4)
         {
-            if (choice == 1)
-                cout << "Player1's hero is DRACULA and Player2's hero is SHERLOCK\n";
-            else
-                cout << "Player1's hero is SHERLOCK and Player2's hero is DRACULA\n";
-            cout << "Determine the position of your Sidekicks\n";
             break;
         }
     }
-    name.emplace_back(to_string(choice));
+    while (1)
+    {
+        string temporary_input;
+        do
+        {
+            cout << older << " Which one do you choose? 1 = DRACULA 2 = SHERLOCK 3 = INVISIBLE_MAN" << endl;
+            cin >> temporary_input;
+        } while (!just_numeric_input(temporary_input));
+        choice2 = stoi(temporary_input);
+        if (choice2 > 0 && choice2 < 4)
+        {
+            if (choice2 != choice1)
+            {
+                break;
+            }
+            else
+            {
+                cout << "This hero has already been selected." << endl;
+            }
+        }
+    }
+    name.emplace_back(to_string(choice1));
+    name.emplace_back(to_string(choice2));
     return name;
 }
 
@@ -475,7 +497,7 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     {
         cout << "\033[91m|" << left << setw(10) << s.nameofEnemy[i] << " * Health:" << s.healthEnemy[i] << "\033[0m" << endl;
     }
-    print_map(s.text);
+    print_map(s.text, s.fog);
     cout << "+=======================================================================+===================+\n";
     cout << "|                              [HAND]                                   |      [ACTION]     |\n";
     cout << "+=======================================================================+===================+\n";

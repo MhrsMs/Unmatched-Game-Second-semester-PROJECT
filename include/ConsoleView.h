@@ -19,6 +19,7 @@ struct ShowActionMenu
 	vector <string> nameofEnemy;
 	vector <int> healthEnemy;
 	vector <string> nameOfDoer;
+	vector <int> fog;
 };
 class ConsoleView
 {
@@ -26,7 +27,7 @@ class ConsoleView
 public:
 	bool just_numeric_input(string input);
 	void print_error(string what);
-	void print_map(vector<string> text);
+	void print_map(vector<string> text, vector <int> fog);
 	void print_Help();
 	int print_main_menu();
 	bool print_ability(int a);

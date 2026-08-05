@@ -225,9 +225,12 @@ int Attack::can_attack(PlayerInformation& players)
 	vector <Card> mainhero = players.player1.playerHero->cards.get_cards_by_action(2, players.player1.playerHero->heros[0].get());
 	vector <Card> otherhero;
 	vector <Hero*> hero;
-	if (players.player1.playerHero->heros[1]->is_alive())
+	if (players.player1.playerHero->heros[0]->get_name() != "INVISIBLE_MAN")
 	{
-		otherhero = players.player1.playerHero->cards.get_cards_by_action(2, players.player1.playerHero->heros[1].get());
+		if (players.player1.playerHero->heros[1]->is_alive())
+		{
+			otherhero = players.player1.playerHero->cards.get_cards_by_action(2, players.player1.playerHero->heros[1].get());
+		}
 	}
 	if (mainhero.empty() && otherhero.empty())
 	{

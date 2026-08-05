@@ -5,6 +5,7 @@
 #include "Sister.h"
 #include "Dracula.h"
 #include "DrWatson.h"
+#include "InvisibleMan.h"
 #include "Hero.h"
 #include <memory>
 class PlayerInformation
@@ -41,6 +42,13 @@ public:
 			heros.push_back(make_unique<Sister>("S1"));
 			heros.push_back(make_unique<Sister>("S2"));
 			heros.push_back(make_unique<Sister>("S3"));
+		}
+	};
+	struct InvisibleManData : public PlayerData
+	{
+		InvisibleManData() : PlayerData(3)
+		{
+			heros.push_back(make_unique<InvisibleMan>("IM"));
 		}
 	};
 	Player player1;

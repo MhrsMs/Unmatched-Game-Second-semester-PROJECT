@@ -4,20 +4,28 @@ void Scheme::do_scheme(PlayerInformation& players)
 	vector <Card> firstCard = players.player1.playerHero->cards.get_cards_by_action(1);
 	vector <Card> secondCard;
 	bool found = false;
-	if (players.player1.playerHero->heros[1]->is_alive())
+	if (players.player1.playerHero->heros[0]->get_name() != "INVISIBLE_MAN")
 	{
-		secondCard = firstCard;
-	}
-	else
-	{
-		for (auto x : firstCard)
+		if (players.player1.playerHero->heros[1]->is_alive())
 		{
-			if (x.get_nameOfDoer() != players.player1.playerHero->heros[1]->get_name())
+			secondCard = firstCard;
+		}
+		else
+		{
+			for (auto x : firstCard)
 			{
-				secondCard.emplace_back(x);
+				if (x.get_nameOfDoer() != players.player1.playerHero->heros[1]->get_name())
+				{
+					secondCard.emplace_back(x);
+				}
 			}
 		}
 	}
+	else
+	{
+		secondCard = firstCard;
+	}
+
 	int v = view.print_scheme(players.card_to_name(secondCard));
 	Hero* actor = {};
 	for (auto& x : players.unique_to_hero(players.player1))
@@ -61,22 +69,29 @@ int Scheme::can_scheme(PlayerInformation& players)
 {
 	vector <Card> first = players.player1.playerHero->cards.get_cards_by_action(1);
 	vector <Card> second;
-	for (auto x : first)
+	if (players.player1.playerHero->heros[0]->get_name() != "INVISIBLE_MAN")
 	{
-		if (x.get_nameOfDoer() == players.player1.playerHero->heros[1]->get_name())
+		for (auto x : first)
 		{
-			second.emplace_back(x);
+			if (x.get_nameOfDoer() == players.player1.playerHero->heros[1]->get_name())
+			{
+				second.emplace_back(x);
+			}
 		}
 	}
+
 	if (first.empty())
 	{
 		return 2;
 	}
-	if (!players.player1.playerHero->heros[1]->is_alive())
+	if (players.player1.playerHero->heros[0]->get_name() != "INVISIBLE_MAN")
 	{
-		if (second.size() == first.size())
+		if (!players.player1.playerHero->heros[1]->is_alive())
 		{
-			return 0;
+			if (second.size() == first.size())
+			{
+				return 0;
+			}
 		}
 	}
 	return 1;

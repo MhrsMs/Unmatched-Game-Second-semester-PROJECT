@@ -222,7 +222,7 @@ void Action::movement(PlayerInformation& players, Hero* hero, int moveMax, int m
 				else
 				{
 					players.mapmanager.move(d[a - 1], hero);
-					view.print_map(players.mapmanager.text_inside_cells());
+					view.print_map(players.mapmanager.text_inside_cells(), players.mapmanager.get_foggy_cells());
 				}
 				movementnum++;
 				position = d[a - 1];

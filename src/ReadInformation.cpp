@@ -42,10 +42,34 @@ vector <string> ReadInformation::read_data_card(int a)
 		bool start = false;
 		while (getline(file, line))
 		{
-
+			if (line.rfind("26", 0) == 0)
+			{
+				break;
+			}
 			if (!start)
 			{
 				if (line.rfind("13", 0) == 0)
+				{
+					start = true;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			s.emplace_back(line);
+		}
+
+	}
+	if (a == 3)
+	{
+		bool start = false;
+		while (getline(file, line))
+		{
+
+			if (!start)
+			{
+				if (line.rfind("26", 0) == 0)
 				{
 					start = true;
 				}

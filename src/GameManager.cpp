@@ -38,7 +38,7 @@ int GameManager::do_at_end()
 
 void GameManager::dracula_ability()
 {
-	view.print_map(players.mapmanager.text_inside_cells());
+	view.print_map(players.mapmanager.text_inside_cells(), players.mapmanager.get_foggy_cells());
 	bool b = view.print_ability(1);
 	if (b)
 	{
@@ -64,68 +64,106 @@ void GameManager::initial_position()
 {
 	players.mapmanager.move(22, players.player1.playerHero->heros[0].get());
 	players.mapmanager.move(9, players.player2.playerHero->heros[0].get());
-	view.print_map(players.mapmanager.text_inside_cells());
-
+	vector <int> fog = { 0,0,0 };
+	view.print_map(players.mapmanager.text_inside_cells(), fog);
 	vector <int> p1;
 	vector <int> p2;
-	for (auto& x : players.player1.playerHero->heros)
+	if (players.player1.playerHero->heros[0]->get_name() == "INVISIBLE_MAN")
 	{
-		if (x->get_position() == 0)
+		for (int i = 1; i < 4; i++)
 		{
 			while (1)
 			{
-				if (x->get_name() == "SISTER")
+				int p = view.print_initial_position("Fog " + to_string(i));
+				if (players.mapmanager.is_same_zone(22, p) && !players.mapmanager.is_foggy(p))
 				{
-					int p = view.print_initial_position(x->get_name() + " " + x->get_short_name());
-					if (players.mapmanager.is_same_zone(22, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
-					{
-						players.mapmanager.move(p, x.get());
-						break;
-					}
+					players.mapmanager.set_foggy(p);
+					break;
 				}
-				else
+			}
+		}
+
+	}
+	else
+	{
+		for (auto& x : players.player1.playerHero->heros)
+		{
+			if (x->get_position() == 0)
+			{
+				while (1)
 				{
-					int p = view.print_initial_position(x->get_name());
-					if (players.mapmanager.is_same_zone(22, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
+					if (x->get_name() == "SISTER")
 					{
-						players.mapmanager.move(p, x.get());
-						break;
+						int p = view.print_initial_position(x->get_name() + " " + x->get_short_name());
+						if (players.mapmanager.is_same_zone(22, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
+						{
+							players.mapmanager.move(p, x.get());
+							break;
+						}
 					}
+					else
+					{
+						int p = view.print_initial_position(x->get_name());
+						if (players.mapmanager.is_same_zone(22, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
+						{
+							players.mapmanager.move(p, x.get());
+							break;
+						}
+					}
+
 				}
 
 			}
-
 		}
 	}
-	for (auto& x : players.player2.playerHero->heros)
+	if (players.player2.playerHero->heros[0]->get_name() == "INVISIBLE_MAN")
 	{
-		if (x->get_position() == 0)
+		for (int i = 1; i < 4; i++)
 		{
 			while (1)
 			{
-				if (x->get_name() == "SISTER")
+				int p = view.print_initial_position("Fog " + to_string(i));
+				if (players.mapmanager.is_same_zone(9, p) && !players.mapmanager.is_foggy(p))
 				{
-					int p = view.print_initial_position(x->get_name() + " " + x->get_short_name());
-					if (players.mapmanager.is_same_zone(9, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
-					{
-						players.mapmanager.move(p, x.get());
-						break;
-					}
+					players.mapmanager.set_foggy(p);
+					break;
 				}
-				else
+			}
+		}
+	}
+	else
+	{
+		for (auto& x : players.player2.playerHero->heros)
+		{
+			if (x->get_position() == 0)
+			{
+				while (1)
 				{
-					int p = view.print_initial_position(x->get_name());
-					if (players.mapmanager.is_same_zone(9, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
+					if (x->get_name() == "SISTER")
 					{
-						players.mapmanager.move(p, x.get());
-						break;
+						int p = view.print_initial_position(x->get_name() + " " + x->get_short_name());
+						if (players.mapmanager.is_same_zone(9, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
+						{
+							players.mapmanager.move(p, x.get());
+							break;
+						}
 					}
+					else
+					{
+						int p = view.print_initial_position(x->get_name());
+						if (players.mapmanager.is_same_zone(9, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
+						{
+							players.mapmanager.move(p, x.get());
+							break;
+						}
+					}
+
 				}
 
 			}
-
 		}
 	}
+
 
 }
 
@@ -184,7 +222,8 @@ ShowActionMenu GameManager::complet_action_menu()
 	}
 
 	show.name = players.player1.name;
-	show.text = players.mapmanager.text_inside_cells();;
+	show.text = players.mapmanager.text_inside_cells();
+	show.fog = players.mapmanager.get_foggy_cells();
 	return show;
 }
 
@@ -203,12 +242,26 @@ void GameManager::run()
 				if (name[2] == "1")
 				{
 					players.player1.playerHero = &draculadata;
-					players.player2.playerHero = &holmesdata;
 				}
-				else
+				else if (name[2] == "2")
 				{
 					players.player1.playerHero = &holmesdata;
+				}
+				else if (name[2] == "3")
+				{
+					players.player1.playerHero = &invisiblemandata;
+				}
+				if (name[3] == "1")
+				{
 					players.player2.playerHero = &draculadata;
+				}
+				else if (name[3] == "2")
+				{
+					players.player2.playerHero = &holmesdata;
+				}
+				else if (name[3] == "3")
+				{
+					players.player2.playerHero = &invisiblemandata;
 				}
 				initial_position();
 				while (1)

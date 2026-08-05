@@ -16,6 +16,7 @@ private:
 	PlayerInformation players;
 	PlayerInformation::HolmesData holmesdata;
 	PlayerInformation::DraculaData draculadata;
+	PlayerInformation::InvisibleManData invisiblemandata;
 
 public:
 	GameManager() = default;
