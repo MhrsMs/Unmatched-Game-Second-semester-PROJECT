@@ -20,6 +20,8 @@ void Effect::apply_effect(int id, Data& data, Complet_Needs complet_needs)
 	case 20:effect9(data, complet_needs); break;
 	case 21:effect10(data, complet_needs); break;
 	case 22:effect8(data, complet_needs); break;
+	case 30:effect14(data, complet_needs); break;
+	case 34:effect15(data, complet_needs); break;
 	default: break;
 	}
 }
@@ -234,6 +236,48 @@ void Effect::effect13(Data& data, Complet_Needs& complet_needs)
 	{
 		data.targetcard->change_attackOrDefense(-data.targetcard->get_attackOrDefense());
 		data.targetcard->change_attackOrDefense(data.targetcard->get_boost());
+	}
+
+}
+
+void Effect::effect14(Data& data, Complet_Needs& complet_needs)
+{
+	//zohor az del meh
+	if (complet_needs.is_foggy)
+	{
+		data.thiscard->change_attackOrDefense(5);
+	}
+}
+
+void Effect::effect15(Data& data, Complet_Needs& complet_needs)
+{
+	//hokomat vahshat
+	if (data.mapManager.is_foggy(data.team[0]->get_position()))
+	{
+		for (auto& x : data.team)
+		{
+			x->decrease_HP(2);
+		}
+	}
+}
+
+void Effect::effect16(Data& data, Complet_Needs& complet_needs)
+{
+	//aram qadam bardar
+	for (auto& x : data.target)
+	{
+		if (data.mapManager.is_adjacent(data.team[0]->get_position(), x->get_position()))
+		{
+			if (data.mapManager.is_foggy(data.team[0]->get_position()))
+			{
+				x->decrease_HP(3);
+			}
+			else
+			{
+				x->decrease_HP(1);
+			}
+			break;
+		}
 	}
 
 }

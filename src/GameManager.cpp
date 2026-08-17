@@ -6,7 +6,7 @@ void GameManager::do_at_fisrt()
 	players.player2.action = 2;
 	while (players.player2.playerHero->cards.hand.size() > 7)
 	{
-		int a = view.get_card(1,players.player2.playerHero->cards.hand.size());
+		int a = view.get_card(1, players.player2.playerHero->cards.hand.size());
 		players.player2.playerHero->cards.hand_to_null_card(players.player2.playerHero->cards.hand[a - 1].get_id());
 	}
 }
@@ -38,7 +38,7 @@ int GameManager::do_at_end()
 
 void GameManager::dracula_ability()
 {
-	
+
 	int b = view.ability();
 	if (b)
 	{
@@ -50,8 +50,8 @@ void GameManager::dracula_ability()
 			{
 				hero1.emplace_back(x.get());
 			}
-			
-			int z = view.get_hero(4,players.hero_to_photo(hero));
+
+			int z = view.get_hero(4, players.hero_to_photo(hero));
 			players.player1.playerHero->heros[0]->ability(*hero[z], hero1, players.player1.playerHero->cards);
 		}
 		else
@@ -71,7 +71,7 @@ void GameManager::initial_position()
 	vector <ActionMenu::cell> same_zone2;
 	for (int i = 1; i < 33; i++)
 	{
-		if (players.mapmanager.is_same_zone(22, i) && i!=22)
+		if (players.mapmanager.is_same_zone(22, i) && i != 22)
 		{
 			ActionMenu::cell c;
 			c.num = i;
@@ -91,18 +91,23 @@ void GameManager::initial_position()
 	int n = 4;
 	if (players.player1.playerHero->heros[0]->get_name() == "INVISIBLE_MAN")
 	{
-
+		ActionMenu::cell c;
+		c.num = 22;
+		c.x = players.mapmanager.get_cell(c.num)->get_x();
+		c.y = players.mapmanager.get_cell(c.num)->get_y();
+		same_zone1.emplace_back(c);
+		ac.update_loc(players);
 		for (int i = 1; i < n; i++)
 		{
 			int f = view.movement1(5, same_zone1, "", 0);
 			if (f > 0)
 			{
 				players.mapmanager.set_foggy(same_zone1[f].num);
-				same_zone1.erase(same_zone1.begin()+ f);
+				same_zone1.erase(same_zone1.begin() + f);
 			}
 			else
 			{
-				n++;
+				++n;
 			}
 			ac.update_loc(players);
 		}
@@ -122,7 +127,7 @@ void GameManager::initial_position()
 						same_zone1.erase(same_zone1.begin() + f);
 						break;
 					}
-					
+
 				}
 			}
 			ac.update_loc(players);
@@ -130,7 +135,12 @@ void GameManager::initial_position()
 	}
 	if (players.player2.playerHero->heros[0]->get_name() == "INVISIBLE_MAN")
 	{
-
+		ActionMenu::cell c;
+		c.num = 9;
+		c.x = players.mapmanager.get_cell(c.num)->get_x();
+		c.y = players.mapmanager.get_cell(c.num)->get_y();
+		same_zone2.emplace_back(c);
+		ac.update_loc(players);
 		for (int i = 1; i < n; i++)
 		{
 			int f = view.movement1(5, same_zone2, "", 0);
@@ -141,7 +151,7 @@ void GameManager::initial_position()
 			}
 			else
 			{
-				n++;
+				++n;
 			}
 			ac.update_loc(players);
 		}
@@ -161,7 +171,7 @@ void GameManager::initial_position()
 						same_zone2.erase(same_zone2.begin() + f);
 						break;
 					}
-					
+
 				}
 			}
 			ac.update_loc(players);
@@ -195,7 +205,7 @@ void GameManager::initial_position()
 			}
 			ac.update_loc(players);
 		}
-		
+
 	}
 	else
 	{
@@ -255,7 +265,7 @@ void GameManager::initial_position()
 			ac.update_loc(players);
 		}
 	}
-	
+
 
 }
 */
@@ -267,7 +277,7 @@ void GameManager::complet_action_menu()
 	int attack = action1.can_attack(players);
 	if (attack == 0)
 	{
-		
+
 		view.action_menu.action.canAttack = false;
 		view.action_menu.action.AttackReason = "ATTACK UNAVAILAVLE-No active cards available for attack";
 	}
@@ -315,7 +325,7 @@ void GameManager::run()
 					players.player2.which = 2;
 					legend = view.run_legend(1);
 				}
-				else if(age[0] == age[1])
+				else if (age[0] == age[1])
 				{
 					Effect e;
 					int random = e.rm(1, 2);
@@ -342,14 +352,14 @@ void GameManager::run()
 				vector <string> photo2;
 				if (legend[0] == 1)
 				{
-					
+
 					players.player1.playerHero = &draculadata;
-					
+
 				}
 				else if (legend[0] == 2)
 				{
 					players.player1.playerHero = &holmesdata;
-					
+
 				}
 				else if (legend[0] == 3)
 				{
@@ -358,12 +368,12 @@ void GameManager::run()
 				if (legend[1] == 1)
 				{
 					players.player2.playerHero = &draculadata;
-					
+
 				}
 				else if (legend[1] == 2)
 				{
 					players.player2.playerHero = &holmesdata;
-					
+
 				}
 				else if (legend[1] == 3)
 				{
@@ -391,14 +401,6 @@ void GameManager::run()
 						photo1.emplace_back(x->get_photo());
 					}
 				}
-				for (int i = 1; i < 33; i++)
-				{
-					ActionMenu::cell cell;
-					cell.num = i;
-					cell.x = players.mapmanager.get_cell(cell.num)->get_x();
-					cell.y = players.mapmanager.get_cell(cell.num)->get_y();
-					view.mapFull.emplace_back(cell);
-				}
 				view.action_menu.player1 = photo1;
 				view.action_menu.player2 = photo2;
 				view.action_menu.load_run();
@@ -410,7 +412,7 @@ void GameManager::run()
 				{
 					try
 					{
-						
+
 						view.turn = players.player1.which;
 						bool exit = false;
 						do_at_fisrt();
@@ -418,6 +420,14 @@ void GameManager::run()
 						if (players.player1.playerHero->heros[0]->get_name() == "DRACULA")
 						{
 							dracula_ability();
+						}
+						players.player1.isFoggyFirst = players.mapmanager.is_foggy(players.player1.playerHero->heros[0]->get_position());
+						if (players.player1.vanish)
+						{
+							vector <ActionMenu::cell> allCells = players.mapmanager.all_cells();
+							int chosenCell = view.movement1(6, allCells, "", 0);
+							players.mapmanager.move(chosenCell, players.player1.playerHero->heros[0].get());
+							players.player1.vanish = 0;
 						}
 						for (int i = 0; i < players.player1.action; i++)
 						{
@@ -445,14 +455,14 @@ void GameManager::run()
 							{
 							case 3:
 							{
-								Maneuver maneuver(view); 
-								maneuver.do_maneuver(players); 
+								Maneuver maneuver(view);
+								maneuver.do_maneuver(players);
 								break;
 							}
 							case 4:
 							{
 								Scheme scheme(view);
-								scheme.do_scheme(players); 
+								scheme.do_scheme(players);
 								break;
 							}
 
@@ -481,18 +491,18 @@ void GameManager::run()
 					}
 					catch (exception& e)
 					{
-						view.text(0,e.what());
+						view.text(0, e.what());
 					}
 				}
 			}
 			catch (exception& e)
 			{
-				view.text(0,e.what());
+				view.text(0, e.what());
 			}
 		}
 		else if (mainMenu == 2)
 		{
-			
+
 		}
 		else if (mainMenu == 3)
 		{

@@ -7,7 +7,7 @@ class InputMenu
 {
 public:
 	void load_movement();
-	void draw_movement(int a,std::vector <ActionMenu::cell> &map, std::string name, int move = 0);
+	void draw_movement(int a, std::vector <ActionMenu::cell>& map, std::string name, int move = 0);
 	void unload_movement();
 	int check_movement(std::vector <ActionMenu::cell>& map);
 	void load_maneuver();
@@ -15,14 +15,14 @@ public:
 	void draw_maneuver();
 	int check_maneuver();
 	void load_card();
-	void draw_card(Texture2D &card);
+	void draw_card(Texture2D& card);
 	void unload_card();
 	std::vector<Texture2D> load_hero(const std::vector<std::string>& hero);
 	void unload_hero(std::vector <Texture2D>& hero);
-	void draw_hero(int a,std::vector <Texture2D> &hero);
+	void draw_hero(int a, std::vector <Texture2D>& hero);
 	int check_hero(int hero);
 	int check_cards(int a, int cards);
-	void draw_hand(std::vector <Texture2D> &cards);
+	void draw_hand(std::vector <Texture2D>& cards);
 	void load_combat();
 	void unload_combat();
 	void draw_combat(int damage, int a);
@@ -33,8 +33,9 @@ public:
 	void draw_text(std::string text);
 	void draw_none();
 	std::vector<Texture2D> load_hand(const std::vector<std::string>& hand);
-	void unload_hand(std::vector<Texture2D> &hand);
-	
+	void unload_hand(std::vector<Texture2D>& hand);
+	void draw_fog(std::vector <int> cells);
+	int check_fog();
 private:
 	Texture2D cell;
 	Texture2D button;
@@ -43,3 +44,4 @@ private:
 	Texture2D defense;
 	Font font = LoadFont("../Assets/font.ttf");
 };
+

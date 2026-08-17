@@ -9,7 +9,7 @@ Graphics::Graphics()
 action_menu.load_run();
 action_menu.load_map(map);
 action_menu.load_cards();
-while (!WindowShouldClose)
+while (!WindowShouldClose())
 {
     BeginDrawing();
     action_menu.draw_run(turn);
@@ -20,18 +20,21 @@ while (!WindowShouldClose)
         break;
 }
 action_menu.unload_run();
-action_menu.unload_map(map); 
+action_menu.unload_map(map);
 action_menu.unload_cards();
 */
 /*
 action_menu.load_run();
     action_menu.load_map(map);
     action_menu.load_cards();
-   
+
     int result = -1;
-    while (!WindowShouldClose)
+    while (!WindowShouldClose())
     {
-        result = ;
+        if(is_new_click())
+        {
+            result = ;
+        }
         if (result != -1)
         {
             break;
@@ -40,27 +43,27 @@ action_menu.load_run();
         action_menu.draw_run(turn);
         action_menu.draw_map(map);
         action_menu.draw_cards();
-        
+
         EndDrawing();
     }
-    
+
     action_menu.unload_run();
     action_menu.unload_map(map);
     action_menu.unload_cards();
     return result;
 */
-int Graphics::get_card(int a,int cards)
+int Graphics::get_card(int a, int cards)
 {
-    
+
     action_menu.load_run();
     action_menu.load_map(map);
     action_menu.load_cards();
     input.load_card();
-    if (a == 3 || a ==5)
+    if (a == 3 || a == 5)
     {
         input.load_YN();
     }
-    int result =  -1;
+    int result = -1;
     string text;
     switch (a)
     {
@@ -81,7 +84,7 @@ int Graphics::get_card(int a,int cards)
     }
     case 4:
     {
-        text = "Which card do you want to\n move to the top of your hand";
+        text = "Which card do you want to\n move to the top of your deck";
         break;
     }
     case 5:
@@ -89,7 +92,7 @@ int Graphics::get_card(int a,int cards)
         text = "which card do you want to play?";
         break;
     }
-    default :
+    default:
     {
         text = " ";
         break;
@@ -97,7 +100,7 @@ int Graphics::get_card(int a,int cards)
     }
     while (!WindowShouldClose())
     {
-        if(is_new_click())
+        if (is_new_click())
         {
             result = input.check_cards(1, cards);
         }
@@ -106,7 +109,7 @@ int Graphics::get_card(int a,int cards)
         action_menu.draw_map(map);
         action_menu.draw_cards();
         input.draw_text(text);
-        if (a == 3 || a==5)
+        if (a == 3 || a == 5)
         {
             input.draw_none();
         }
@@ -121,7 +124,7 @@ int Graphics::get_card(int a,int cards)
     action_menu.unload_map(map);
     action_menu.unload_cards();
     input.unload_card();
-    if (a == 3 || a==5)
+    if (a == 3 || a == 5)
     {
         input.unload_YN();
     }
@@ -134,7 +137,7 @@ void Graphics::end_game(int a)
     action_menu.load_map(map);
     while (!WindowShouldClose())
     {
-        
+
         BeginDrawing();
         action_menu.draw_run(turn);
         action_menu.draw_map(map);
@@ -142,7 +145,7 @@ void Graphics::end_game(int a)
         EndDrawing();
         WaitTime(5);
         break;
-        
+
     }
     action_menu.unload_run();
     action_menu.unload_map(map);
@@ -179,40 +182,6 @@ int Graphics::movement1(int a, std::vector<ActionMenu::cell>& current_cell, std:
     action_menu.unload_map(map);
     action_menu.unload_cards();
     input.unload_card();
-    return result;
-}
-
-int Graphics::movement2(int a, std::string name, int move)
-{
-    action_menu.load_run();
-    action_menu.load_map(map);
-    action_menu.load_cards();
-    input.load_card();
-    input.load_movement();
-    int result = -1;
-    while (!WindowShouldClose())
-    {
-        if (is_new_click())
-        {
-            result = input.check_movement(mapFull);
-        }
-        if (result != -1)
-        {
-            break;
-        }
-        BeginDrawing();
-        action_menu.draw_run(turn);
-        action_menu.draw_map(map);
-        action_menu.draw_cards();
-        input.draw_movement(a,mapFull, name, move);
-        is_in_action();
-        EndDrawing();
-    }
-    input.unload_movement();
-    input.unload_card();
-    action_menu.unload_run();
-    action_menu.unload_map(map);
-    action_menu.unload_cards();
     return result;
 }
 
@@ -378,7 +347,7 @@ int Graphics::get_number()
     return result;
 }
 
-int Graphics::get_hero(int a,const std::vector<std::string>& heros)
+int Graphics::get_hero(int a, const std::vector<std::string>& heros)
 {
     action_menu.load_run();
     action_menu.load_map(map);
@@ -400,7 +369,7 @@ int Graphics::get_hero(int a,const std::vector<std::string>& heros)
         action_menu.draw_run(turn);
         action_menu.draw_map(map);
         action_menu.draw_cards();
-        input.draw_hero(a,t);
+        input.draw_hero(a, t);
         is_in_action();
         EndDrawing();
     }
@@ -412,7 +381,7 @@ int Graphics::get_hero(int a,const std::vector<std::string>& heros)
     return result;
 }
 
-void Graphics::combat(int a,int damage)
+void Graphics::combat(int a, int damage)
 {
     action_menu.load_run();
     action_menu.load_map(map);
@@ -425,7 +394,7 @@ void Graphics::combat(int a,int damage)
         action_menu.draw_run(turn);
         action_menu.draw_map(map);
         action_menu.draw_cards();
-        input.draw_combat(damage,a);
+        input.draw_combat(damage, a);
         is_in_action();
         EndDrawing();
         WaitTime(5);
@@ -659,6 +628,70 @@ bool Graphics::is_new_click()
     return 0;
 }
 
+int Graphics::yes_or_no(int a)
+{
+    action_menu.load_run();
+    action_menu.load_map(map);
+    action_menu.load_cards();
+    input.load_YN();
+    input.load_card();
+    int result = -1;
+    while (!WindowShouldClose())
+    {
+        if (is_new_click())
+        {
+            result = input.check_YN(1);
+        }
+        if (result != -1)
+        {
+            break;
+        }
+        BeginDrawing();
+        action_menu.draw_run(turn);
+        action_menu.draw_map(map);
+        action_menu.draw_cards();
+        input.draw_YN(a);
+        is_in_action();
+        EndDrawing();
+    }
+    input.unload_YN();
+    action_menu.unload_run();
+    action_menu.unload_map(map);
+    action_menu.unload_cards();
+    return result;
+}
+
+int Graphics::get_foggy_cell(std::vector<int> cells)
+{
+    action_menu.load_run();
+    action_menu.load_map(map);
+    action_menu.load_cards();
+    int result = -1;
+    while (!WindowShouldClose())
+    {
+        if (is_new_click())
+        {
+            result = input.check_fog();
+        }
+        if (result != -1)
+        {
+            break;
+        }
+        BeginDrawing();
+        action_menu.draw_run(turn);
+        action_menu.draw_map(map);
+        action_menu.draw_cards();
+        input.draw_fog(cells);
+        is_in_action();
+        EndDrawing();
+    }
+    input.unload_card();
+    action_menu.unload_run();
+    action_menu.unload_map(map);
+    action_menu.unload_cards();
+    return result;
+
+}
 
 
 void Graphics::is_in_action()
@@ -668,3 +701,4 @@ void Graphics::is_in_action()
         input.draw_card(action_menu.action.thiscard);
     }
 }
+

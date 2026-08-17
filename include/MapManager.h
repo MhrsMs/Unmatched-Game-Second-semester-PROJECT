@@ -3,7 +3,7 @@
 #include "Cell.h"
 #include "Hero.h"
 #include "ReadInformation.h"
-
+#include "ActionMenu.h"
 class MapManager
 {
 private:
@@ -22,6 +22,8 @@ public:
     void set_foggy(int chosen_cell, int current_cell = 0);
     std::vector<int> get_foggy_cells() const;
     std::vector<int> all_adjacent_cells(int position) const;
+    std::vector<ActionMenu::cell> all_cells() const;
+    std::vector<ActionMenu::cell> all_cells_fog() const;
 };
 
 #endif

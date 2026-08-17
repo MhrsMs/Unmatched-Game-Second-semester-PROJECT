@@ -17,7 +17,8 @@ private:
 	PlayerInformation::HolmesData holmesdata;
 	PlayerInformation::DraculaData draculadata;
 	PlayerInformation::InvisibleManData invisiblemandata;
-	
+
+
 public:
 	GameManager() = default;
 	void run();
@@ -26,5 +27,6 @@ public:
 	void dracula_ability();
 	void initial_position();
 	void complet_action_menu();
+
 };
 

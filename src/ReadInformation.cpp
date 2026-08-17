@@ -145,7 +145,7 @@ vector<Cell> ReadInformation::get_cell()
 	vector<Cell> main;
 	vector <string> l = {};
 	vector <int> k = {};
-	Cell b(0, l, k, 0,0,0);
+	Cell b(0, l, k, 0, 0, 0);
 	main.push_back(b);
 	for (auto x : s)
 	{
@@ -169,7 +169,7 @@ vector<Cell> ReadInformation::get_cell()
 		adjacent_cell.emplace_back(a6);
 		zone.erase(remove(zone.begin(), zone.end(), "##"), zone.end());
 		adjacent_cell.erase(remove(adjacent_cell.begin(), adjacent_cell.end(), 0), adjacent_cell.end());
-		Cell c(number_of_cell, zone, adjacent_cell, passage,x0,y0);
+		Cell c(number_of_cell, zone, adjacent_cell, passage, x0, y0);
 		main.emplace_back(c);
 	}
 	return main;

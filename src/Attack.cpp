@@ -12,7 +12,7 @@ void Attack::do_attack(PlayerInformation& players)
 	vector <string> photoCard1;
 	while (1)
 	{
-		attacker = view.get_hero(1,players.hero_to_photo(hero1));
+		attacker = view.get_hero(1, players.hero_to_photo(hero1));
 		for (auto& x : players.player2.playerHero->heros)
 		{
 			if (x->is_alive())
@@ -51,7 +51,7 @@ void Attack::do_attack(PlayerInformation& players)
 			}
 		}
 	}
-	int defender = view.get_hero(2,players.hero_to_photo(hero2));
+	int defender = view.get_hero(2, players.hero_to_photo(hero2));
 	int ca1 = view.get_card_action(players.card_to_photo(Card1));
 	view.action_menu.action.thiscard = LoadTexture(Card1[ca1].get_cardPhoto().c_str());
 	view.action_menu.action.is_thiscard = 1;
@@ -118,6 +118,7 @@ void Attack::do_attack(PlayerInformation& players)
 		if (card2[ca2].get_effectTime() == 1 && !farib1)
 		{
 			effect.apply_effect(card2[ca2].get_id(), data2, complet2);
+
 		}
 	}
 
@@ -136,13 +137,26 @@ void Attack::do_attack(PlayerInformation& players)
 	if (Card1[ca1].get_effectTime() == 2 && !farib2)
 	{
 		effect.apply_effect(Card1[ca1].get_id(), data1, complet1);
+		if (Card1[ca1].get_id() == 31)
+		{
+			card2[ca2].change_attackOrDefense(0);
+		}
 	}
 	int defensenumber = 0;
 	if (df)
 	{
+		if (card2[ca2].get_id() == 31)
+		{
+			Card1[ca1].change_attackOrDefense(0);
+		}
 		defensenumber = card2[ca2].get_attackOrDefense();
+		if (players.mapmanager.is_foggy(players.player2.playerHero->heros[0]->get_position()))
+		{
+			++defensenumber;
+		}
 	}
 	update_loc(players);
+
 	if (Card1[ca1].get_attackOrDefense() > defensenumber)
 	{
 		int damage = Card1[ca1].get_attackOrDefense() - defensenumber;
@@ -172,7 +186,7 @@ void Attack::do_attack(PlayerInformation& players)
 						second.emplace_back(c);
 					}
 				}
-				int k = view.movement1(4, second,"",0);
+				int k = view.movement1(4, second, "", 0);
 				players.mapmanager.move(second[k].num, players.player1.playerHero->heros[0].get());
 			}
 		}
@@ -190,7 +204,7 @@ void Attack::do_attack(PlayerInformation& players)
 			complet2.heroWin = 1;
 		}
 
-		view.combat(2,0);
+		view.combat(2, 0);
 	}
 	if (df)
 	{
@@ -205,7 +219,125 @@ void Attack::do_attack(PlayerInformation& players)
 					movement(players, hero2[defender], 3, 3);
 				}
 			}
+			if (card2[ca2].get_id() == 26)
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					if (players.player2.playerHero->cards.can_deck_to_hand(1))
+					{
+						players.player2.playerHero->cards.deck_to_hand(1);
+					}
+					else
+					{
+						players.player2.playerHero->heros[0]->decrease_HP(2);
+					}
+					update_loc(players);
+				}
+				for (int i = 0; i < 2; i++)
+				{
+					int choice = view.get_card(4, players.player2.playerHero->cards.hand.size());
+					Card c = players.player2.playerHero->cards.hand[choice];
+					players.player2.playerHero->cards.hand.erase(players.player2.playerHero->cards.hand.begin() + choice);
+					players.player2.playerHero->cards.deck.emplace_back(c);
+					update_loc(players);
+				}
+			}
+			if (card2[ca2].get_id() == 27)
+			{
+				int yn = view.yes_or_no(2);
+				if (yn == 1)
+				{
+					view.show_hand(players.card_to_photo(players.player1.playerHero->cards.hand));
+					int choiceCard = view.get_card_target(players.card_to_photo(players.player1.playerHero->cards.hand));
+					players.player1.playerHero->cards.hand_to_null_card(choiceCard);
+				}
+				else
+				{
+					vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+					int chosenCell1 = view.get_foggy_cell(foggyCells);
+					vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells_fog();
+					int chosenCell2 = view.movement1(5, current_cells, "", 0);
+					players.mapmanager.set_foggy(current_cells[chosenCell2].num, foggyCells[chosenCell1]);
+				}
+			}
+			if (card2[ca2].get_id() == 28)
+			{
+				if (players.player2.playerHero->cards.can_deck_to_hand(1))
+				{
+					players.player2.playerHero->cards.deck_to_hand(1);
+				}
+				else
+				{
+					players.player2.playerHero->heros[0]->decrease_HP(2);
+				}
+				vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+				update_loc(players);
+				int chosenCell1 = view.get_foggy_cell(foggyCells);
+				movement_fog(players, foggyCells[chosenCell1], 2);
+
+				int chosenCell2;
+				while (1)
+				{
+					update_loc(players);
+					chosenCell2 = view.get_foggy_cell(foggyCells);
+					if (chosenCell1 != chosenCell2)
+					{
+						break;
+					}
+				}
+				movement_fog(players, foggyCells[chosenCell2], 2);
+			}
+			if (card2[ca2].get_id() == 29)
+			{
+				if (players.mapmanager.is_foggy(players.player2.playerHero->heros[0]->get_position()))
+				{
+					for (auto& x : players.player1.playerHero->heros)
+					{
+						if (players.mapmanager.is_foggy(x->get_position()))
+						{
+							x->decrease_HP(1);
+						}
+						update_loc(players);
+					}
+				}
+			}
+			if (card2[ca2].get_id() == 32)
+			{
+				movement(players, players.player1.playerHero->heros[0].get(), 1, 1);
+				vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+				update_loc(players);
+				int chosenCell = view.get_foggy_cell(foggyCells);
+				movement_fog(players, foggyCells[chosenCell], 3);
+			}
+			if (card2[ca2].get_id() == 33)
+			{
+				if (players.player2.playerHero->cards.can_deck_to_hand(1))
+				{
+					players.player2.playerHero->cards.deck_to_hand(1);
+				}
+				else
+				{
+					players.player2.playerHero->heros[0]->decrease_HP(2);
+				}
+				update_loc(players);
+				int yn = view.yes_or_no(3);
+				if (yn == 1)
+				{
+					vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+					update_loc(players);
+					int chosenCell = view.get_foggy_cell(foggyCells);
+					players.mapmanager.move(foggyCells[chosenCell], players.player2.playerHero->heros[0].get());
+				}
+				else
+				{
+					vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+					update_loc(players);
+					int chosenCell = view.get_foggy_cell(foggyCells);
+					movement_fog(players, foggyCells[chosenCell], 3);
+				}
+			}
 		}
+
 	}
 	if (Card1[ca1].get_effectTime() == 3 && !farib2)
 	{
@@ -217,6 +349,85 @@ void Attack::do_attack(PlayerInformation& players)
 				view.text(3);
 				movement(players, hero1[attacker], 3, 3);
 			}
+		}
+		if (Card1[ca1].get_id() == 27)
+		{
+			int yn = view.yes_or_no(2);
+			if (yn == 1)
+			{
+				view.show_hand(players.card_to_photo(players.player2.playerHero->cards.hand));
+				int choiceCard = view.get_card_target(players.card_to_photo(players.player2.playerHero->cards.hand));
+				players.player2.playerHero->cards.hand_to_null_card(choiceCard);
+			}
+			else
+			{
+				vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+				int chosenCell1 = view.get_foggy_cell(foggyCells);
+				vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells_fog();
+				int chosenCell2 = view.movement1(5, current_cells, "", 0);
+				players.mapmanager.set_foggy(current_cells[chosenCell2].num, foggyCells[chosenCell1]);
+			}
+		}
+		if (Card1[ca1].get_id() == 28)
+		{
+			if (players.player1.playerHero->cards.can_deck_to_hand(1))
+			{
+				players.player1.playerHero->cards.deck_to_hand(1);
+			}
+			else
+			{
+				players.player1.playerHero->heros[0]->decrease_HP(2);
+			}
+			vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+			update_loc(players);
+			int chosenCell1 = view.get_foggy_cell(foggyCells);
+			movement_fog(players, foggyCells[chosenCell1], 2);
+
+			int chosenCell2;
+			while (1)
+			{
+				update_loc(players);
+				chosenCell2 = view.get_foggy_cell(foggyCells);
+				if (chosenCell1 != chosenCell2)
+				{
+					break;
+				}
+			}
+			movement_fog(players, foggyCells[chosenCell2], 2);
+		}
+		if (Card1[ca1].get_id() == 29)
+		{
+			if (players.mapmanager.is_foggy(players.player1.playerHero->heros[0]->get_position()))
+			{
+				for (auto& x : players.player2.playerHero->heros)
+				{
+					if (players.mapmanager.is_foggy(x->get_position()))
+					{
+						x->decrease_HP(1);
+					}
+					update_loc(players);
+				}
+			}
+		}
+		if (Card1[ca1].get_id() == 36)
+		{
+			vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+			update_loc(players);
+			int chosenCell1 = view.get_foggy_cell(foggyCells);
+			vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells_fog();
+			for (int i = 0; i < current_cells.size();)
+			{
+				if (players.mapmanager.get_cell(current_cells[i].num)->get_fog())
+				{
+					current_cells.erase(current_cells.begin() + i);
+				}
+				else
+				{
+					++i;
+				}
+			}
+			int chosenCell2 = view.movement1(5, current_cells, "", 0);
+			players.mapmanager.set_foggy(current_cells[chosenCell2].num, foggyCells[chosenCell1]);
 		}
 
 	}
@@ -288,4 +499,3 @@ int Attack::can_attack(PlayerInformation& players)
 	}
 	return 1;
 }
-

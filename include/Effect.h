@@ -22,6 +22,7 @@ struct Complet_Needs
 	bool heroWin = 0;
 	Hero* teamPerson = nullptr;
 	Hero* targetPerson = nullptr;
+	bool is_foggy = 0;
 };
 class Effect
 {
@@ -40,5 +41,8 @@ public:
 	void effect11(Data& data, Complet_Needs& complet_needs);
 	void effect12(Data& data, Complet_Needs& complet_needs);
 	void effect13(Data& data, Complet_Needs& complet_needs);
+	void effect14(Data& data, Complet_Needs& complet_needs);
+	void effect15(Data& data, Complet_Needs& complet_needs);
+	void effect16(Data& data, Complet_Needs& complet_needs);
 };
 

@@ -236,9 +236,47 @@ vector<int> MapManager::get_foggy_cells() const
         if (cell[i].get_fog())
             foggy_cells.push_back(i);
     }
+    if (foggy_cells.size() == 3)
+    {
+        cout << "aaaa" << endl;
+    }
     return foggy_cells;
 }
 vector<int> MapManager::all_adjacent_cells(int position) const
 {
     return cell[position].get_connections();
+}
+
+std::vector<ActionMenu::cell> MapManager::all_cells() const
+{
+    vector <ActionMenu::cell> allCells;
+    for (int i = 0; i < 33; i++)
+    {
+        if (cell[i].get_hero_inside() == nullptr)
+        {
+            ActionMenu::cell c;
+            c.num = i;
+            c.x = cell[i].get_x();
+            c.y = cell[i].get_y();
+            allCells.emplace_back(c);
+        }
+    }
+    return allCells;
+}
+
+std::vector<ActionMenu::cell> MapManager::all_cells_fog() const
+{
+    vector <ActionMenu::cell> allCells;
+    for (int i = 0; i < 33; i++)
+    {
+        if (!cell[i].get_fog())
+        {
+            ActionMenu::cell c;
+            c.num = i;
+            c.x = cell[i].get_x();
+            c.y = cell[i].get_y();
+            allCells.emplace_back(c);
+        }
+    }
+    return allCells;
 }

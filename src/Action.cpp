@@ -2,7 +2,7 @@
 Action::Action(Graphics& view) : view(view)
 {
 }
-Complet_Needs Action::take_needs(PlayerInformation &players, Card& card, Hero* heroTeam, Hero* heroTarget)
+Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* heroTeam, Hero* heroTarget)
 {
 	Complet_Needs complet_needs;
 	Needs needs = card.get_Needs();
@@ -29,7 +29,7 @@ Complet_Needs Action::take_needs(PlayerInformation &players, Card& card, Hero* h
 					thishero.emplace_back(x.get());
 				}
 			}
-			int z = view.get_hero(4,players.hero_to_photo(thishero));
+			int z = view.get_hero(4, players.hero_to_photo(thishero));
 			complet_needs.targetPerson = thishero[z];
 		}
 		else
@@ -44,7 +44,7 @@ Complet_Needs Action::take_needs(PlayerInformation &players, Card& card, Hero* h
 		if (card.get_id() == 1)
 		{
 			bool dead = false;
-			
+
 			for (auto& x : players.player1.playerHero->heros)
 			{
 				if (x->get_name() == "SISTER" && !x->is_alive())
@@ -53,7 +53,8 @@ Complet_Needs Action::take_needs(PlayerInformation &players, Card& card, Hero* h
 					int choice;
 					while (1)
 					{
-						choice = view.movement2(3,"",0);
+						vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells();
+						choice = view.movement1(3, current_cells, "", 0);
 						if (players.mapmanager.is_same_zone(players.player1.playerHero->heros[0]->get_position(), choice))
 						{
 							break;
@@ -71,7 +72,8 @@ Complet_Needs Action::take_needs(PlayerInformation &players, Card& card, Hero* h
 			int cell;
 			while (1)
 			{
-				cell = view.movement2(4, "", 0);
+				vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells();
+				cell = view.movement1(4, current_cells, "", 0);
 				if (!players.mapmanager.is_ally_inside(cell, players.player1.playerHero->heros[0].get()) && !players.mapmanager.is_enemy_inside(cell, players.player1.playerHero->heros[0].get()))
 				{
 					break;
@@ -99,7 +101,7 @@ Complet_Needs Action::take_needs(PlayerInformation &players, Card& card, Hero* h
 					second.emplace_back(i);
 				}
 			}
-			int m = view.movement1(7,second,"",0);
+			int m = view.movement1(7, second, "", 0);
 			complet_needs.location = second[m].num;
 		}
 	}
@@ -118,7 +120,7 @@ Complet_Needs Action::take_needs(PlayerInformation &players, Card& card, Hero* h
 			vector <int> c;
 			while (1)
 			{
-				s = view.get_card(1,players.player1.playerHero->cards.hand.size());
+				s = view.get_card(1, players.player1.playerHero->cards.hand.size());
 				if (s == -2)
 				{
 					break;
@@ -162,40 +164,20 @@ Complet_Needs Action::take_needs(PlayerInformation &players, Card& card, Hero* h
 			}
 			complet_needs.optionalCard = optionalcard;
 		}
-		if (card.get_id() == 26)
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				if (players.player1.playerHero->cards.can_deck_to_hand(1))
-				{
-					players.player1.playerHero->cards.deck_to_hand(1);
-				}
-				else
-				{
-					players.player1.playerHero->heros[0]->decrease_HP(2);
-				}
-			}
-			for (int i = 0; i < 2; i++)
-			{
-				int choice = view.get_card(4,players.player1.playerHero->cards.hand.size());
-				Card c = players.player1.playerHero->cards.hand[choice];
-				players.player1.playerHero->cards.hand.erase(players.player1.playerHero->cards.hand.begin() + choice);
-				players.player1.playerHero->cards.deck.emplace_back(c);
-			}
-		}
-		if (card.get_id() == 27)
-		{
 
-		}
+	}
+	if (card.get_id() == 30)
+	{
+		complet_needs.is_foggy = players.player1.isFoggyFirst;
 	}
 	return complet_needs;
 }
 
-void Action::movement(PlayerInformation &players, Hero* hero, int moveMax, int moveMin)
+void Action::movement(PlayerInformation& players, Hero* hero, int moveMax, int moveMin)
 {
 	if (hero == nullptr)
 	{
-		int b = view.get_hero(3,players.hero_to_photo(players.unique_to_hero(players.player1)));
+		int b = view.get_hero(3, players.hero_to_photo(players.unique_to_hero(players.player1)));
 		hero = players.player1.playerHero->heros[b].get();
 		moveMax += hero->get_move();
 	}
@@ -240,7 +222,7 @@ void Action::movement(PlayerInformation &players, Hero* hero, int moveMax, int m
 		}
 		else
 		{
-			int a = view.movement1(2,d,hero->get_name(),moveMax-movementnum);
+			int a = view.movement1(2, d, hero->get_name(), moveMax - movementnum);
 			if (a == -2)
 			{
 				if (movementnum < moveMin)
@@ -279,7 +261,7 @@ void Action::movement_fog(PlayerInformation& players, int cell, int movementnum)
 	vector <ActionMenu::cell> cell2;
 	if (movementnum - move < 2)
 	{
-		for (auto x : cell1)
+		for (auto& x : cell1)
 		{
 			if (!players.mapmanager.is_foggy(x))
 			{
@@ -293,7 +275,7 @@ void Action::movement_fog(PlayerInformation& players, int cell, int movementnum)
 	}
 	else
 	{
-		for (auto x : cell1)
+		for (auto& x : cell1)
 		{
 			ActionMenu::cell c;
 			c.num = x;
@@ -304,7 +286,8 @@ void Action::movement_fog(PlayerInformation& players, int cell, int movementnum)
 	}
 	while (move < movementnum)
 	{
-		int c = view.movement1(5,cell2,"",0);
+		update_loc(players);
+		int c = view.movement1(5, cell2, "", 0);
 		if (c == -2)
 		{
 			break;
@@ -318,8 +301,8 @@ void Action::movement_fog(PlayerInformation& players, int cell, int movementnum)
 			players.mapmanager.set_foggy(cell2[c].num, cell);
 			update_loc(players);
 		}
-		move++;
-		cell = c;
+		++move;
+		cell = cell2[c].num;
 	}
 	update_loc(players);
 }
@@ -344,7 +327,7 @@ void Action::update_loc(PlayerInformation& players)
 	for (auto& x : players.player2.playerHero->heros)
 	{
 		if (x->get_position() != 0)
-		{ 
+		{
 			ActionMenu::cell cell;
 			cell.num = x->get_position();
 			cell.heroPhoto = x->get_photo();
@@ -393,4 +376,5 @@ void Action::update_loc(PlayerInformation& players)
 		view.action_menu.action.cards.emplace_back(x.get_cardPhoto());
 	}
 }
+
 

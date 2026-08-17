@@ -13,7 +13,7 @@
 class PlayerInformation
 {
 public:
-	
+
 	struct PlayerData
 	{
 		vector <unique_ptr<Hero>> heros;
@@ -26,7 +26,8 @@ public:
 		int action;
 		int which;
 		PlayerData* playerHero = nullptr;
-
+		bool isFoggyFirst = 0;
+		bool vanish = 0;
 	};
 	struct HolmesData : public PlayerData
 	{
@@ -56,8 +57,8 @@ public:
 	Player player1;
 	Player player2;
 	MapManager mapmanager;
-	vector <string>hero_to_photo(const vector <Hero*> &hero);
+	vector <string>hero_to_photo(const vector <Hero*>& hero);
 	vector <string>card_to_photo(const vector <Card>& card);
-	vector <Hero*> unique_to_hero(Player &player);
+	vector <Hero*> unique_to_hero(Player& player);
 };
 

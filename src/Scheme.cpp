@@ -27,7 +27,7 @@ void Scheme::do_scheme(PlayerInformation& players)
 	{
 		secondCard = firstCard;
 	}
-	
+
 	int v = view.get_card_action(players.card_to_photo(secondCard));
 	view.action_menu.action.thiscard = LoadTexture(secondCard[v].get_cardPhoto().c_str());
 	view.action_menu.action.is_thiscard = 1;
@@ -43,9 +43,18 @@ void Scheme::do_scheme(PlayerInformation& players)
 	Data data{ players.unique_to_hero(players.player1),players.unique_to_hero(players.player2),players.player1.playerHero->cards,players.player2.playerHero->cards,players.mapmanager,*actor,&secondCard[v] };
 	Effect effect;
 	effect.apply_effect(secondCard[v].get_id(), data, complet);
-	if (secondCard[v].get_id() == 2)
+	if (secondCard[v].get_id() == 2 || secondCard[v].get_id() == 35)
 	{
 		players.player1.action++;
+		if (secondCard[v].get_id() == 35)
+		{
+			vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+			update_loc(players);
+			int chosenCell = view.get_foggy_cell(foggyCells);
+			vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells_fog();
+			int chosenCell2 = view.movement1(5, current_cells, "", 0);
+			players.mapmanager.set_foggy(current_cells[chosenCell2].num, foggyCells[chosenCell]);
+		}
 	}
 	if (secondCard[v].get_id() == 16)
 	{
@@ -67,6 +76,20 @@ void Scheme::do_scheme(PlayerInformation& players)
 			complet.targetPerson->decrease_HP(card1[c].get_boost());
 		}
 	}
+	if (secondCard[v].get_id() == 36)
+	{
+		vector <int> foggyCells = players.mapmanager.get_foggy_cells();
+		update_loc(players);
+		int chosenCell = view.get_foggy_cell(foggyCells);
+		movement_fog(players, foggyCells[chosenCell], 2);
+	}
+	if (secondCard[v].get_id() == 38)
+	{
+		players.player1.playerHero->heros[0]->increase_HP(1);
+		players.mapmanager.move(0, players.player1.playerHero->heros[0].get());
+		players.player1.vanish = 1;
+		players.player1.action = 0;
+	}
 	players.player1.playerHero->cards.hand_to_null_card(secondCard[v].get_id());
 	view.action_menu.action.is_thiscard = 0;
 }
@@ -84,7 +107,7 @@ int Scheme::can_scheme(PlayerInformation& players)
 			}
 		}
 	}
-	
+
 	if (first.empty())
 	{
 		return 2;

@@ -10,12 +10,9 @@ void InputMenu::load_movement()
 
 void InputMenu::draw_movement(int a, std::vector <ActionMenu::cell>& map, std::string name, int move)
 {
-	if (map.size() < 10)
+	for (int i = 0; i < map.size(); i++)
 	{
-		for (int i = 0; i < map.size(); i++)
-		{
-			DrawTexturePro(cell, { 0,0,(float)cell.width,(float)cell.height }, { map[i].x-7,map[i].y-5,80,80 }, { 0,0 }, 0, WHITE);
-		}
+		DrawTexturePro(cell, { 0,0,(float)cell.width,(float)cell.height }, { map[i].x - 7,map[i].y - 5,80,80 }, { 0,0 }, 0, WHITE);
 	}
 	string text;
 	Rectangle r;
@@ -38,13 +35,17 @@ void InputMenu::draw_movement(int a, std::vector <ActionMenu::cell>& map, std::s
 	{
 		text = "Select the cell where you want\n Dracula to be placed:"; break;
 	}
-	case 7:
-	{
-		text = "Select the cell where you want\n Dr.Watson to be placed:"; break;
-	}
 	case 5:
 	{
 		text = "Select the cell where you want\n fog to be placed:"; break;
+	}
+	case 6:
+	{
+		text = "Select the cell where you want\n Invisible_men to be placed:"; break;
+	}
+	case 7:
+	{
+		text = "Select the cell where you want\n Dr.Watson to be placed:"; break;
 	}
 	default:
 	{
@@ -60,7 +61,7 @@ void InputMenu::draw_movement(int a, std::vector <ActionMenu::cell>& map, std::s
 	{
 		r = { 1050,673,507,172 };
 	}
-	if (a == 2)
+	if (a == 2 || a == 5)
 	{
 		r.y = r.y - 15;
 		b = { 1109,790,165,48 };
@@ -70,7 +71,7 @@ void InputMenu::draw_movement(int a, std::vector <ActionMenu::cell>& map, std::s
 	}
 	Vector2 t = MeasureTextEx(font, text.c_str(), 30, 2);
 	DrawTextEx(font, text.c_str(), { r.x + (r.width - t.x) / 2,r.y + (r.height - t.y) / 2 }, 30, 2, WHITE);
-	
+
 }
 
 void InputMenu::unload_movement()
@@ -86,7 +87,7 @@ int InputMenu::check_movement(std::vector <ActionMenu::cell>& map)
 	{
 		for (int i = 0; i < map.size(); i++)
 		{
-			if (CheckCollisionPointRec(mouse, { map[i].x-5,map[i].y-7,80,80 }))
+			if (CheckCollisionPointRec(mouse, { map[i].x - 5,map[i].y - 7,80,80 }))
 			{
 				return i;
 			}
@@ -152,7 +153,7 @@ void InputMenu::load_card()
 
 }
 
-void InputMenu::draw_card(Texture2D & card)
+void InputMenu::draw_card(Texture2D& card)
 {
 	DrawTexturePro(card, { 0,0,(float)card.width,(float)card.height }, { 856,684,115,161 }, { 0,0 }, 0, WHITE);
 	DrawTexturePro(divider, { 0,0,(float)divider.width,(float)divider.height }, { 971,669,44,191 }, { 0,0 }, 0, WHITE);
@@ -181,7 +182,7 @@ void InputMenu::unload_hero(std::vector<Texture2D>& hero)
 	}
 }
 
-void InputMenu::draw_hero(int a,std::vector<Texture2D> &hero)
+void InputMenu::draw_hero(int a, std::vector<Texture2D>& hero)
 {
 	if (!hero.empty())
 	{
@@ -237,13 +238,13 @@ int InputMenu::check_hero(int hero)
 
 		}
 	}
-	
+
 	return -1;
 }
 
-int InputMenu::check_cards(int a,int cards)
+int InputMenu::check_cards(int a, int cards)
 {
-	
+
 	if (a == 1)
 	{
 		if (cards != 0)
@@ -252,7 +253,7 @@ int InputMenu::check_cards(int a,int cards)
 			Vector2 mouse = GetMousePosition();
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 			{
-				for (int i = 0; i <cards ; i++)
+				for (int i = 0; i < cards; i++)
 				{
 					if (CheckCollisionPointRec(mouse, { (float)70 + (i * x), 677, 115, 160 }))
 					{
@@ -265,7 +266,7 @@ int InputMenu::check_cards(int a,int cards)
 				}
 			}
 		}
-		
+
 	}
 	else
 	{
@@ -285,12 +286,12 @@ int InputMenu::check_cards(int a,int cards)
 				return -2;
 			}
 		}
-		
+
 	}
 	return -1;
 }
 
-void InputMenu::draw_hand(std::vector<Texture2D> & cards)
+void InputMenu::draw_hand(std::vector<Texture2D>& cards)
 {
 	if (!cards.empty())
 	{
@@ -342,6 +343,26 @@ void InputMenu::draw_YN(int a)
 	if (a == 1)
 	{
 		DrawTextEx(font, "Do you want to use Dracula's ability?", { 908,684 }, 30, 2, WHITE);
+		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 949,749,225,66 }, { 0,0 }, 0, WHITE);
+		Vector2 t1 = MeasureTextEx(font, "YES", 25, 2);
+		DrawTextEx(font, "YES", { 942 + (225 - t1.x) / 2,749 + (66 - t1.y) / 2 }, 25, 2, WHITE);
+		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1210,749,225,66 }, { 0,0 }, 0, WHITE);
+		Vector2 t2 = MeasureTextEx(font, "NO", 25, 2);
+		DrawTextEx(font, "NO", { 1210 + (225 - t2.x) / 2,749 + (66 - t2.y) / 2 }, 25, 2, WHITE);
+	}
+	else if (a == 2)
+	{
+		DrawTextEx(font, "Do you want to discard a card?", { 1060,697 }, 30, 2, WHITE);
+		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 949,749,225,66 }, { 0,0 }, 0, WHITE);
+		Vector2 t1 = MeasureTextEx(font, "YES", 25, 2);
+		DrawTextEx(font, "YES", { 942 + (225 - t1.x) / 2,749 + (66 - t1.y) / 2 }, 25, 2, WHITE);
+		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1210,749,225,66 }, { 0,0 }, 0, WHITE);
+		Vector2 t2 = MeasureTextEx(font, "NO", 25, 2);
+		DrawTextEx(font, "NO", { 1210 + (225 - t2.x) / 2,749 + (66 - t2.y) / 2 }, 25, 2, WHITE);
+	}
+	else if (a == 3)
+	{
+		DrawTextEx(font, "Do you want to move Invisible_Man?", { 1060,697 }, 30, 2, WHITE);
 		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 949,749,225,66 }, { 0,0 }, 0, WHITE);
 		Vector2 t1 = MeasureTextEx(font, "YES", 25, 2);
 		DrawTextEx(font, "YES", { 942 + (225 - t1.x) / 2,749 + (66 - t1.y) / 2 }, 25, 2, WHITE);
@@ -403,3 +424,38 @@ void InputMenu::unload_hand(std::vector<Texture2D>& hand)
 		UnloadTexture(x);
 	}
 }
+
+void InputMenu::draw_fog(std::vector<int> cells)
+{
+	DrawTextEx(font, "Which fog do you want to move?", { 1060,697 }, 30, 2, WHITE);
+	Vector2 t = MeasureTextEx(font, "00", 25, 2);
+	DrawRectangle(1079, 752, 87, 66, WHITE);
+	DrawTextEx(font, to_string(cells[0]).c_str(), { 1079 + (87 - t.x) / 2,752 + (66 - t.y) / 2 }, 25, 2, BLUE);
+	DrawRectangle(1225, 752, 87, 66, WHITE);
+	DrawTextEx(font, to_string(cells[1]).c_str(), { 1225 + (87 - t.x) / 2,752 + (66 - t.y) / 2 }, 25, 2, BLUE);
+	DrawRectangle(1369, 752, 87, 66, WHITE);
+	DrawTextEx(font, to_string(cells[2]).c_str(), { 1369 + (87 - t.x) / 2,752 + (66 - t.y) / 2 }, 25, 2, BLUE);
+}
+
+int InputMenu::check_fog()
+{
+	Vector2 mouse = GetMousePosition();
+	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	{
+		if (CheckCollisionPointRec(mouse, { 1079, 752, 87, 66 }))
+		{
+			return 0;
+		}
+		if (CheckCollisionPointRec(mouse, { 1225, 752, 87, 66 }))
+		{
+			return 1;
+		}
+		if (CheckCollisionPointRec(mouse, { 1369, 752, 87, 66 }))
+		{
+			return 2;
+		}
+	}
+	return -1;
+}
+
+
