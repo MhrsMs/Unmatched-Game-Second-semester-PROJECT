@@ -16,7 +16,7 @@ class Card
 {
 private:
 	int id;
-	string card_name;
+	string card_photo;
 	int attack_or_defense;
 	string name_of_doer;
 	int effect_time;
@@ -26,9 +26,9 @@ private:
 	Needs needs;
 public:
 
-	Card(int id, string card_name, int attack_or_defense, string name_of_doer, int effect_time, int boost, int number, string kind_of_action, Needs needs);
+	Card(int id, string card_photo, int attack_or_defense, string name_of_doer, int effect_time, int boost, int number, string kind_of_action, Needs needs);
 	int get_id() const;
-	string get_cardName() const;
+	string get_cardPhoto() const;
 	int get_attackOrDefense() const;
 	string get_nameOfDoer() const;
 	int get_effectTime() const;

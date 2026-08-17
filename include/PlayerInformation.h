@@ -8,10 +8,12 @@
 #include "InvisibleMan.h"
 #include "Hero.h"
 #include <memory>
+#include <vector>
+#include <string>
 class PlayerInformation
 {
 public:
-
+	
 	struct PlayerData
 	{
 		vector <unique_ptr<Hero>> heros;
@@ -22,7 +24,7 @@ public:
 	struct Player
 	{
 		int action;
-		string name;
+		int which;
 		PlayerData* playerHero = nullptr;
 
 	};
@@ -30,32 +32,32 @@ public:
 	{
 		HolmesData() : PlayerData(2)
 		{
-			heros.push_back(make_unique<Sherlock>("SH"));
-			heros.push_back(make_unique<DrWatson>("DW"));
+			heros.push_back(make_unique<Sherlock>("../Assets/sherlock_cell.png"));
+			heros.push_back(make_unique<DrWatson>("../Assets/drwatson.png"));
 		}
 	};
 	struct DraculaData : public PlayerData
 	{
 		DraculaData() : PlayerData(1)
 		{
-			heros.push_back(make_unique<Dracula>("DR"));
-			heros.push_back(make_unique<Sister>("S1"));
-			heros.push_back(make_unique<Sister>("S2"));
-			heros.push_back(make_unique<Sister>("S3"));
+			heros.push_back(make_unique<Dracula>("../Assets/dracula_cell.png"));
+			heros.push_back(make_unique<Sister>("../Assets/sis1.png"));
+			heros.push_back(make_unique<Sister>("../Assets/sis2.png"));
+			heros.push_back(make_unique<Sister>("../Assets/sis3.png"));
 		}
 	};
 	struct InvisibleManData : public PlayerData
 	{
 		InvisibleManData() : PlayerData(3)
 		{
-			heros.push_back(make_unique<InvisibleMan>("IM"));
+			heros.push_back(make_unique<InvisibleMan>("../Assets/invisible_man_cell.png"));
 		}
 	};
 	Player player1;
 	Player player2;
 	MapManager mapmanager;
-	vector <string> hero_to_name(vector <Hero*> hero);
-	vector <string> card_to_name(vector <Card> card);
-	vector <Hero*> unique_to_hero(Player player);
+	vector <string>hero_to_photo(const vector <Hero*> &hero);
+	vector <string>card_to_photo(const vector <Card>& card);
+	vector <Hero*> unique_to_hero(Player &player);
 };
 

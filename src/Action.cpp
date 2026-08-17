@@ -1,5 +1,8 @@
 #include "Action.h"
-Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* heroTeam, Hero* heroTarget)
+Action::Action(Graphics& view) : view(view)
+{
+}
+Complet_Needs Action::take_needs(PlayerInformation &players, Card& card, Hero* heroTeam, Hero* heroTarget)
 {
 	Complet_Needs complet_needs;
 	Needs needs = card.get_Needs();
@@ -26,12 +29,12 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 					thishero.emplace_back(x.get());
 				}
 			}
-			int z = view.print_complet_needs(8, {}, players.hero_to_name(thishero));
+			int z = view.get_hero(4,players.hero_to_photo(thishero));
 			complet_needs.targetPerson = thishero[z];
 		}
 		else
 		{
-			int z = view.print_complet_needs(8, {}, players.hero_to_name(players.unique_to_hero(players.player2)));
+			int z = view.get_hero(4, players.hero_to_photo(players.unique_to_hero(players.player2)));
 			complet_needs.targetPerson = players.player2.playerHero->heros[z].get();
 		}
 
@@ -41,7 +44,7 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 		if (card.get_id() == 1)
 		{
 			bool dead = false;
-
+			
 			for (auto& x : players.player1.playerHero->heros)
 			{
 				if (x->get_name() == "SISTER" && !x->is_alive())
@@ -50,7 +53,7 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 					int choice;
 					while (1)
 					{
-						choice = view.print_complet_needs(1);
+						choice = view.movement2(3,"",0);
 						if (players.mapmanager.is_same_zone(players.player1.playerHero->heros[0]->get_position(), choice))
 						{
 							break;
@@ -68,7 +71,7 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 			int cell;
 			while (1)
 			{
-				cell = view.print_complet_needs(2);
+				cell = view.movement2(4, "", 0);
 				if (!players.mapmanager.is_ally_inside(cell, players.player1.playerHero->heros[0].get()) && !players.mapmanager.is_enemy_inside(cell, players.player1.playerHero->heros[0].get()))
 				{
 					break;
@@ -78,27 +81,31 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 		}
 		if (card.get_id() == 4)
 		{
-			view.print_complet_needs(3);
+			view.text(2);
 			movement(players, complet_needs.targetPerson, 2, 2);
 		}
 		if (card.get_id() == 15)
 		{
 			vector <int> first = players.mapmanager.electable_cells(players.player1.playerHero->heros[0]->get_position());
-			vector <int> second;
+			vector <ActionMenu::cell> second;
 			for (auto x : first)
 			{
 				if (!players.mapmanager.is_ally_inside(x, players.player1.playerHero->heros[0].get()))
 				{
-					second.emplace_back(x);
+					ActionMenu::cell i;
+					i.num = x;
+					i.x = players.mapmanager.get_cell(x)->get_x();
+					i.y = players.mapmanager.get_cell(x)->get_y();
+					second.emplace_back(i);
 				}
 			}
-			int m = view.print_complet_needs(9, second);
-			complet_needs.location = second[m];
+			int m = view.movement1(7,second,"",0);
+			complet_needs.location = second[m].num;
 		}
 	}
 	if (needs.need_number)
 	{
-		int s = view.print_complet_needs(7);
+		int s = view.get_number();
 		complet_needs.number = s;
 	}
 	if (needs.need_optional_card)
@@ -107,19 +114,12 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 		if (card.get_id() == 8)
 		{
 			int s;
-			vector <Card> cards;
+			bool selected = 0;
 			vector <int> c;
-			for (auto x : players.player1.playerHero->cards.hand)
-			{
-				if (x.get_cardName() != card.get_cardName())
-				{
-					cards.emplace_back(x);
-				}
-			}
 			while (1)
 			{
-				s = view.print_discarding(players.card_to_name(cards));
-				if (s == 0)
+				s = view.get_card(1,players.player1.playerHero->cards.hand.size());
+				if (s == -2)
 				{
 					break;
 				}
@@ -127,10 +127,15 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 				{
 					if (x == s)
 					{
-						continue;
+						selected = 1;
+						break;
 					}
 				}
-				optionalcard.emplace_back(cards[s - 1]);
+				if (selected)
+				{
+					continue;
+				}
+				optionalcard.emplace_back(players.player1.playerHero->cards.hand[s]);
 				c.emplace_back(s);
 			}
 			complet_needs.optionalCard = optionalcard;
@@ -143,10 +148,10 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 			{
 				if (!players.player2.playerHero->cards.hand.empty())
 				{
-					s = view.print_discarding(players.card_to_name(players.player2.playerHero->cards.hand));
-					if (s != 0)
+					s = view.get_card_target(players.card_to_photo(players.player2.playerHero->cards.hand));
+					if (s != -2)
 					{
-						optionalcard.emplace_back(players.player2.playerHero->cards.hand[s - 1]);
+						optionalcard.emplace_back(players.player2.playerHero->cards.hand[s]);
 						break;
 					}
 				}
@@ -157,18 +162,42 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 			}
 			complet_needs.optionalCard = optionalcard;
 		}
+		if (card.get_id() == 26)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				if (players.player1.playerHero->cards.can_deck_to_hand(1))
+				{
+					players.player1.playerHero->cards.deck_to_hand(1);
+				}
+				else
+				{
+					players.player1.playerHero->heros[0]->decrease_HP(2);
+				}
+			}
+			for (int i = 0; i < 2; i++)
+			{
+				int choice = view.get_card(4,players.player1.playerHero->cards.hand.size());
+				Card c = players.player1.playerHero->cards.hand[choice];
+				players.player1.playerHero->cards.hand.erase(players.player1.playerHero->cards.hand.begin() + choice);
+				players.player1.playerHero->cards.deck.emplace_back(c);
+			}
+		}
+		if (card.get_id() == 27)
+		{
+
+		}
 	}
 	return complet_needs;
 }
 
-void Action::movement(PlayerInformation& players, Hero* hero, int moveMax, int moveMin)
+void Action::movement(PlayerInformation &players, Hero* hero, int moveMax, int moveMin)
 {
 	if (hero == nullptr)
 	{
-		int b = view.print_move_get_name(players.hero_to_name(players.unique_to_hero(players.player1)));
+		int b = view.get_hero(3,players.hero_to_photo(players.unique_to_hero(players.player1)));
 		hero = players.player1.playerHero->heros[b].get();
 		moveMax += hero->get_move();
-		view.print_movenumber(moveMax);
 	}
 	if (moveMax == 0)
 	{
@@ -179,20 +208,31 @@ void Action::movement(PlayerInformation& players, Hero* hero, int moveMax, int m
 	while (movementnum < moveMax)
 	{
 		vector <int> cell = players.mapmanager.electable_cells(position);
-		vector <int> d;
+		vector <ActionMenu::cell> d;
 		if ((moveMax - movementnum) < 2)
 		{
 			for (auto x : cell)
 			{
 				if (!players.mapmanager.is_ally_inside(x, hero))
 				{
-					d.emplace_back(x);
+					ActionMenu::cell c;
+					c.num = x;
+					c.x = players.mapmanager.get_cell(x)->get_x();
+					c.y = players.mapmanager.get_cell(x)->get_y();
+					d.emplace_back(c);
 				}
 			}
 		}
 		else
 		{
-			d = cell;
+			for (auto x : cell)
+			{
+				ActionMenu::cell c;
+				c.num = x;
+				c.x = players.mapmanager.get_cell(x)->get_x();
+				c.y = players.mapmanager.get_cell(x)->get_y();
+				d.emplace_back(c);
+			}
 		}
 		if (d.empty())
 		{
@@ -200,12 +240,12 @@ void Action::movement(PlayerInformation& players, Hero* hero, int moveMax, int m
 		}
 		else
 		{
-			int a = view.print_move1(d);
-			if (a == 0)
+			int a = view.movement1(2,d,hero->get_name(),moveMax-movementnum);
+			if (a == -2)
 			{
 				if (movementnum < moveMin)
 				{
-					view.print_move2(3);
+					view.text(4);
 				}
 				else
 				{
@@ -214,20 +254,143 @@ void Action::movement(PlayerInformation& players, Hero* hero, int moveMax, int m
 			}
 			else
 			{
-				if (players.mapmanager.is_ally_inside(d[a - 1], hero))
+				if (players.mapmanager.is_ally_inside(d[a].num, hero))
 				{
-					view.print_move2(1);
+					view.text(5);
 
 				}
 				else
 				{
-					players.mapmanager.move(d[a - 1], hero);
-					view.print_map(players.mapmanager.text_inside_cells(), players.mapmanager.get_foggy_cells());
+					players.mapmanager.move(d[a].num, hero);
+					update_loc(players);
 				}
 				movementnum++;
-				position = d[a - 1];
+				position = d[a].num;
 			}
 		}
+	}
+	update_loc(players);
+}
+
+void Action::movement_fog(PlayerInformation& players, int cell, int movementnum)
+{
+	int move = 0;
+	vector <int> cell1 = players.mapmanager.all_adjacent_cells(cell);
+	vector <ActionMenu::cell> cell2;
+	if (movementnum - move < 2)
+	{
+		for (auto x : cell1)
+		{
+			if (!players.mapmanager.is_foggy(x))
+			{
+				ActionMenu::cell c;
+				c.num = x;
+				c.x = players.mapmanager.get_cell(x)->get_x();
+				c.y = players.mapmanager.get_cell(x)->get_y();
+				cell2.emplace_back(c);
+			}
+		}
+	}
+	else
+	{
+		for (auto x : cell1)
+		{
+			ActionMenu::cell c;
+			c.num = x;
+			c.x = players.mapmanager.get_cell(x)->get_x();
+			c.y = players.mapmanager.get_cell(x)->get_y();
+			cell2.emplace_back(c);
+		}
+	}
+	while (move < movementnum)
+	{
+		int c = view.movement1(5,cell2,"",0);
+		if (c == -2)
+		{
+			break;
+		}
+		if (players.mapmanager.is_foggy(cell2[c].num))
+		{
+			view.text(6);
+		}
+		else
+		{
+			players.mapmanager.set_foggy(cell2[c].num, cell);
+			update_loc(players);
+		}
+		move++;
+		cell = c;
+	}
+	update_loc(players);
+}
+void Action::update_loc(PlayerInformation& players)
+{
+	view.map.clear();
+	view.action_menu.action.healthPlayer1.clear();
+	view.action_menu.action.healthPlayer2.clear();
+	view.action_menu.action.cards.clear();
+	for (auto& x : players.player1.playerHero->heros)
+	{
+		if (x->get_position() != 0)
+		{
+			ActionMenu::cell cell;
+			cell.num = x->get_position();
+			cell.heroPhoto = x->get_photo();
+			cell.x = players.mapmanager.get_cell(cell.num)->get_x();
+			cell.y = players.mapmanager.get_cell(cell.num)->get_y();
+			view.map.emplace_back(cell);
+		}
+	}
+	for (auto& x : players.player2.playerHero->heros)
+	{
+		if (x->get_position() != 0)
+		{ 
+			ActionMenu::cell cell;
+			cell.num = x->get_position();
+			cell.heroPhoto = x->get_photo();
+			cell.x = players.mapmanager.get_cell(cell.num)->get_x();
+			cell.y = players.mapmanager.get_cell(cell.num)->get_y();
+			view.map.emplace_back(cell);
+		}
+	}
+	vector <int> fog = players.mapmanager.get_foggy_cells();
+	if (!fog.empty())
+	{
+		for (auto& x : fog)
+		{
+			ActionMenu::cell cell;
+			cell.num = x;
+			cell.heroPhoto = "../Assets/fog_cell.png";
+			cell.x = players.mapmanager.get_cell(cell.num)->get_x();
+			cell.y = players.mapmanager.get_cell(cell.num)->get_y();
+			view.map.emplace_back(cell);
+		}
+	}
+	if (players.player1.which == 1)
+	{
+		for (auto& x : players.player1.playerHero->heros)
+		{
+			view.action_menu.action.healthPlayer1.emplace_back(x->get_HP());
+		}
+		for (auto& x : players.player2.playerHero->heros)
+		{
+			view.action_menu.action.healthPlayer2.emplace_back(x->get_HP());
+		}
+	}
+	else
+	{
+		for (auto& x : players.player1.playerHero->heros)
+		{
+			view.action_menu.action.healthPlayer2.emplace_back(x->get_HP());
+		}
+		for (auto& x : players.player2.playerHero->heros)
+		{
+			view.action_menu.action.healthPlayer1.emplace_back(x->get_HP());
+		}
+	}
+	for (auto& x : players.player1.playerHero->cards.hand)
+	{
+		view.action_menu.action.cards.emplace_back(x.get_cardPhoto());
 	}
 }
 

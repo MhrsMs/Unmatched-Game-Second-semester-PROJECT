@@ -1,7 +1,7 @@
 #include "Dracula.h"
 using namespace std;
 
-Dracula::Dracula(string short_name) : Hero(short_name, "DRACULA", 13, 2, "melee") {}
+Dracula::Dracula(string photo) : Hero(photo, "DRACULA", 13, 2, "melee") {}
 
 void Dracula::ability(Hero& hero, vector <Hero*> heros, CardManager& card)
 {

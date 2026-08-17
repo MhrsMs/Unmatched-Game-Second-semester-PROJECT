@@ -1,9 +1,11 @@
 #include "Scheme.h"
+Scheme::Scheme(Graphics& view) : Action(view)
+{
+}
 void Scheme::do_scheme(PlayerInformation& players)
 {
 	vector <Card> firstCard = players.player1.playerHero->cards.get_cards_by_action(1);
 	vector <Card> secondCard;
-	bool found = false;
 	if (players.player1.playerHero->heros[0]->get_name() != "INVISIBLE_MAN")
 	{
 		if (players.player1.playerHero->heros[1]->is_alive())
@@ -25,8 +27,10 @@ void Scheme::do_scheme(PlayerInformation& players)
 	{
 		secondCard = firstCard;
 	}
-
-	int v = view.print_scheme(players.card_to_name(secondCard));
+	
+	int v = view.get_card_action(players.card_to_photo(secondCard));
+	view.action_menu.action.thiscard = LoadTexture(secondCard[v].get_cardPhoto().c_str());
+	view.action_menu.action.is_thiscard = 1;
 	Hero* actor = {};
 	for (auto& x : players.unique_to_hero(players.player1))
 	{
@@ -55,15 +59,16 @@ void Scheme::do_scheme(PlayerInformation& players)
 		}
 		if (card1.empty())
 		{
-			view.show_hand(players.card_to_name(players.player2.playerHero->cards.hand));
+			view.show_hand(players.card_to_photo(players.player2.playerHero->cards.hand));
 		}
 		else
 		{
-			int c = view.print_attack2(players.card_to_name(card1), 3);
+			int c = view.get_card_target(players.card_to_photo(card1));
 			complet.targetPerson->decrease_HP(card1[c].get_boost());
 		}
 	}
 	players.player1.playerHero->cards.hand_to_null_card(secondCard[v].get_id());
+	view.action_menu.action.is_thiscard = 0;
 }
 int Scheme::can_scheme(PlayerInformation& players)
 {
@@ -79,7 +84,7 @@ int Scheme::can_scheme(PlayerInformation& players)
 			}
 		}
 	}
-
+	
 	if (first.empty())
 	{
 		return 2;

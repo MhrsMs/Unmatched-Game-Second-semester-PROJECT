@@ -1,13 +1,18 @@
 #include "Attack.h"
+
+Attack::Attack(Graphics& view) : Action(view)
+{
+}
 void Attack::do_attack(PlayerInformation& players)
 {
 	vector <Hero*> hero1 = players.unique_to_hero(players.player1);
 	int attacker;
 	vector <Hero*> hero2;
-	vector <Card> card1;
+	vector <Card> Card1;
+	vector <string> photoCard1;
 	while (1)
 	{
-		attacker = view.print_attack1(players.hero_to_name(hero1), 1);
+		attacker = view.get_hero(1,players.hero_to_photo(hero1));
 		for (auto& x : players.player2.playerHero->heros)
 		{
 			if (x->is_alive())
@@ -31,14 +36,14 @@ void Attack::do_attack(PlayerInformation& players)
 		}
 		if (hero2.empty())
 		{
-			view.print_error_attack(1);
+			view.text(7);
 		}
 		else
 		{
-			card1 = players.player1.playerHero->cards.get_cards_by_action(2, hero1[attacker]);
-			if (card1.empty())
+			Card1 = players.player1.playerHero->cards.get_cards_by_action(2, hero1[attacker]);
+			if (Card1.empty())
 			{
-				view.print_error_attack(2);
+				view.text(8);
 			}
 			else
 			{
@@ -46,8 +51,10 @@ void Attack::do_attack(PlayerInformation& players)
 			}
 		}
 	}
-	int defender = view.print_attack1(players.hero_to_name(hero2), 2);
-	int ca1 = view.print_attack2(players.card_to_name(card1), 1);
+	int defender = view.get_hero(2,players.hero_to_photo(hero2));
+	int ca1 = view.get_card_action(players.card_to_photo(Card1));
+	view.action_menu.action.thiscard = LoadTexture(Card1[ca1].get_cardPhoto().c_str());
+	view.action_menu.action.is_thiscard = 1;
 	vector <Card> card2 = players.player2.playerHero->cards.get_cards_by_action(3, hero2[defender]);
 	bool df = 1;
 	int ca2;
@@ -57,21 +64,16 @@ void Attack::do_attack(PlayerInformation& players)
 	}
 	else
 	{
-		view.print_name(players.player2.name);
-		ca2 = view.print_attack2(players.card_to_name(card2), 2);
-		if (ca2 == 0)
+		ca2 = view.get_card_target(players.card_to_photo(card2));;
+		if (ca2 == -2)
 		{
 			df = 0;
 		}
-		else
-		{
-			ca2 = ca2 - 1;
-		}
 	}
-	Complet_Needs complet1 = take_needs(players, card1[ca1], hero1[attacker], hero2[defender]);
+	Complet_Needs complet1 = take_needs(players, Card1[ca1], hero1[attacker], hero2[defender]);
 	Complet_Needs complet2;
-	Data data1{ hero1,players.unique_to_hero(players.player2),players.player1.playerHero->cards,players.player2.playerHero->cards,players.mapmanager,*hero1[attacker],&card1[ca1],nullptr };
-	Data data2{ players.unique_to_hero(players.player2),hero1,players.player2.playerHero->cards,players.player1.playerHero->cards,players.mapmanager,*hero2[defender],nullptr,&card1[ca1] };
+	Data data1{ hero1,players.unique_to_hero(players.player2),players.player1.playerHero->cards,players.player2.playerHero->cards,players.mapmanager,*hero1[attacker],&Card1[ca1],nullptr };
+	Data data2{ players.unique_to_hero(players.player2),hero1,players.player2.playerHero->cards,players.player1.playerHero->cards,players.mapmanager,*hero2[defender],nullptr,&Card1[ca1] };
 	if (df)
 	{
 		complet2 = take_needs(players, card2[ca2], hero2[defender], hero1[attacker]);
@@ -85,7 +87,7 @@ void Attack::do_attack(PlayerInformation& players)
 	{
 		if (card2[ca2].get_id() == 23 || card2[ca2].get_id() == 10)
 		{
-			if (card1[ca1].get_nameOfDoer() != "SHERLOCK" && card1[ca1].get_nameOfDoer() != "DR.WATSON")
+			if (Card1[ca1].get_nameOfDoer() != "SHERLOCK" && Card1[ca1].get_nameOfDoer() != "DR.WATSON")
 			{
 				farib2 = 1;
 			}
@@ -93,14 +95,14 @@ void Attack::do_attack(PlayerInformation& players)
 		}
 		if (card2[ca2].get_id() == 25)
 		{
-			if (complet2.number == card1[ca1].get_attackOrDefense())
+			if (complet2.number == Card1[ca1].get_attackOrDefense())
 			{
 				farib2 = 1;
-				card1[ca1].change_attackOrDefense(-card1[ca1].get_attackOrDefense());
+				Card1[ca1].change_attackOrDefense(-Card1[ca1].get_attackOrDefense());
 			}
 		}
 	}
-	if (card1[ca1].get_id() == 23 || card1[ca1].get_id() == 10)
+	if (Card1[ca1].get_id() == 23 || Card1[ca1].get_id() == 10)
 	{
 		if (df)
 		{
@@ -119,9 +121,9 @@ void Attack::do_attack(PlayerInformation& players)
 		}
 	}
 
-	if (card1[ca1].get_effectTime() == 1 && !farib2)
+	if (Card1[ca1].get_effectTime() == 1 && !farib2)
 	{
-		effect.apply_effect(card1[ca1].get_id(), data1, complet1);
+		effect.apply_effect(Card1[ca1].get_id(), data1, complet1);
 	}
 	if (df)
 	{
@@ -131,52 +133,56 @@ void Attack::do_attack(PlayerInformation& players)
 		}
 	}
 
-	if (card1[ca1].get_effectTime() == 2 && !farib2)
+	if (Card1[ca1].get_effectTime() == 2 && !farib2)
 	{
-		effect.apply_effect(card1[ca1].get_id(), data1, complet1);
+		effect.apply_effect(Card1[ca1].get_id(), data1, complet1);
 	}
 	int defensenumber = 0;
 	if (df)
 	{
 		defensenumber = card2[ca2].get_attackOrDefense();
 	}
-	if (card1[ca1].get_attackOrDefense() > defensenumber)
+	update_loc(players);
+	if (Card1[ca1].get_attackOrDefense() > defensenumber)
 	{
-		int damage = card1[ca1].get_attackOrDefense() - defensenumber;
+		int damage = Card1[ca1].get_attackOrDefense() - defensenumber;
 		hero2[defender]->decrease_HP(damage);
-		if (card1[ca1].get_id() == 24)
+		if (Card1[ca1].get_id() == 24)
 		{
-			view.show_hand(players.card_to_name(players.player2.playerHero->cards.hand));
+			view.show_hand(players.card_to_photo(players.player2.playerHero->cards.hand));
 		}
 		complet1.heroWin = 1;
 		if (df)
 		{
 			complet2.heroWin = 0;
 		}
-		if (card1[ca1].get_id() == 7)
+		if (Card1[ca1].get_id() == 7)
 		{
 			{
 				vector <int> first = players.mapmanager.electable_cells(hero2[defender]->get_position());
-				vector <int> second;
+				vector <ActionMenu::cell> second;
 				for (auto x : first)
 				{
 					if (!players.mapmanager.is_ally_inside(x, hero2[defender]))
 					{
-						second.emplace_back(x);
+						ActionMenu::cell c;
+						c.num = x;
+						c.x = players.mapmanager.get_cell(x)->get_x();
+						c.y = players.mapmanager.get_cell(x)->get_y();
+						second.emplace_back(c);
 					}
 				}
-				int k = view.print_complet_needs(4, second);
-				players.mapmanager.move(second[k], players.player1.playerHero->heros[0].get());
+				int k = view.movement1(4, second,"",0);
+				players.mapmanager.move(second[k].num, players.player1.playerHero->heros[0].get());
 			}
 		}
-		view.print_combat_result(1, damage);
+		view.combat(1, damage);
 	}
-
 	else
 	{
 		if (card2[ca2].get_id() == 24)
 		{
-			view.show_hand(players.card_to_name(players.player1.playerHero->cards.hand));
+			view.show_hand(players.card_to_photo(players.player1.playerHero->cards.hand));
 		}
 		complet1.heroWin = 0;
 		if (df)
@@ -184,7 +190,7 @@ void Attack::do_attack(PlayerInformation& players)
 			complet2.heroWin = 1;
 		}
 
-		view.print_combat_result(2);
+		view.combat(2,0);
 	}
 	if (df)
 	{
@@ -195,30 +201,32 @@ void Attack::do_attack(PlayerInformation& players)
 			{
 				if (hero2[defender]->is_alive())
 				{
-					view.print_complet_needs(5);
+					view.text(3);
 					movement(players, hero2[defender], 3, 3);
 				}
 			}
 		}
 	}
-	if (card1[ca1].get_effectTime() == 3 && !farib2)
+	if (Card1[ca1].get_effectTime() == 3 && !farib2)
 	{
-		effect.apply_effect(card1[ca1].get_id(), data1, complet1);
-		if (card1[ca1].get_id() == 9 || card1[ca1].get_id() == 18)
+		effect.apply_effect(Card1[ca1].get_id(), data1, complet1);
+		if (Card1[ca1].get_id() == 9 || Card1[ca1].get_id() == 18)
 		{
 			if (hero1[attacker]->is_alive())
 			{
-				view.print_complet_needs(5);
+				view.text(3);
 				movement(players, hero1[attacker], 3, 3);
 			}
 		}
 
 	}
-	players.player1.playerHero->cards.hand_to_null_card(card1[ca1].get_id());
+	players.player1.playerHero->cards.hand_to_null_card(Card1[ca1].get_id());
 	if (df)
 	{
 		players.player2.playerHero->cards.hand_to_null_card(card2[ca2].get_id());
 	}
+	update_loc(players);
+	view.action_menu.action.is_thiscard = 0;
 }
 int Attack::can_attack(PlayerInformation& players)
 {

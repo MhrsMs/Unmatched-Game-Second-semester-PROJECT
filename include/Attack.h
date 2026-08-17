@@ -3,7 +3,8 @@
 class Attack : public Action
 {
 public:
-	void do_attack(PlayerInformation& players);
+	Attack(Graphics& view);
+	void do_attack(PlayerInformation & players);
 	int can_attack(PlayerInformation& players);
 };
 

@@ -1,32 +1,26 @@
 #include "PlayerInformation.h"
-vector<string> PlayerInformation::hero_to_name(vector <Hero*> hero)
+using namespace std;
+vector<string> PlayerInformation::hero_to_photo(const vector <Hero*> &hero)
 {
 	vector <string> s;
-	for (auto x : hero)
+	for (auto &x : hero)
 	{
-		if (x->get_name() == "SISTER")
-		{
-			s.emplace_back(x->get_name() + " " + x->get_short_name());
-		}
-		else
-		{
-			s.emplace_back(x->get_name());
-		}
+		s.emplace_back(x->get_photo());
 	}
 	return s;
 }
 
-vector<string> PlayerInformation::card_to_name(vector<Card> card)
+vector<string> PlayerInformation::card_to_photo(const vector<Card> &card)
 {
 	vector <string> s;
 	for (auto x : card)
 	{
-		s.emplace_back(x.get_cardName());
+		s.emplace_back(x.get_cardPhoto());
 	}
 	return s;
 }
 
-vector<Hero*> PlayerInformation::unique_to_hero(Player player)
+vector<Hero*> PlayerInformation::unique_to_hero(Player & player)
 {
 	vector <Hero*> hero;
 	for (auto& x : player.playerHero->heros)

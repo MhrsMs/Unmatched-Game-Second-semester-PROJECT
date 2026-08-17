@@ -5,19 +5,19 @@
 #include "Scheme.h"
 #include "Attack.h"
 #include "Maneuver.h"
-#include "ConsoleView.h"
+#include "Graphics.h"
 #include <exception>
 #include <algorithm>
 class GameManager
 {
 private:
 
-	ConsoleView view;
+	Graphics view;
 	PlayerInformation players;
 	PlayerInformation::HolmesData holmesdata;
 	PlayerInformation::DraculaData draculadata;
 	PlayerInformation::InvisibleManData invisiblemandata;
-
+	
 public:
 	GameManager() = default;
 	void run();
@@ -25,6 +25,6 @@ public:
 	int do_at_end();
 	void dracula_ability();
 	void initial_position();
-	ShowActionMenu complet_action_menu();
+	void complet_action_menu();
 };
 

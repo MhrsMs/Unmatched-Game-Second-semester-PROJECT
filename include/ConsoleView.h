@@ -50,5 +50,6 @@ public:
 	void show_hand(vector <string> s);
 	void print_combat_result(int a, int attack = 0);
 	void print_movenumber(int a);
+	int print_movement_fog(int a,vector <int> fog);
 	void clear();
 };

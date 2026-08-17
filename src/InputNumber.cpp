@@ -16,7 +16,7 @@ void InputNumber::update()
 		}
 		k = GetCharPressed();
 	}
-	if (IsKeyPressed(KEY_BACKSPACE && !input.empty()))
+	if (IsKeyPressed(KEY_BACKSPACE) && !input.empty())
 	{
 		input.pop_back();
 	}
@@ -24,9 +24,9 @@ void InputNumber::update()
 
 void InputNumber::draw(Rectangle r, bool active)
 {
-	Color border = active ? RED : BLACK;
-	DrawRectangleLines(r.x, r.y, r.width, r.height, border);
-	DrawTextEx(font, input.c_str(), { r.x + 10,r.y + 10 }, 40, 2, RED);
+	Color border = active ? RED: BLACK;
+	DrawRectangleLines(r.x,r.y,r.width,r.height, border);
+	DrawTextEx(font, input.c_str(), { r.x+10,r.y+10 }, 40, 2,RED);
 }
 
 bool InputNumber::isMouseOver(Rectangle r) const
@@ -39,7 +39,7 @@ int InputNumber::getNumber() const
 {
 	if (input.empty())
 	{
-		return 0;
+		return -1;
 	}
 	return std::stoi(input);
 }

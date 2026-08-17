@@ -40,7 +40,7 @@ void ConsoleView::print_error(string what)
     cout << what << endl;
 }
 
-void ConsoleView::print_map(vector<string> text, vector <int> fog)
+void ConsoleView::print_map(vector<string> text,vector <int> fog)
 {
     cout << "+===========================================================================================+\n";
     cout << "|     [MAP]      *DR : Dracula *SH : Sherlock Holmes *DW : DR.Watson *S1,S2,S3 : Sisters    |\n";
@@ -342,6 +342,30 @@ int ConsoleView::print_complet_needs(int c, vector<int> a, vector<string> b)
         cout << "You must move the Dracula 3 cells" << endl;
         return 0;
     }
+    case 11:
+    {
+        string temporary_input;
+        int s;
+        while (1)
+        {
+            do
+            {
+                cout << "Which card whould you like to move to the deck?" << endl;
+                for (int i = 0; i < a.size(); i++)
+                {
+                    cout << i << " = " << a[i] << " ";
+                }
+                cout << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            s = stoi(temporary_input);
+            if (s >= 0 && s < a.size())
+            {
+                break;
+            }
+        }
+        return s;
+    }
     }
 
     return 0;
@@ -405,7 +429,7 @@ vector<string> ConsoleView::get_name()
             break;
         }
     }
-    while (1)
+    while(1)
     {
         string temporary_input;
         do
@@ -497,7 +521,7 @@ int ConsoleView::print_action_menu(ShowActionMenu s)
     {
         cout << "\033[91m|" << left << setw(10) << s.nameofEnemy[i] << " * Health:" << s.healthEnemy[i] << "\033[0m" << endl;
     }
-    print_map(s.text, s.fog);
+    print_map(s.text,s.fog);
     cout << "+=======================================================================+===================+\n";
     cout << "|                              [HAND]                                   |      [ACTION]     |\n";
     cout << "+=======================================================================+===================+\n";
@@ -845,6 +869,58 @@ void ConsoleView::print_combat_result(int a, int attack)
 void ConsoleView::print_movenumber(int a)
 {
     cout << "Allowed moves : " << a << endl;
+}
+
+int ConsoleView::print_movement_fog(int a, vector<int> fog)
+{
+    if (a == 1)
+    {
+        int r;
+        string temporary_input;
+        while (1)
+        {
+            do
+            {
+                cout << "which cell would you like to move the fog? 0 = none" << endl;
+                for (int i = 0; i < fog.size(); i++)
+                {
+                    cout << i << " = " << fog[i] << " ";
+                }
+                cout << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            r = stoi(temporary_input);
+            if (r >= 0 && r <= fog.size())
+            {
+                break;
+            }
+        }
+        return r;
+    }
+    else if (a == 2)
+    {
+        int r;
+        string temporary_input;
+        while (1)
+        {
+            do
+            {
+                cout << "which cell would you like to move the fog? 0 = none" << endl;
+                cin >> temporary_input;
+            } while (!just_numeric_input(temporary_input));
+            r = stoi(temporary_input);
+            if (r >= 0 && r <33)
+            {
+                break;
+            }
+        }
+        return r;
+    }
+    else if (a == 3)
+    {
+        cout << "This space already contains fog. You can't place the fog here." << endl;
+    }
+    
 }
 
 void ConsoleView::clear()

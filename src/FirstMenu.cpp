@@ -3,21 +3,21 @@
 int FirstMenu::run_first()
 {
     load_first();
+    int result;
     while (!WindowShouldClose())
     {
         update();
-        int result = checkButtons_first();
+        result = checkButtons_first();
         if (result != -1)
         {
-            unload_first();
-            return result;
+            break;
         }
         BeginDrawing();
         draw_first();
         EndDrawing();
     }
     unload_first();
-    return 3;
+    return result;
 }
 
 std::vector<int> FirstMenu::run_age()
@@ -119,9 +119,9 @@ std::vector<int> FirstMenu::run_legend(int a)
 
 void FirstMenu::load_first()
 {
-    back = LoadTexture("Assets/first_back.png");
-    button = LoadTexture("Assets/button_first.png");
-    unmatched = LoadTexture("Assets/unmatched.png");
+    back = LoadTexture("../Assets/first_back.png");
+    button = LoadTexture("../Assets/button_first.png");
+    unmatched = LoadTexture("../Assets/unmatched.png");
    
     startrect = { 549,355,503,148 };
     loadrect = { 549,518,503,148 };
@@ -132,7 +132,7 @@ void FirstMenu::load_first()
 
 void FirstMenu::load_age()
 {
-    age = LoadTexture("Assets/first_age.png");
+    age = LoadTexture("../Assets/first_age.png");
     age1rect = { 781,329,615,86 };
     age2rect= { 781,525,615,86 };
     okrect = { 556,702,488,102 };
@@ -140,8 +140,8 @@ void FirstMenu::load_age()
 
 void FirstMenu::load_legend()
 {
-    legend = LoadTexture("Assets/first_legend.png");
-    dark = LoadTexture("Assets/dark.png");
+    legend = LoadTexture("../Assets/first_legend.png");
+    dark = LoadTexture("../Assets/dark.png");
     legend1rect = {110,285,393,392};
     legend2rect = { 600,285,393,393 };
     legend3rect = { 1090,285,393,393};
@@ -220,15 +220,15 @@ void FirstMenu::draw_legend(int a,int b)
     {
         DrawTextEx(font, "2", { 889 ,75 }, 77, 2, WHITE);
     }
-    if (b == 1)
+    if (b == 2)
     {
         DrawTexturePro(dark, { 0,0,(float)dark.width,(float)dark.height }, legend1rect, { 0,0 }, 0, WHITE);
     }
-    else if (b == 2)
+    else if (b == 3)
     {
         DrawTexturePro(dark, { 0,0,(float)dark.width,(float)dark.height }, legend2rect, { 0,0 }, 0, WHITE);
     }
-    else if (b == 3)
+    else if (b == 1)
     {
         DrawTexturePro(dark, { 0,0,(float)dark.width,(float)dark.height }, legend3rect, { 0,0 }, 0, WHITE);
     }
@@ -263,18 +263,19 @@ int FirstMenu::checkbuttons_legend()
     {
         if (CheckCollisionPointRec(mouse, legend1rect))
         {
-            return 1;
+            return 2;
             
         }
         else if (CheckCollisionPointRec(mouse, legend2rect))
         {
-            return 2;
+            return 3;
             
         }
         else if (CheckCollisionPointRec(mouse, legend3rect))
         {
-            return 3;
+            return 1;
         }
 
     }
+    return 0;
 }

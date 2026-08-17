@@ -19,7 +19,7 @@ public:
     bool can_deck_to_hand(int number);
     void deck_to_hand(int number);
     void hand_to_null_card(int id);
-    std::vector<Card> get_cards_by_action(int action_type, Hero* doer_hero= nullptr);
+    std::vector<Card> get_cards_by_action(int action_type, Hero* doer_hero = nullptr);
     void hand_to_deck_BACK();
     void null_card_to_hand_BACK();
 };

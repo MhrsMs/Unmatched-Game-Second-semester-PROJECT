@@ -5,7 +5,7 @@
 class Dracula : public Hero
 {
 public:
-    Dracula(std::string short_name);
+    Dracula(std::string photo);
     void ability(Hero& hero, vector <Hero*> heros, CardManager& card) override;
 };
 

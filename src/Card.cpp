@@ -1,6 +1,6 @@
 #include "Card.h"
 
-Card::Card(int id, string card_name, int attack_or_defense, string name_of_doer, int effect_time, int boost, int number, string kind_of_action, Needs needs) : id(id), card_name(card_name), attack_or_defense(attack_or_defense), name_of_doer(name_of_doer),
+Card::Card(int id, string card_photo, int attack_or_defense, string name_of_doer, int effect_time, int boost, int number, string kind_of_action, Needs needs) : id(id), card_photo(card_photo), attack_or_defense(attack_or_defense), name_of_doer(name_of_doer),
 effect_time(effect_time), boost(boost), number(number), kind_of_action(kind_of_action), needs(needs)
 {
 }
@@ -10,9 +10,9 @@ int Card::get_id() const
     return id;
 }
 
-string Card::get_cardName() const
+string Card::get_cardPhoto() const
 {
-    return card_name;
+    return card_photo;
 }
 
 int Card::get_attackOrDefense() const

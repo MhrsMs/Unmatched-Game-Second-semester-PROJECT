@@ -3,14 +3,14 @@
 #include <string>
 class InputNumber
 {
-private:
+private :
 	std::string input;
-	Font font = LoadFont("Assets/font.ttf");
+	Font font = LoadFont("../Assets/font.ttf");
 public:
 	InputNumber();
 	void update();
 	void draw(Rectangle r, bool active);
-	bool isMouseOver(Rectangle r) const;
+	bool isMouseOver(Rectangle r ) const;
 	int getNumber() const;
 	bool isEmpty() const;
 	void reset();

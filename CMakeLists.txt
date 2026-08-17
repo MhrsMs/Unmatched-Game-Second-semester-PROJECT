@@ -37,6 +37,9 @@ add_library(
     src/Scheme.cpp
     src/InputNumber.cpp
     src/FirstMenu.cpp
+    src/ActionMenu.cpp
+    src/Graphics.cpp
+    src/InputMenu.cpp
 )
 
 target_link_libraries(app PUBLIC MyLibs)

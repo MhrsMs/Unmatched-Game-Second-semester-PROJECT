@@ -5,7 +5,7 @@
 class InvisibleMan : public Hero
 {
 public:
-    InvisibleMan(std::string short_name);
+    InvisibleMan(std::string photo);
     void ability(Hero& hero, vector <Hero*> heros, CardManager& card) override;
 };
 

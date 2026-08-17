@@ -19,7 +19,7 @@ private:
 	void update();
 	void draw_first();
 	void draw_age();
-	void draw_legend(int a, int b);
+	void draw_legend(int a,int b);
 	int checkButtons_first();
 	int checkbuttons_legend();
 private:
@@ -38,7 +38,7 @@ private:
 	Rectangle legend1rect;
 	Rectangle legend2rect;
 	Rectangle legend3rect;
-	Font font = LoadFont("Assets/font.ttf");
+	Font font = LoadFont("../Assets/font.ttf");
 	InputNumber num_age1;
 	InputNumber num_age2;
 	int activeInput;

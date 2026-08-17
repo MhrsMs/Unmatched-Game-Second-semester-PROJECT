@@ -2,11 +2,12 @@
 #include "Hero.h"
 using namespace std;
 
-Cell::Cell(int n, std::vector<std::string> col, std::vector<int> con, bool isp):
-    number(n), color(col), connections(con), is_passage(isp){
-        hero_inside= nullptr;
-        fog= false;
-    }
+Cell::Cell(int n, std::vector<std::string> col, std::vector<int> con, bool isp, float x, float y) :
+    number(n), color(col), connections(con), is_passage(isp), x(x), y(y) 
+{
+    hero_inside = nullptr;
+    fog = false;
+}
 
 int Cell::get_number() const
 {
@@ -30,7 +31,7 @@ Hero* Cell::get_hero_inside() const
 }
 void Cell::change_hero_inside(Hero* current_hero_inside)
 {
-    hero_inside= current_hero_inside;
+    hero_inside = current_hero_inside;
 }
 bool Cell::get_fog() const
 {
@@ -39,4 +40,14 @@ bool Cell::get_fog() const
 void Cell::change_fog(bool fogg)
 {
     fog = fogg;
+}
+
+float Cell::get_x() const
+{
+    return x;
+}
+
+float Cell::get_y() const
+{
+    return y;
 }

@@ -106,7 +106,7 @@ vector<Card> ReadInformation::get_card(int a)
 	{
 		stringstream ss(x);
 		int id;
-		string card_name;
+		string card_photo;
 		int attack_or_defense;
 		string name_of_attacker;
 		int effect_time;
@@ -119,7 +119,7 @@ vector<Card> ReadInformation::get_card(int a)
 		bool need_team_person;
 		bool need_target_person;
 		bool need_winner;
-		ss >> id >> card_name >> attack_or_defense >> name_of_attacker
+		ss >> id >> card_photo >> attack_or_defense >> name_of_attacker
 			>> effect_time >> boost >> number >> kind_of_action >> need_location
 			>> need_optional_card >> need_number >> need_team_person >> need_target_person >> need_winner;
 		Needs needs;
@@ -129,7 +129,7 @@ vector<Card> ReadInformation::get_card(int a)
 		needs.need_target_person = need_target_person;
 		needs.need_team_person = need_team_person;
 		needs.need_winner = need_winner;
-		Card c(id, card_name, attack_or_defense, name_of_attacker, effect_time, boost, number, kind_of_action, needs);
+		Card c(id, card_photo, attack_or_defense, name_of_attacker, effect_time, boost, number, kind_of_action, needs);
 		for (int i = number; i > 0; i--)
 		{
 			main.emplace_back(c);
@@ -145,7 +145,7 @@ vector<Cell> ReadInformation::get_cell()
 	vector<Cell> main;
 	vector <string> l = {};
 	vector <int> k = {};
-	Cell b(0, l, k, 0);
+	Cell b(0, l, k, 0,0,0);
 	main.push_back(b);
 	for (auto x : s)
 	{
@@ -155,8 +155,9 @@ vector<Cell> ReadInformation::get_cell()
 		bool passage;
 		string z1, z2, z3;
 		int a1, a2, a3, a4, a5, a6;
+		float x0, y0;
 		vector <int> adjacent_cell;
-		ss >> number_of_cell >> passage >> z1 >> z2 >> z3 >> a1 >> a2 >> a3 >> a4 >> a5 >> a6;
+		ss >> number_of_cell >> passage >> z1 >> z2 >> z3 >> a1 >> a2 >> a3 >> a4 >> a5 >> a6 >> x0 >> y0;
 		zone.emplace_back(z1);
 		zone.emplace_back(z2);
 		zone.emplace_back(z3);
@@ -168,7 +169,7 @@ vector<Cell> ReadInformation::get_cell()
 		adjacent_cell.emplace_back(a6);
 		zone.erase(remove(zone.begin(), zone.end(), "##"), zone.end());
 		adjacent_cell.erase(remove(adjacent_cell.begin(), adjacent_cell.end(), 0), adjacent_cell.end());
-		Cell c(number_of_cell, zone, adjacent_cell, passage);
+		Cell c(number_of_cell, zone, adjacent_cell, passage,x0,y0);
 		main.emplace_back(c);
 	}
 	return main;
