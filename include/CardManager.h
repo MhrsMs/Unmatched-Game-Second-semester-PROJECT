@@ -15,6 +15,7 @@ public:
     std::vector<Card> null_card;
 
     CardManager(int a);
+    CardManager();
     void Shuffle(std::vector<Card>& set);
     bool can_deck_to_hand(int number);
     void deck_to_hand(int number);
@@ -22,6 +23,8 @@ public:
     std::vector<Card> get_cards_by_action(int action_type, Hero* doer_hero = nullptr);
     void hand_to_deck_BACK();
     void null_card_to_hand_BACK();
+    void deck_to_hand_by_id(int id);
+    void deck_to_null_by_id(int id);
 };
 
 #endif

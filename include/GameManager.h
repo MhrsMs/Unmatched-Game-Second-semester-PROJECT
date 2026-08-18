@@ -27,6 +27,7 @@ public:
 	void dracula_ability();
 	void initial_position();
 	void complet_action_menu();
-
+	void run_game();
+	void match_heros(int nameOfHero1, int nameOfHero2);
 };
 

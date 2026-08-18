@@ -458,4 +458,75 @@ int InputMenu::check_fog()
 	return -1;
 }
 
+void InputMenu::load_save()
+{
+	save1 = LoadTexture("../Assets/save.png");
+	save2 = LoadTexture("../Assets/save_rep.png");
+}
+
+void InputMenu::unload_save()
+{
+	UnloadTexture(save1);
+	UnloadTexture(save2);
+}
+
+void InputMenu::draw_save(int a, std::vector <std::string> time)
+{
+	if (a == 1)
+	{
+		DrawTexture(save1, 0, 0, WHITE);
+		DrawTextEx(font, time[0].c_str(), { 722,222 }, 40, 2, WHITE);
+		DrawTextEx(font, time[1].c_str(), { 722,403 }, 40, 2, WHITE);
+		DrawTextEx(font, time[2].c_str(), { 722,579 }, 40, 2, WHITE);
+	}
+	else if (a == 2)
+	{
+		DrawTexture(save2, 0, 0, WHITE);
+		DrawTextEx(font, time[0].c_str(), { 722,223 }, 40, 2, WHITE);
+		DrawTextEx(font, time[1].c_str(), { 722,403 }, 40, 2, WHITE);
+		DrawTextEx(font, time[2].c_str(), { 722,579 }, 40, 2, WHITE);
+	}
+
+}
+
+int InputMenu::check_save(int a)
+{
+	if (a == 1)
+	{
+		Vector2 mouse = GetMousePosition();
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		{
+			if (CheckCollisionPointRec(mouse, { 359, 168, 882, 147 }))
+			{
+				return 1;
+			}
+			if (CheckCollisionPointRec(mouse, { 359, 348, 882, 147 }))
+			{
+				return 2;
+			}
+			if (CheckCollisionPointRec(mouse, { 359, 526, 882, 147 }))
+			{
+				return 3;
+			}
+			return -2;
+		}
+	}
+	else if (a == 2)
+	{
+		Vector2 mouse = GetMousePosition();
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		{
+			if (CheckCollisionPointRec(mouse, { 462, 749, 300, 88 }))
+			{
+				return 1;
+			}
+			if (CheckCollisionPointRec(mouse, { 835, 749, 300, 88 }))
+			{
+				return 0;
+			}
+		}
+	}
+	return -1;
+}
+
 

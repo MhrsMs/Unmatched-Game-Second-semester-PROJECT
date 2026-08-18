@@ -26,6 +26,7 @@ public:
 	bool is_new_click();
 	int yes_or_no(int a);
 	int get_foggy_cell(std::vector <int> cells);
+	int get_save(int a, std::vector <std::string> time);
 
 private:
 	void is_in_action();

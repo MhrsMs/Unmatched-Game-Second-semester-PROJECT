@@ -12,6 +12,9 @@ CardManager::CardManager(int a)
     Shuffle(deck);
     deck_to_hand(5);
 }
+CardManager::CardManager()
+{
+}
 void CardManager::Shuffle(vector<Card>& set)
 {
     random_device rd;
@@ -103,4 +106,30 @@ void CardManager::null_card_to_hand_BACK()
 {
     hand.push_back(null_card.back());
     null_card.pop_back();
+}
+
+void CardManager::deck_to_hand_by_id(int id)
+{
+    for (size_t i = 0; i < deck.size(); i++)
+    {
+        if (deck[i].get_id() == id)
+        {
+            hand.push_back(deck[i]);
+            deck.erase(deck.begin() + i);
+            break;
+        }
+    }
+}
+
+void CardManager::deck_to_null_by_id(int id)
+{
+    for (size_t i = 0; i < deck.size(); i++)
+    {
+        if (deck[i].get_id() == id)
+        {
+            null_card.push_back(deck[i]);
+            deck.erase(deck.begin() + i);
+            break;
+        }
+    }
 }

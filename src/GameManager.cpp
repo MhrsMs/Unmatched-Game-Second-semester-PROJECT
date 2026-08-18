@@ -38,7 +38,6 @@ int GameManager::do_at_end()
 
 void GameManager::dracula_ability()
 {
-
 	int b = view.ability();
 	if (b)
 	{
@@ -100,7 +99,7 @@ void GameManager::initial_position()
 		for (int i = 1; i < n; i++)
 		{
 			int f = view.movement1(5, same_zone1, "", 0);
-			if (f > 0)
+			if (f >= 0)
 			{
 				players.mapmanager.set_foggy(same_zone1[f].num);
 				same_zone1.erase(same_zone1.begin() + f);
@@ -121,7 +120,7 @@ void GameManager::initial_position()
 				while (1)
 				{
 					int f = view.movement1(1, same_zone1, x->get_name(), 0);
-					if (f > 0)
+					if (f >= 0)
 					{
 						players.mapmanager.move(same_zone1[f].num, x.get());
 						same_zone1.erase(same_zone1.begin() + f);
@@ -144,7 +143,7 @@ void GameManager::initial_position()
 		for (int i = 1; i < n; i++)
 		{
 			int f = view.movement1(5, same_zone2, "", 0);
-			if (f > 0)
+			if (f >= 0)
 			{
 				players.mapmanager.set_foggy(same_zone2[f].num);
 				same_zone2.erase(same_zone2.begin() + f);
@@ -165,7 +164,7 @@ void GameManager::initial_position()
 				while (1)
 				{
 					int f = view.movement1(1, same_zone2, x->get_name(), 0);
-					if (f > 0)
+					if (f >= 0)
 					{
 						players.mapmanager.move(same_zone2[f].num, x.get());
 						same_zone2.erase(same_zone2.begin() + f);
@@ -177,98 +176,8 @@ void GameManager::initial_position()
 			ac.update_loc(players);
 		}
 	}
-
 }
 
-/*
-void GameManager::initial_position()
-{
-	players.mapmanager.move(22, players.player1.playerHero->heros[0].get());
-	players.mapmanager.move(9, players.player2.playerHero->heros[0].get());
-	Action ac(view);
-	ac.update_loc(players);
-	vector <int> fog = { 0,0,0 };
-	vector <int> p1;
-	vector <int> p2;
-	if (players.player1.playerHero->heros[0]->get_name() == "INVISIBLE_MAN")
-	{
-		for (int i = 1; i < 4; i++)
-		{
-			while (1)
-			{
-				int p = view.movement2(1,"Fog " + to_string(i),0);
-				if (players.mapmanager.is_same_zone(22, p) && !players.mapmanager.is_foggy(p))
-				{
-					players.mapmanager.set_foggy(p);
-					break;
-				}
-			}
-			ac.update_loc(players);
-		}
-
-	}
-	else
-	{
-		for (auto& x : players.player1.playerHero->heros)
-		{
-			if (x->get_position() == 0)
-			{
-				while (1)
-				{
-					int p = view.movement2(1,x->get_name(),0);
-					if (players.mapmanager.is_same_zone(22, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
-					{
-						players.mapmanager.move(p, x.get());
-						break;
-					}
-
-				}
-
-			}
-			ac.update_loc(players);
-		}
-	}
-	if (players.player2.playerHero->heros[0]->get_name() == "INVISIBLE_MAN")
-	{
-		for (int i = 1; i < 4; i++)
-		{
-			while (1)
-			{
-				int p = view.movement2(1,"Fog " + to_string(i),0);
-				if (players.mapmanager.is_same_zone(9, p) && !players.mapmanager.is_foggy(p))
-				{
-					players.mapmanager.set_foggy(p);
-					break;
-				}
-			}
-			ac.update_loc(players);
-		}
-
-	}
-	else
-	{
-		for (auto& x : players.player2.playerHero->heros)
-		{
-			if (x->get_position() == 0)
-			{
-				while (1)
-				{
-					int p = view.movement2(1,x->get_name(),0);
-					if (players.mapmanager.is_same_zone(9, p) && !players.mapmanager.is_ally_inside(p, x.get()) && !players.mapmanager.is_enemy_inside(p, x.get()))
-					{
-						players.mapmanager.move(p, x.get());
-						break;
-					}
-				}
-
-			}
-			ac.update_loc(players);
-		}
-	}
-
-
-}
-*/
 void GameManager::complet_action_menu()
 {
 	Attack action1(view);
@@ -307,9 +216,249 @@ void GameManager::complet_action_menu()
 	}
 }
 
+void GameManager::run_game()
+{
+	bool exit = false;
+	while (1)
+	{
+		try
+		{
+			Action ac(view);
+			ac.update_loc(players);
+			view.turn = players.player1.which;
+			do_at_fisrt();
+			if (players.player1.playerHero->heros[0]->get_name() == "DRACULA")
+			{
+				dracula_ability();
+			}
+			players.player1.isFoggyFirst = players.mapmanager.is_foggy(players.player1.playerHero->heros[0]->get_position());
+			if (players.player1.vanish)
+			{
+				vector <ActionMenu::cell> allCells = players.mapmanager.all_cells();
+				int chosenCell = view.movement1(6, allCells, "", 0);
+				players.mapmanager.move(chosenCell, players.player1.playerHero->heros[0].get());
+				players.player1.vanish = 0;
+			}
+			while (players.player1.action > 0)
+			{
+				complet_action_menu();
+				int choice;
+				while (1)
+				{
+					ac.update_loc(players);
+					int choice1 = view.run_action();
+					if (choice1 == 7)
+					{
+						view.help();
+					}
+					else
+					{
+						choice = choice1;
+						break;
+					}
+				}
+				if (choice == 1)
+				{
+					exit = true;
+					break;
+				}
+				switch (choice)
+				{
+				case 3:
+				{
+					Maneuver maneuver(view);
+					maneuver.do_maneuver(players);
+					--players.player1.action;
+					break;
+				}
+				case 4:
+				{
+					Scheme scheme(view);
+					scheme.do_scheme(players);
+					--players.player1.action;
+					break;
+				}
+
+				case 5:
+				{
+					Attack attack(view);
+					attack.do_attack(players);
+					--players.player1.action;
+					break;
+				}
+				case 6:
+				{
+					ReadInformation ri;
+					vector <string> check = ri.ckeck();
+					if (check.size() < 3)
+					{
+						cout << "ssss" << endl;
+					}
+
+					for (auto& x : check)
+					{
+						cout << x << endl;
+						if (x == "0")
+						{
+							x = " Game not saved yet";
+						}
+					}
+					while (1)
+					{
+						int c = view.get_save(1, check);
+						if (c == -2)
+						{
+							break;
+						}
+						int y;
+						if (check[c - 1] != " Game not saved yet")
+						{
+							int y = view.get_save(2, check);
+							if (y == 0)
+							{
+								continue;
+							}
+						}
+						writingData data1;
+						data1.effect = players.player1.action;
+						data1.which = players.player1.which;
+						for (auto& x : players.player1.playerHero->heros)
+						{
+							string info = x->get_name() + " " + to_string(x->get_HP()) + " " + to_string(x->get_position());
+							data1.players_info.emplace_back(info);
+						}
+						for (auto& x : players.player1.playerHero->cards.hand)
+						{
+							data1.hand.emplace_back(x.get_id());
+						}
+						for (auto& x : players.player1.playerHero->cards.null_card)
+						{
+							data1.null.emplace_back(x.get_id());
+						}
+						writingData data2;
+						data2.effect = players.player2.action;
+						data2.which = players.player2.which;
+						for (auto& x : players.player2.playerHero->heros)
+						{
+							string info = x->get_name() + " " + to_string(x->get_HP()) + " " + to_string(x->get_position());
+							data2.players_info.emplace_back(info);
+						}
+						for (auto& x : players.player2.playerHero->cards.hand)
+						{
+							data2.hand.emplace_back(x.get_id());
+						}
+						for (auto& x : players.player2.playerHero->cards.null_card)
+						{
+							data2.null.emplace_back(x.get_id());
+						}
+						data1.fog.clear();
+						data1.fog = players.mapmanager.get_foggy_cells();
+						ri.save_data(c, data1, data2);
+						exit = true;
+						break;
+					}
+					if (exit)
+					{
+						break;
+					}
+				}
+				if (exit)
+				{
+					break;
+				}
+				int x = do_at_end();
+				if (x != 0)
+				{
+					exit = true;
+					break;
+				}
+				}
+				if (exit)
+				{
+					break;
+				}
+			}
+			PlayerInformation::Player player = players.player1;
+			players.player1 = players.player2;
+			players.player2 = player;
+			if (exit)
+			{
+				break;
+			}
+		}
+		catch (exception& e)
+		{
+			view.text(0, e.what());
+		}
+		if (exit)
+		{
+			break;
+		}
+	}
+}
+
+void GameManager::match_heros(int nameOfHero1, int nameOfHero2)
+{
+	vector <string> photo1;
+	vector <string> photo2;
+	if (nameOfHero1 == 1)
+	{
+
+		players.player1.playerHero = &draculadata;
+
+	}
+	else if (nameOfHero1 == 2)
+	{
+		players.player1.playerHero = &holmesdata;
+
+	}
+	else if (nameOfHero1 == 3)
+	{
+		players.player1.playerHero = &invisiblemandata;
+	}
+	if (nameOfHero2 == 1)
+	{
+		players.player2.playerHero = &draculadata;
+
+	}
+	else if (nameOfHero2 == 2)
+	{
+		players.player2.playerHero = &holmesdata;
+
+	}
+	else if (nameOfHero2 == 3)
+	{
+		players.player2.playerHero = &invisiblemandata;
+	}
+	if (players.player1.which == 1)
+	{
+		for (auto& x : players.player1.playerHero->heros)
+		{
+			photo1.emplace_back(x->get_photo());
+		}
+		for (auto& x : players.player2.playerHero->heros)
+		{
+			photo2.emplace_back(x->get_photo());
+		}
+	}
+	else
+	{
+		for (auto& x : players.player1.playerHero->heros)
+		{
+			photo2.emplace_back(x->get_photo());
+		}
+		for (auto& x : players.player2.playerHero->heros)
+		{
+			photo1.emplace_back(x->get_photo());
+		}
+	}
+	view.action_menu.player1 = photo1;
+	view.action_menu.player2 = photo2;
+}
 
 void GameManager::run()
 {
+	bool exit = false;
 	while (1)
 	{
 		int mainMenu = view.run_first();
@@ -348,152 +497,14 @@ void GameManager::run()
 					players.player2.which = 1;
 					legend = view.run_legend(2);
 				}
-				vector <string> photo1;
-				vector <string> photo2;
-				if (legend[0] == 1)
-				{
-
-					players.player1.playerHero = &draculadata;
-
-				}
-				else if (legend[0] == 2)
-				{
-					players.player1.playerHero = &holmesdata;
-
-				}
-				else if (legend[0] == 3)
-				{
-					players.player1.playerHero = &invisiblemandata;
-				}
-				if (legend[1] == 1)
-				{
-					players.player2.playerHero = &draculadata;
-
-				}
-				else if (legend[1] == 2)
-				{
-					players.player2.playerHero = &holmesdata;
-
-				}
-				else if (legend[1] == 3)
-				{
-					players.player2.playerHero = &invisiblemandata;
-				}
-				if (players.player1.which == 1)
-				{
-					for (auto& x : players.player1.playerHero->heros)
-					{
-						photo1.emplace_back(x->get_photo());
-					}
-					for (auto& x : players.player2.playerHero->heros)
-					{
-						photo2.emplace_back(x->get_photo());
-					}
-				}
-				else
-				{
-					for (auto& x : players.player1.playerHero->heros)
-					{
-						photo2.emplace_back(x->get_photo());
-					}
-					for (auto& x : players.player2.playerHero->heros)
-					{
-						photo1.emplace_back(x->get_photo());
-					}
-				}
-				view.action_menu.player1 = photo1;
-				view.action_menu.player2 = photo2;
-				view.action_menu.load_run();
+				match_heros(legend[0], legend[1]);
 				Action ac(view);
 				ac.update_loc(players);
+				view.action_menu.load_run();
 				view.turn = players.player1.which;
 				initial_position();
-				while (1)
-				{
-					try
-					{
-
-						view.turn = players.player1.which;
-						bool exit = false;
-						do_at_fisrt();
-						ac.update_loc(players);
-						if (players.player1.playerHero->heros[0]->get_name() == "DRACULA")
-						{
-							dracula_ability();
-						}
-						players.player1.isFoggyFirst = players.mapmanager.is_foggy(players.player1.playerHero->heros[0]->get_position());
-						if (players.player1.vanish)
-						{
-							vector <ActionMenu::cell> allCells = players.mapmanager.all_cells();
-							int chosenCell = view.movement1(6, allCells, "", 0);
-							players.mapmanager.move(chosenCell, players.player1.playerHero->heros[0].get());
-							players.player1.vanish = 0;
-						}
-						for (int i = 0; i < players.player1.action; i++)
-						{
-							complet_action_menu();
-							int choice;
-							while (1)
-							{
-								int choice1 = view.run_action();
-								if (choice1 == 7)
-								{
-									view.help();
-								}
-								else
-								{
-									choice = choice1;
-									break;
-								}
-							}
-							if (choice == 1)
-							{
-								exit = true;
-								break;
-							}
-							switch (choice)
-							{
-							case 3:
-							{
-								Maneuver maneuver(view);
-								maneuver.do_maneuver(players);
-								break;
-							}
-							case 4:
-							{
-								Scheme scheme(view);
-								scheme.do_scheme(players);
-								break;
-							}
-
-							case 5:
-							{
-								Attack attack(view);
-								attack.do_attack(players);
-								break;
-							}
-							}
-							int x = do_at_end();
-							if (x != 0)
-							{
-								exit = true;
-								break;
-							}
-
-						}
-						if (exit)
-						{
-							break;
-						}
-						PlayerInformation::Player player = players.player1;
-						players.player1 = players.player2;
-						players.player2 = player;
-					}
-					catch (exception& e)
-					{
-						view.text(0, e.what());
-					}
-				}
+				run_game();
+				exit = true;
 			}
 			catch (exception& e)
 			{
@@ -502,9 +513,109 @@ void GameManager::run()
 		}
 		else if (mainMenu == 2)
 		{
-
+			ReadInformation ri;
+			vector <string> check = ri.ckeck();
+			for (auto& x : check)
+			{
+				if (x == "0")
+				{
+					x = " Game not saved yet";
+				}
+			}
+			while (1)
+			{
+				int c = view.get_save(1, check);
+				if (c == -2)
+				{
+					break;
+				}
+				if (check[c - 1] == " Game not saved yet")
+				{
+					continue;
+				}
+				readingData data = ri.read_data(c);
+				int name1 = 0;
+				int	name2 = 0;
+				if (data.players_info1[0].name == "DRACULA")
+				{
+					name1 = 1;
+				}
+				if (data.players_info1[0].name == "SHERLOCK")
+				{
+					name1 = 2;
+				}
+				if (data.players_info1[0].name == "INVISIBLE_MAN")
+				{
+					name1 = 3;
+				}
+				if (data.players_info2[0].name == "DRACULA")
+				{
+					name2 = 1;
+				}
+				if (data.players_info2[0].name == "SHERLOCK")
+				{
+					name2 = 2;
+				}
+				if (data.players_info2[0].name == "INVISIBLE_MAN")
+				{
+					name2 = 3;
+				}
+				players.player1.which = data.which1;
+				players.player2.which = data.which2;
+				players.player1.action = data.effect1;
+				players.player2.action = 2;
+				match_heros(name1, name2);
+				for (int i = 0; i < 5; i++)
+				{
+					players.player1.playerHero->cards.hand_to_deck_BACK();
+					players.player2.playerHero->cards.hand_to_deck_BACK();
+				}
+				for (int i = 0; i < data.hand1.size(); i++)
+				{
+					players.player1.playerHero->cards.deck_to_hand_by_id(data.hand1[i]);
+				}
+				for (int i = 0; i < data.hand2.size(); i++)
+				{
+					players.player2.playerHero->cards.deck_to_hand_by_id(data.hand2[i]);
+				}
+				for (int i = 0; i < data.null1.size(); i++)
+				{
+					players.player1.playerHero->cards.deck_to_null_by_id(data.null1[i]);
+				}
+				for (int i = 0; i < data.null2.size(); i++)
+				{
+					players.player2.playerHero->cards.deck_to_null_by_id(data.null2[i]);
+				}
+				for (int i = 0; i < players.player1.playerHero->heros.size(); i++)
+				{
+					players.mapmanager.move(data.players_info1[i].position, players.player1.playerHero->heros[i].get());
+					players.player1.playerHero->heros[i]->decrease_HP(players.player1.playerHero->heros[i]->get_original_HP() - data.players_info1[i].hp);
+				}
+				for (int i = 0; i < players.player2.playerHero->heros.size(); i++)
+				{
+					players.mapmanager.move(data.players_info2[i].position, players.player2.playerHero->heros[i].get());
+					players.player2.playerHero->heros[i]->decrease_HP(players.player2.playerHero->heros[i]->get_original_HP() - data.players_info2[i].hp);
+				}
+				if (players.player1.playerHero->heros[0]->get_name() == "INVISIBLE_MAN" || players.player2.playerHero->heros[0]->get_name() == "INVISIBLE_MAN")
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						players.mapmanager.set_foggy(data.fog[i]);
+					}
+				}
+				Action ac(view);
+				ac.update_loc(players);
+				view.action_menu.load_run();
+				view.turn = players.player1.which;
+				run_game();
+			}
 		}
 		else if (mainMenu == 3)
+		{
+			exit = true;
+			break;
+		}
+		if (exit)
 		{
 			break;
 		}

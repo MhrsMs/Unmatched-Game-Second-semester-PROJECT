@@ -36,12 +36,18 @@ public:
 	void unload_hand(std::vector<Texture2D>& hand);
 	void draw_fog(std::vector <int> cells);
 	int check_fog();
+	void load_save();
+	void unload_save();
+	void draw_save(int a, std::vector <std::string> time);
+	int check_save(int a);
 private:
 	Texture2D cell;
 	Texture2D button;
 	Texture2D divider;
 	Texture2D attack;
 	Texture2D defense;
+	Texture2D save1;
+	Texture2D save2;
 	Font font = LoadFont("../Assets/font.ttf");
 };
 

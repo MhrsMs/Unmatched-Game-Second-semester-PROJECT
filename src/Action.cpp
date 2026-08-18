@@ -337,9 +337,9 @@ void Action::update_loc(PlayerInformation& players)
 		}
 	}
 	vector <int> fog = players.mapmanager.get_foggy_cells();
-	if (!fog.empty())
+	for (auto& x : fog)
 	{
-		for (auto& x : fog)
+		if (x != 0)
 		{
 			ActionMenu::cell cell;
 			cell.num = x;

@@ -693,6 +693,29 @@ int Graphics::get_foggy_cell(std::vector<int> cells)
 
 }
 
+int Graphics::get_save(int a, std::vector<std::string> time)
+{
+
+    input.load_save();
+    int result = -1;
+    while (!WindowShouldClose())
+    {
+        if (is_new_click())
+        {
+            result = input.check_save(1);
+        }
+        if (result != -1)
+        {
+            break;
+        }
+        BeginDrawing();
+        input.draw_save(a, time);
+        EndDrawing();
+    }
+    input.unload_save();
+    return result;
+}
+
 
 void Graphics::is_in_action()
 {
