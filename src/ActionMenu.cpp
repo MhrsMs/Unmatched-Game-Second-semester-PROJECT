@@ -129,10 +129,10 @@ void ActionMenu::draw_run(int a)
 		string h0 = to_string(action.healthPlayer1[0]) + "/16";
 		string h1 = to_string(action.healthPlayer1[1]) + "/8";
 		Vector2 t = MeasureTextEx(font, "SHERLOCK", 25, 2);
-		DrawTextEx(font, "SHERLOCK", { 176 - (t.x) / 2,285 }, 25, 2, BLUE);
-		DrawTextEx(font, h0.c_str(), { 153,311 }, 25, 2, BLUE);
+		DrawTextEx(font, "SHERLOCK", { 176 - (t.x) / 2,285 }, 25, 2, YELLOW);
+		DrawTextEx(font, h0.c_str(), { 153,311 }, 25, 2, YELLOW);
 		DrawTexturePro(player1photo[1], { 0,0,(float)player1photo[1].width,(float)player1photo[1].height }, { 142,459 ,75,75 }, { 0,0 }, 0, WHITE);
-		DrawTextEx(font, h1.c_str(), { 160,551 }, 25, 2, BLUE);
+		DrawTextEx(font, h1.c_str(), { 160,551 }, 25, 2, YELLOW);
 	}
 	if (player2[0] == "../Assets/dracula_cell.png")
 	{
@@ -167,10 +167,10 @@ void ActionMenu::draw_run(int a)
 		string h0 = to_string(action.healthPlayer2[0]) + "/16";
 		string h1 = to_string(action.healthPlayer2[1]) + "/8";
 		Vector2 t = MeasureTextEx(font, "SHERLOCK", 25, 2);
-		DrawTextEx(font, "SHERLOCK", { 1424 - (t.x / 2),285 }, 25, 2, BLUE);
-		DrawTextEx(font, h0.c_str(), { 1399,311 }, 25, 2, BLUE);
+		DrawTextEx(font, "SHERLOCK", { 1424 - (t.x / 2),285 }, 25, 2, YELLOW);
+		DrawTextEx(font, h0.c_str(), { 1399,311 }, 25, 2, YELLOW);
 		DrawTexturePro(player2photo[1], { 0,0,(float)player2photo[1].width,(float)player2photo[1].height }, { 1389,459 ,75,75 }, { 0,0 }, 0, WHITE);
-		DrawTextEx(font, h1.c_str(), { 1408,551 }, 25, 2, BLUE);
+		DrawTextEx(font, h1.c_str(), { 1408,551 }, 25, 2, YELLOW);
 	}
 	draw_change_turn(a);
 }
