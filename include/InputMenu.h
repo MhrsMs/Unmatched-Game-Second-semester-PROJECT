@@ -34,8 +34,7 @@ public:
 	void draw_none();
 	std::vector<Texture2D> load_hand(const std::vector<std::string>& hand);
 	void unload_hand(std::vector<Texture2D>& hand);
-	void draw_fog(std::vector <int> cells);
-	int check_fog();
+	void draw_fog(std::vector<ActionMenu::cell> map);
 	void load_save();
 	void unload_save();
 	void draw_save(int a, std::vector <std::string> time);
@@ -48,6 +47,7 @@ private:
 	Texture2D defense;
 	Texture2D save1;
 	Texture2D save2;
+
 	Font font = LoadFont("../Assets/font.ttf");
 };
 

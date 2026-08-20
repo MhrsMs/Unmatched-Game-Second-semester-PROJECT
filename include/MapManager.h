@@ -24,6 +24,7 @@ public:
     std::vector<int> all_adjacent_cells(int position) const;
     std::vector<ActionMenu::cell> all_cells() const;
     std::vector<ActionMenu::cell> all_cells_fog() const;
+    std::vector<ActionMenu::cell> get_cells(std::vector<int> cells) const;
 };
 
 #endif

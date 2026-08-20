@@ -40,6 +40,9 @@ void ActionMenu::load_run()
 	{
 		fog = LoadTexture("../Assets/fog.png");
 	}
+	backdra = LoadTexture("../Assets/dracula/backDra.png");
+	backsher = LoadTexture("../Assets/holms/backSher.png");
+	backman = LoadTexture("../Assets/InvisibleMan/backMan.png");
 }
 
 
@@ -47,12 +50,12 @@ void ActionMenu::load_action()
 {
 	button = LoadTexture("../Assets/button_action.png");
 	help = LoadTexture("../Assets/help.png");
-	
+
 }
 
 void ActionMenu::load_cards()
 {
-	
+
 	for (auto& x : action.cards)
 	{
 		action.cardsPhoto.emplace_back(LoadTexture(x.c_str()));
@@ -62,11 +65,11 @@ void ActionMenu::load_cards()
 void ActionMenu::unload_run()
 {
 	UnloadTexture(back);
-	for (auto & x : player1photo)
+	for (auto& x : player1photo)
 	{
 		UnloadTexture(x);
 	}
-	for (auto & x : player2photo)
+	for (auto& x : player2photo)
 	{
 		UnloadTexture(x);
 	}
@@ -78,7 +81,7 @@ void ActionMenu::unload_action()
 {
 	UnloadTexture(button);
 	UnloadTexture(help);
-	
+
 }
 
 void ActionMenu::unload_cards()
@@ -93,17 +96,17 @@ void ActionMenu::unload_cards()
 void ActionMenu::draw_run(int a)
 {
 	ClearBackground(BLACK);
-	DrawTexture(back, 0, 0,WHITE);
+	DrawTexture(back, 0, 0, WHITE);
 	if (player1[0] == "../Assets/dracula_cell.png")
 	{
-		DrawTexturePro(player1photo[0], {0,0,(float)player1photo[0].width,(float)player1photo[0].height}, {70,92 ,213,213}, {0,0}, 0, WHITE);
+		DrawTexturePro(player1photo[0], { 0,0,(float)player1photo[0].width,(float)player1photo[0].height }, { 70,92 ,213,213 }, { 0,0 }, 0, WHITE);
 		Vector2 t = MeasureTextEx(font, "DRACULA", 25, 2);
-		DrawTextEx(font, "DRACULA", { 176 - (t.x)/2,285}, 25, 2, RED);
+		DrawTextEx(font, "DRACULA", { 176 - (t.x) / 2,285 }, 25, 2, RED);
 		string h0 = to_string(action.healthPlayer1[0]) + "/13";
 		string h1 = to_string(action.healthPlayer1[1]) + "/1";
 		string h2 = to_string(action.healthPlayer1[2]) + "/1";
 		string h3 = to_string(action.healthPlayer1[3]) + "/1";
-		DrawTextEx(font, h0.c_str() , {153,311}, 25, 2, RED);
+		DrawTextEx(font, h0.c_str(), { 153,311 }, 25, 2, RED);
 		DrawTexturePro(player1photo[1], { 0,0,(float)player1photo[1].width,(float)player1photo[1].height }, { 52,459 ,75,75 }, { 0,0 }, 0, WHITE);
 		DrawTextEx(font, h1.c_str(), { 72,551 }, 25, 2, RED);
 		DrawTexturePro(player1photo[2], { 0,0,(float)player1photo[2].width,(float)player1photo[2].height }, { 142,459 ,75,75 }, { 0,0 }, 0, WHITE);
@@ -116,7 +119,7 @@ void ActionMenu::draw_run(int a)
 		DrawTexturePro(player1photo[0], { 0,0,(float)player1photo[0].width,(float)player1photo[0].height }, { 70,92 ,213,213 }, { 0,0 }, 0, WHITE);
 		string h0 = to_string(action.healthPlayer1[0]) + "/15";
 		Vector2 t = MeasureTextEx(font, "INVISIBLE_MAN", 25, 2);
-		DrawTextEx(font,"INVISIBLE_MAN" , { 176 - (t.x) / 2,285 }, 25, 2, BLUE);
+		DrawTextEx(font, "INVISIBLE_MAN", { 176 - (t.x) / 2,285 }, 25, 2, BLUE);
 		DrawTextEx(font, h0.c_str(), { 153,311 }, 25, 2, BLUE);
 		DrawTexturePro(fog, { 0,0,(float)fog.width,(float)fog.height }, { 38,460 ,280,176 }, { 0,0 }, 0, WHITE);
 	}
@@ -126,7 +129,7 @@ void ActionMenu::draw_run(int a)
 		string h0 = to_string(action.healthPlayer1[0]) + "/16";
 		string h1 = to_string(action.healthPlayer1[1]) + "/8";
 		Vector2 t = MeasureTextEx(font, "SHERLOCK", 25, 2);
-		DrawTextEx(font, "SHERLOCK", { 176 - (t.x)/2,285 }, 25, 2, BLUE);
+		DrawTextEx(font, "SHERLOCK", { 176 - (t.x) / 2,285 }, 25, 2, BLUE);
 		DrawTextEx(font, h0.c_str(), { 153,311 }, 25, 2, BLUE);
 		DrawTexturePro(player1photo[1], { 0,0,(float)player1photo[1].width,(float)player1photo[1].height }, { 142,459 ,75,75 }, { 0,0 }, 0, WHITE);
 		DrawTextEx(font, h1.c_str(), { 160,551 }, 25, 2, BLUE);
@@ -139,7 +142,7 @@ void ActionMenu::draw_run(int a)
 		string h2 = to_string(action.healthPlayer2[2]) + "/1";
 		string h3 = to_string(action.healthPlayer2[3]) + "/1";
 		Vector2 t = MeasureTextEx(font, "DRACULA", 25, 2);
-		DrawTextEx(font, "DRACULA", { 1424 - (t.x/2),285 }, 25, 2, RED);
+		DrawTextEx(font, "DRACULA", { 1424 - (t.x / 2),285 }, 25, 2, RED);
 		DrawTextEx(font, h0.c_str(), { 1399,311 }, 25, 2, RED);
 		DrawTexturePro(player2photo[1], { 0,0,(float)player2photo[1].width,(float)player2photo[1].height }, { 1299,459 ,75,75 }, { 0,0 }, 0, WHITE);
 		DrawTextEx(font, h1.c_str(), { 1317,551 }, 25, 2, RED);
@@ -153,8 +156,8 @@ void ActionMenu::draw_run(int a)
 		DrawTexturePro(player2photo[0], { 0,0,(float)player2photo[0].width,(float)player2photo[0].height }, { 1319,92 ,213,213 }, { 0,0 }, 0, WHITE);
 		string h0 = to_string(action.healthPlayer2[0]) + "/15";
 		Vector2 t = MeasureTextEx(font, "INVISIBLE_MAN", 25, 2);
-		DrawTextEx(font, "INVISIBLE_MAN", { 1424 - (t.x/2),285 }, 25, 2, BLUE);
-		
+		DrawTextEx(font, "INVISIBLE_MAN", { 1424 - (t.x / 2),285 }, 25, 2, BLUE);
+
 		DrawTextEx(font, h0.c_str(), { 1399,311 }, 25, 2, BLUE);
 		DrawTexturePro(fog, { 0,0,(float)fog.width,(float)fog.height }, { 1285,460 ,280,176 }, { 0,0 }, 0, WHITE);
 	}
@@ -172,7 +175,7 @@ void ActionMenu::draw_run(int a)
 	draw_change_turn(a);
 }
 
-void ActionMenu::load_map(std::vector <cell>  &map)
+void ActionMenu::load_map(std::vector <cell>& map)
 {
 	for (auto& x : map)
 	{
@@ -180,7 +183,7 @@ void ActionMenu::load_map(std::vector <cell>  &map)
 	}
 }
 
-void ActionMenu::unload_map(std::vector<cell> &map)
+void ActionMenu::unload_map(std::vector<cell>& map)
 {
 	for (auto& x : map)
 	{
@@ -188,7 +191,7 @@ void ActionMenu::unload_map(std::vector<cell> &map)
 	}
 }
 
-void ActionMenu::draw_map(std::vector <cell> &map)
+void ActionMenu::draw_map(std::vector <cell>& map)
 {
 	for (size_t i = 0; i < map.size(); i++)
 	{
@@ -247,7 +250,7 @@ void ActionMenu::draw_change_turn(int a)
 	{
 		DrawTextEx(font, "1", { 805,615 }, 36, 2, WHITE);
 	}
-	else if (a==2)
+	else if (a == 2)
 	{
 		DrawTextEx(font, "2", { 805,615 }, 36, 2, WHITE);
 	}
@@ -263,19 +266,19 @@ void ActionMenu::draw_cards()
 			DrawTexturePro(action.cardsPhoto[i], { 0,0,(float)action.cardsPhoto[i].width,(float)action.cardsPhoto[i].height }, { (float)70 + (i * x),677,115,160 }, { 0,0 }, 0, WHITE);
 		}
 	}
-	
+
 }
 
 void ActionMenu::draw_winner(int a)
 {
 	if (a == 1)
 	{
-		
+
 		DrawTextEx(font, "PLAYER1 WIN", { 954,731 }, 60, 2, WHITE);
 	}
 	else
 	{
-		
+
 		DrawTextEx(font, "PLAYER2 WIN", { 954,731 }, 60, 2, WHITE);
 	}
 }
@@ -344,12 +347,12 @@ int ActionMenu::checkAction()
 	Vector2 mouse = GetMousePosition();
 	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 	{
-		if (CheckCollisionPointRec(mouse,{859,677,225,67}))
+		if (CheckCollisionPointRec(mouse, { 859,677,225,67 }))
 		{
 			return 3;
 
 		}
-		else if (CheckCollisionPointRec(mouse, {1084,677,225,67}))
+		else if (CheckCollisionPointRec(mouse, { 1084,677,225,67 }))
 		{
 			if (!action.canScheme)
 			{
@@ -360,7 +363,7 @@ int ActionMenu::checkAction()
 				return 4;
 			}
 		}
-		else if (CheckCollisionPointRec(mouse, {1309,677,225,67}))
+		else if (CheckCollisionPointRec(mouse, { 1309,677,225,67 }))
 		{
 			if (!action.canAttack)
 			{

@@ -23,11 +23,14 @@ public:
 	GameManager() = default;
 	void run();
 	void do_at_fisrt();
-	int do_at_end();
+	void check_every_round();
+	int check_every_action();
 	void dracula_ability();
 	void initial_position();
-	void complet_action_menu();
-	void run_game();
+	void complete_action_menu();
+	void complete_for_save_game();
+	void load_save_game(int which_save);
+	void run_game_action();
 	void match_heros(int nameOfHero1, int nameOfHero2);
 };
 

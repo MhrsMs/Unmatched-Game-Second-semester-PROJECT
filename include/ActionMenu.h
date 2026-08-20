@@ -6,7 +6,7 @@
 class ActionMenu
 {
 public:
-	
+
 	struct ShowActionMenu
 	{
 		std::vector <int> healthPlayer1;
@@ -32,6 +32,9 @@ public:
 	std::vector <std::string> player1;
 	std::vector <std::string> player2;
 	Font font = LoadFont("../Assets/font.ttf");
+	Texture2D backsher;
+	Texture2D backdra;
+	Texture2D backman;
 	ActionMenu();
 	~ActionMenu();
 	void load_run();
@@ -41,9 +44,9 @@ public:
 	void unload_action();
 	void unload_cards();
 	void draw_run(int a);
-	void load_map(std::vector <cell> &map);
-	void unload_map(std::vector <cell> &map);
-	void draw_map(std::vector <cell> &map);
+	void load_map(std::vector <cell>& map);
+	void unload_map(std::vector <cell>& map);
+	void draw_map(std::vector <cell>& map);
 	void draw_action();
 	void draw_change_turn(int a);
 	void draw_cards();
@@ -58,7 +61,7 @@ public:
 	ShowActionMenu action;
 	int checkAction();
 private:
-	
+
 	std::vector <Texture2D> player1photo;
 	std::vector <Texture2D> player2photo;
 	Texture2D back;
@@ -66,5 +69,7 @@ private:
 	Texture2D help;
 	Texture2D help_text;
 	Texture2D fog;
-	
+
+
 };
+

@@ -82,11 +82,6 @@ int Graphics::get_card(int a, int cards)
         text = "Which card do you want to discard?";
         break;
     }
-    case 4:
-    {
-        text = "Which card do you want to\n move to the top of your deck";
-        break;
-    }
     case 5:
     {
         text = "which card do you want to play?";
@@ -263,6 +258,11 @@ void Graphics::text(int a, string t)
             text = "This hero has no active card.\n Please select another hero";
             break;
         }
+        case 9:
+        {
+            text = "Which card do you want to\n move to the top of your deck";
+            break;
+        }
         default:
         {
             text = " "; break;
@@ -306,13 +306,12 @@ int Graphics::get_number()
     num.reset();
     int result = -1;
     bool active = 0;
-    Rectangle rect = { 1183,738,173,39 };
     while (!WindowShouldClose())
     {
         Vector2 mouse = GetMousePosition();
         if (is_new_click())
         {
-            if (num.isMouseOver(rect))
+            if (num.isMouseOver({ 1183,738,173,39 }))
             {
                 active = 1;
                 num.reset();
@@ -335,7 +334,7 @@ int Graphics::get_number()
         DrawRectangle(1183, 738, 173, 39, WHITE);
         DrawRectangle(1210, 799, 120, 27, WHITE);
         DrawTextEx(action_menu.font, "OK", { 1251,799 }, 25, 2, BLACK);
-        num.draw(rect, active);
+        num.draw({ 1183,738,173,39 }, active);
         is_in_action();
         EndDrawing();
     }
@@ -661,17 +660,19 @@ int Graphics::yes_or_no(int a)
     return result;
 }
 
-int Graphics::get_foggy_cell(std::vector<int> cells)
+int Graphics::get_foggy_cell(std::vector<ActionMenu::cell> cells)
 {
     action_menu.load_run();
     action_menu.load_map(map);
     action_menu.load_cards();
+    input.load_card();
+    input.load_movement();
     int result = -1;
     while (!WindowShouldClose())
     {
         if (is_new_click())
         {
-            result = input.check_fog();
+            result = input.check_movement(cells);
         }
         if (result != -1)
         {
@@ -685,6 +686,7 @@ int Graphics::get_foggy_cell(std::vector<int> cells)
         is_in_action();
         EndDrawing();
     }
+    input.unload_movement();
     input.unload_card();
     action_menu.unload_run();
     action_menu.unload_map(map);
@@ -695,7 +697,7 @@ int Graphics::get_foggy_cell(std::vector<int> cells)
 
 int Graphics::get_save(int a, std::vector<std::string> time)
 {
-
+    click = 1;
     input.load_save();
     int result = -1;
     while (!WindowShouldClose())
@@ -719,9 +721,28 @@ int Graphics::get_save(int a, std::vector<std::string> time)
 
 void Graphics::is_in_action()
 {
+    bool a = 0;
     if (action_menu.action.is_thiscard)
     {
-        input.draw_card(action_menu.action.thiscard);
+        if (backCardsSher)
+        {
+            input.draw_card(action_menu.backsher);
+            a = 1;
+        }
+        if (backCardsDra)
+        {
+            input.draw_card(action_menu.backdra);
+            a = 1;
+        }
+        if (backCardsMan)
+        {
+            input.draw_card(action_menu.backman);
+            a = 1;
+        }
+        if (a == 0)
+        {
+            input.draw_card(action_menu.action.thiscard);
+        }
     }
 }
 

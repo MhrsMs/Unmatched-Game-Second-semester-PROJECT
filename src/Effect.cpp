@@ -72,10 +72,6 @@ void Effect::effect2(int b, Data& data, Complet_Needs& complet_needs)
 	{
 		int a = complet_needs.optionalCard.size();
 		data.thiscard->change_attackOrDefense(a);
-		for (auto x : complet_needs.optionalCard)
-		{
-			data.cardsTeam.hand_to_null_card(x.get_id());
-		}
 	}
 	if (b == 3)
 	{
@@ -245,7 +241,7 @@ void Effect::effect14(Data& data, Complet_Needs& complet_needs)
 	//zohor az del meh
 	if (complet_needs.is_foggy)
 	{
-		data.thiscard->change_attackOrDefense(5);
+		data.thiscard->change_attackOrDefense(2);
 	}
 }
 
@@ -254,7 +250,7 @@ void Effect::effect15(Data& data, Complet_Needs& complet_needs)
 	//hokomat vahshat
 	if (data.mapManager.is_foggy(data.team[0]->get_position()))
 	{
-		for (auto& x : data.team)
+		for (auto& x : data.target)
 		{
 			x->decrease_HP(2);
 		}

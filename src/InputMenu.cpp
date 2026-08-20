@@ -47,6 +47,10 @@ void InputMenu::draw_movement(int a, std::vector <ActionMenu::cell>& map, std::s
 	{
 		text = "Select the cell where you want\n Dr.Watson to be placed:"; break;
 	}
+	case 8:
+	{
+		text = "Move " + name + " " + to_string(move) + " cells"; break;
+	}
 	default:
 	{
 		text = " "; break;
@@ -353,22 +357,22 @@ void InputMenu::draw_YN(int a)
 	else if (a == 2)
 	{
 		DrawTextEx(font, "Do you want to discard a card?", { 1060,697 }, 30, 2, WHITE);
-		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 949,749,225,66 }, { 0,0 }, 0, WHITE);
+		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1092,777,165,48 }, { 0,0 }, 0, WHITE);
 		Vector2 t1 = MeasureTextEx(font, "YES", 25, 2);
-		DrawTextEx(font, "YES", { 942 + (225 - t1.x) / 2,749 + (66 - t1.y) / 2 }, 25, 2, WHITE);
-		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1210,749,225,66 }, { 0,0 }, 0, WHITE);
+		DrawTextEx(font, "YES", { 1092 + (165 - t1.x) / 2,777 + (48 - t1.y) / 2 }, 25, 2, WHITE);
+		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1286,777,165,48 }, { 0,0 }, 0, WHITE);
 		Vector2 t2 = MeasureTextEx(font, "NO", 25, 2);
-		DrawTextEx(font, "NO", { 1210 + (225 - t2.x) / 2,749 + (66 - t2.y) / 2 }, 25, 2, WHITE);
+		DrawTextEx(font, "NO", { 1286 + (165 - t2.x) / 2,777 + (48 - t2.y) / 2 }, 25, 2, WHITE);
 	}
 	else if (a == 3)
 	{
-		DrawTextEx(font, "Do you want to move Invisible_Man?", { 1060,697 }, 30, 2, WHITE);
-		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 949,749,225,66 }, { 0,0 }, 0, WHITE);
+		DrawTextEx(font, "Do you want to move Invisible_Man?", { 1034,697 }, 30, 2, WHITE);
+		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1092,777,165,48 }, { 0,0 }, 0, WHITE);
 		Vector2 t1 = MeasureTextEx(font, "YES", 25, 2);
-		DrawTextEx(font, "YES", { 942 + (225 - t1.x) / 2,749 + (66 - t1.y) / 2 }, 25, 2, WHITE);
-		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1210,749,225,66 }, { 0,0 }, 0, WHITE);
+		DrawTextEx(font, "YES", { 1092 + (165 - t1.x) / 2,777 + (48 - t1.y) / 2 }, 25, 2, WHITE);
+		DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1286,777,165,48 }, { 0,0 }, 0, WHITE);
 		Vector2 t2 = MeasureTextEx(font, "NO", 25, 2);
-		DrawTextEx(font, "NO", { 1210 + (225 - t2.x) / 2,749 + (66 - t2.y) / 2 }, 25, 2, WHITE);
+		DrawTextEx(font, "NO", { 1286 + (165 - t2.x) / 2,777 + (48 - t2.y) / 2 }, 25, 2, WHITE);
 	}
 }
 
@@ -384,6 +388,21 @@ int InputMenu::check_YN(int a)
 				return 1;
 			}
 			else if (CheckCollisionPointRec(mouse, { 1210,749,225,66 }))
+			{
+				return 0;
+			}
+		}
+	}
+	else
+	{
+		Vector2 mouse = GetMousePosition();
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		{
+			if (CheckCollisionPointRec(mouse, { 1092,777,165,48 }))
+			{
+				return 1;
+			}
+			else if (CheckCollisionPointRec(mouse, { 1286,777,165,48 }))
 			{
 				return 0;
 			}
@@ -425,38 +444,15 @@ void InputMenu::unload_hand(std::vector<Texture2D>& hand)
 	}
 }
 
-void InputMenu::draw_fog(std::vector<int> cells)
+void InputMenu::draw_fog(std::vector<ActionMenu::cell> map)
 {
-	DrawTextEx(font, "Which fog do you want to move?", { 1060,697 }, 30, 2, WHITE);
-	Vector2 t = MeasureTextEx(font, "00", 25, 2);
-	DrawRectangle(1079, 752, 87, 66, WHITE);
-	DrawTextEx(font, to_string(cells[0]).c_str(), { 1079 + (87 - t.x) / 2,752 + (66 - t.y) / 2 }, 25, 2, BLUE);
-	DrawRectangle(1225, 752, 87, 66, WHITE);
-	DrawTextEx(font, to_string(cells[1]).c_str(), { 1225 + (87 - t.x) / 2,752 + (66 - t.y) / 2 }, 25, 2, BLUE);
-	DrawRectangle(1369, 752, 87, 66, WHITE);
-	DrawTextEx(font, to_string(cells[2]).c_str(), { 1369 + (87 - t.x) / 2,752 + (66 - t.y) / 2 }, 25, 2, BLUE);
+	DrawTextEx(font, "Which fog do you want to move?", { 1065,737 }, 30, 2, WHITE);
+	for (int i = 0; i < map.size(); i++)
+	{
+		DrawTexturePro(cell, { 0,0,(float)cell.width,(float)cell.height }, { map[i].x - 7,map[i].y - 5,80,80 }, { 0,0 }, 0, WHITE);
+	}
 }
 
-int InputMenu::check_fog()
-{
-	Vector2 mouse = GetMousePosition();
-	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-	{
-		if (CheckCollisionPointRec(mouse, { 1079, 752, 87, 66 }))
-		{
-			return 0;
-		}
-		if (CheckCollisionPointRec(mouse, { 1225, 752, 87, 66 }))
-		{
-			return 1;
-		}
-		if (CheckCollisionPointRec(mouse, { 1369, 752, 87, 66 }))
-		{
-			return 2;
-		}
-	}
-	return -1;
-}
 
 void InputMenu::load_save()
 {

@@ -25,7 +25,7 @@ public:
 	void show_hand(const std::vector <std::string>& hand);
 	bool is_new_click();
 	int yes_or_no(int a);
-	int get_foggy_cell(std::vector <int> cells);
+	int get_foggy_cell(std::vector<ActionMenu::cell> cells);
 	int get_save(int a, std::vector <std::string> time);
 
 private:
@@ -37,5 +37,8 @@ public:
 	ActionMenu action_menu;;
 	std::vector <ActionMenu::cell> map;
 	int turn = 0;
+	bool backCardsSher = 0;
+	bool backCardsDra = 0;
+	bool backCardsMan = 0;
 };
 

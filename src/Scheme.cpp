@@ -27,7 +27,7 @@ void Scheme::do_scheme(PlayerInformation& players)
 	{
 		secondCard = firstCard;
 	}
-
+	update_loc(players);
 	int v = view.get_card_action(players.card_to_photo(secondCard));
 	view.action_menu.action.thiscard = LoadTexture(secondCard[v].get_cardPhoto().c_str());
 	view.action_menu.action.is_thiscard = 1;
@@ -50,7 +50,7 @@ void Scheme::do_scheme(PlayerInformation& players)
 		{
 			vector <int> foggyCells = players.mapmanager.get_foggy_cells();
 			update_loc(players);
-			int chosenCell = view.get_foggy_cell(foggyCells);
+			int chosenCell = view.get_foggy_cell(players.mapmanager.get_cells(foggyCells));
 			vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells_fog();
 			int chosenCell2 = view.movement1(5, current_cells, "", 0);
 			players.mapmanager.set_foggy(current_cells[chosenCell2].num, foggyCells[chosenCell]);
@@ -68,20 +68,27 @@ void Scheme::do_scheme(PlayerInformation& players)
 		}
 		if (card1.empty())
 		{
+			update_loc(players);
 			view.show_hand(players.card_to_photo(players.player2.playerHero->cards.hand));
 		}
 		else
 		{
+			view.backCardsSher = 1;
+			update_loc(players);
 			int c = view.get_card_target(players.card_to_photo(card1));
 			complet.targetPerson->decrease_HP(card1[c].get_boost());
+			players.player2.playerHero->cards.hand_to_null_card(card1[c].get_id());
+			view.backCardsSher = 0;
 		}
 	}
-	if (secondCard[v].get_id() == 36)
+	if (secondCard[v].get_id() == 37)
 	{
+		view.backCardsMan = 1;
 		vector <int> foggyCells = players.mapmanager.get_foggy_cells();
 		update_loc(players);
-		int chosenCell = view.get_foggy_cell(foggyCells);
+		int chosenCell = view.get_foggy_cell(players.mapmanager.get_cells(foggyCells));
 		movement_fog(players, foggyCells[chosenCell], 2);
+		view.backCardsMan = 0;
 	}
 	if (secondCard[v].get_id() == 38)
 	{

@@ -236,9 +236,9 @@ vector<int> MapManager::get_foggy_cells() const
         if (cell[i].get_fog())
             foggy_cells.push_back(i);
     }
-    if (foggy_cells.size() == 3)
+    while (foggy_cells.size() < 4)
     {
-        cout << "aaaa" << endl;
+        foggy_cells.emplace_back(0);
     }
     return foggy_cells;
 }
@@ -279,4 +279,18 @@ std::vector<ActionMenu::cell> MapManager::all_cells_fog() const
         }
     }
     return allCells;
+}
+
+std::vector<ActionMenu::cell> MapManager::get_cells(std::vector<int> cells) const
+{
+    std::vector<ActionMenu::cell> result;
+    for (auto& x : cells)
+    {
+        ActionMenu::cell c;
+        c.num = x;
+        c.x = cell[x].get_x();
+        c.y = cell[x].get_y();
+        result.emplace_back(c);
+    }
+    return result;
 }
