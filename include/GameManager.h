@@ -32,5 +32,6 @@ public:
 	void load_save_game(int which_save);
 	void run_game_action();
 	void match_heros(int nameOfHero1, int nameOfHero2);
+	void undo();
 };
 

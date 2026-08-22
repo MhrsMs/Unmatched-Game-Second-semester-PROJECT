@@ -1,6 +1,6 @@
 #include "Effect.h"
 #include <random>
-
+#include "Action.h"
 void Effect::apply_effect(int id, Data& data, Complet_Needs complet_needs)
 {
 	switch (id)
@@ -38,18 +38,23 @@ void Effect::effect1(int a, Data& data, Complet_Needs& complet_needs)
 	//1=bahre bardari 2 = emdad resani
 	if (a == 2)
 	{
+		undo_system_list.back().push_back(make_unique<undo_move_hero>(data.mapManager, data.team[1]->get_position(), data.team[1]));
 		data.mapManager.move(complet_needs.location, data.team[1]);
+		undo_system_list.back().push_back(make_unique<undo_hp>(0, 1, data.team[0]));
 		data.team[0]->increase_HP(1);
+
 	}
 	if (data.cardsTeam.can_deck_to_hand(1))
 	{
 		data.cardsTeam.deck_to_hand(1);
+		undo_system_list.back().push_back(make_unique<undo_card>(data.cardsTeam, 1));
 	}
 	else
 	{
 		for (auto& x : data.team)
 		{
 			x->decrease_HP(2);
+			undo_system_list.back().push_back(make_unique<undo_hp>(1, 2, x));
 		}
 	}
 }
@@ -65,6 +70,7 @@ void Effect::effect2(int b, Data& data, Complet_Needs& complet_needs)
 			int a = rm(0, data.cardsTarget.hand.size() - 1);
 			int boost = data.cardsTarget.hand[a].get_boost();
 			data.cardsTarget.hand_to_null_card(data.cardsTarget.hand[a].get_id());
+			undo_system_list.back().push_back(make_unique<undo_card>(data.cardsTarget, 0, a));
 			data.thiscard->change_attackOrDefense(boost);
 		}
 	}
@@ -103,6 +109,7 @@ void Effect::effect3(Data& data, Complet_Needs& complet_needs)
 		if (x->get_name() == "SISTER")
 		{
 			complet_needs.targetPerson->decrease_HP(1);
+			undo_system_list.back().push_back(make_unique<undo_hp>(1, 1, x));
 		}
 	}
 
@@ -117,7 +124,9 @@ void Effect::effect5(Data& data, Complet_Needs& complet_needs)
 		if (x->get_name() == "SHERLOCK" || x->get_name() == "DR.WATSON")
 		{
 			x->decrease_HP(1);
+			undo_system_list.back().push_back(make_unique<undo_hp>(1, 1, x));
 			data.actor.increase_HP(1);
+			undo_system_list.back().push_back(make_unique<undo_hp>(0, 1, data.team[0]));
 		}
 	}
 }
@@ -125,8 +134,6 @@ void Effect::effect5(Data& data, Complet_Needs& complet_needs)
 void Effect::effect7(Data& data, Complet_Needs& complet_needs)
 {
 	//ostad taqir chehre
-
-
 	int hPosition = data.team[0]->get_position();
 	int tPosition = complet_needs.targetPerson->get_position();
 	int empty;
@@ -140,10 +147,13 @@ void Effect::effect7(Data& data, Complet_Needs& complet_needs)
 
 		}
 	}
+	undo_system_list.back().push_back(make_unique<undo_move_hero>(data.mapManager, data.team[0]->get_position(), data.team[0]));
+	undo_system_list.back().push_back(make_unique<undo_move_hero>(data.mapManager, complet_needs.targetPerson->get_position(), complet_needs.targetPerson));
 	data.mapManager.move(empty, data.team[0]);
 	data.mapManager.move(hPosition, complet_needs.targetPerson);
 	data.mapManager.move(tPosition, data.team[0]);
 	complet_needs.targetPerson->decrease_HP(1);
+	undo_system_list.back().push_back(make_unique<undo_hp>(1, 1, complet_needs.targetPerson));
 }
 void Effect::effect8(Data& data, Complet_Needs& complet_needs)
 {
@@ -153,12 +163,14 @@ void Effect::effect8(Data& data, Complet_Needs& complet_needs)
 		if (data.cardsTarget.can_deck_to_hand(1))
 		{
 			data.cardsTarget.deck_to_hand(1);
+			undo_system_list.back().push_back(make_unique<undo_card>(data.cardsTarget, 1));
 		}
 		else
 		{
 			for (auto& x : data.target)
 			{
 				x->decrease_HP(2);
+				undo_system_list.back().push_back(make_unique<undo_hp>(1, 2, x));
 			}
 		}
 	}
@@ -169,12 +181,14 @@ void Effect::effect8(Data& data, Complet_Needs& complet_needs)
 			if (data.cardsTeam.can_deck_to_hand(1))
 			{
 				data.cardsTeam.deck_to_hand(1);
+				undo_system_list.back().push_back(make_unique<undo_card>(data.cardsTarget, 1));
 			}
 			else
 			{
 				for (auto& x : data.team)
 				{
 					x->decrease_HP(2);
+					undo_system_list.back().push_back(make_unique<undo_hp>(1, 2, x));
 				}
 			}
 		}
@@ -190,6 +204,7 @@ void Effect::effect9(Data& data, Complet_Needs& complet_needs)
 		if (data.mapManager.is_adjacent(data.team[0]->get_position(), complet_needs.targetPerson->get_position()))
 		{
 			complet_needs.targetPerson->decrease_HP(2);
+			undo_system_list.back().push_back(make_unique<undo_hp>(1, 2, complet_needs.targetPerson));
 		}
 	}
 
@@ -202,7 +217,9 @@ void Effect::effect10(Data& data, Complet_Needs& complet_needs)
 		if (data.mapManager.is_adjacent(data.team[0]->get_position(), data.team[1]->get_position()))
 		{
 			data.team[0]->increase_HP(1);
+			undo_system_list.back().push_back(make_unique<undo_hp>(0, 1, data.team[0]));
 			data.team[1]->increase_HP(1);
+			undo_system_list.back().push_back(make_unique<undo_hp>(0, 1, data.team[1]));
 		}
 	}
 
@@ -211,6 +228,7 @@ void Effect::effect10(Data& data, Complet_Needs& complet_needs)
 void Effect::effect11(Data& data, Complet_Needs& complet_needs)
 {
 	//form meh
+	undo_system_list.back().push_back(make_unique<undo_move_hero>(data.mapManager, data.team[0]->get_position(), data.team[0]));
 	data.mapManager.move(complet_needs.location, data.team[0]);
 }
 
@@ -221,6 +239,7 @@ void Effect::effect12(Data& data, Complet_Needs& complet_needs)
 	{
 		int id = complet_needs.optionalCard[0].get_id();
 		data.cardsTarget.hand_to_null_card(id);
+		undo_system_list.back().push_back(make_unique<undo_card>(data.cardsTarget, 0, 0));
 	}
 
 }
@@ -253,6 +272,7 @@ void Effect::effect15(Data& data, Complet_Needs& complet_needs)
 		for (auto& x : data.target)
 		{
 			x->decrease_HP(2);
+			undo_system_list.back().push_back(make_unique<undo_hp>(1, 2, x));
 		}
 	}
 }
@@ -267,10 +287,12 @@ void Effect::effect16(Data& data, Complet_Needs& complet_needs)
 			if (data.mapManager.is_foggy(data.team[0]->get_position()))
 			{
 				x->decrease_HP(3);
+				undo_system_list.back().push_back(make_unique<undo_hp>(1, 3, x));
 			}
 			else
 			{
 				x->decrease_HP(1);
+				undo_system_list.back().push_back(make_unique<undo_hp>(1, 1, x));
 			}
 			break;
 		}

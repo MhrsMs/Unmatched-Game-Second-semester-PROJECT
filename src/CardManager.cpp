@@ -102,9 +102,9 @@ void CardManager::hand_to_deck_BACK()
     deck.push_back(hand.back());
     hand.pop_back();
 }
-void CardManager::null_card_to_hand_BACK()
+void CardManager::null_card_to_hand_BACK(int index)
 {
-    hand.push_back(null_card.back());
+    hand.insert(hand.begin() + index, null_card.back());
     null_card.pop_back();
 }
 

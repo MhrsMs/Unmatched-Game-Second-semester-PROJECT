@@ -1,5 +1,5 @@
 #include "Attack.h"
-
+#include "Effect.h"
 Attack::Attack(Graphics& view) : Action(view)
 {
 }
@@ -180,11 +180,12 @@ void Attack::do_attack(PlayerInformation& players)
 			}
 		}
 	}
-
+	//effect.undo_system_list.back().push_back(make_unique<>);
 	if (Card1[ca1].get_attackOrDefense() > defensenumber)
 	{
 		int damage = Card1[ca1].get_attackOrDefense() - defensenumber;
 		hero2[defender]->decrease_HP(damage);
+		effect.undo_system_list.back().push_back(make_unique<undo_hp>(1, damage, hero2[defender]));
 		complet1.heroWin = 1;
 		if (df)
 		{
@@ -215,6 +216,7 @@ void Attack::do_attack(PlayerInformation& players)
 				}
 				update_loc(players);
 				int k = view.movement1(4, second, "", 0);
+				effect.undo_system_list.back().push_back(make_unique<undo_move_hero>(players.mapmanager, players.player1.playerHero->heros[0]->get_position(), players.player1.playerHero->heros[0].get()));
 				players.mapmanager.move(second[k].num, players.player1.playerHero->heros[0].get());
 			}
 		}
@@ -281,10 +283,12 @@ void Attack::do_attack(PlayerInformation& players)
 					if (players.player2.playerHero->cards.can_deck_to_hand(1))
 					{
 						players.player2.playerHero->cards.deck_to_hand(1);
+						effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player2.playerHero->cards, 1));
 					}
 					else
 					{
 						players.player2.playerHero->heros[0]->decrease_HP(2);
+						effect.undo_system_list.back().push_back(make_unique<undo_hp>(1, 2, players.player2.playerHero->heros[0].get()));
 					}
 				}
 				for (int i = 0; i < 2; i++)
@@ -295,6 +299,7 @@ void Attack::do_attack(PlayerInformation& players)
 					Card c = players.player2.playerHero->cards.hand[choice];
 					players.player2.playerHero->cards.hand.erase(players.player2.playerHero->cards.hand.begin() + choice);
 					players.player2.playerHero->cards.deck.emplace_back(c);
+					effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player2.playerHero->cards, 2));
 				}
 
 			}
@@ -307,7 +312,8 @@ void Attack::do_attack(PlayerInformation& players)
 				{
 					view.show_hand(players.card_to_photo(players.player1.playerHero->cards.hand));
 					int choiceCard = view.get_card_target(players.card_to_photo(players.player1.playerHero->cards.hand));
-					players.player1.playerHero->cards.hand_to_null_card(choiceCard);
+					players.player1.playerHero->cards.hand_to_null_card(players.player1.playerHero->cards.hand[choiceCard].get_id());
+					effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player1.playerHero->cards, 0, choiceCard));
 				}
 				else
 				{
@@ -317,6 +323,7 @@ void Attack::do_attack(PlayerInformation& players)
 					vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells_fog();
 					int chosenCell2 = view.movement1(5, current_cells, "", 0);
 					players.mapmanager.set_foggy(current_cells[chosenCell2].num, foggyCells[chosenCell1]);
+					effect.undo_system_list.back().push_back(make_unique<undo_move_fog>(players.mapmanager, current_cells[chosenCell2].num, foggyCells[chosenCell1]));
 				}
 				view.backCardsMan = 0;
 			}
@@ -325,10 +332,12 @@ void Attack::do_attack(PlayerInformation& players)
 				if (players.player2.playerHero->cards.can_deck_to_hand(1))
 				{
 					players.player2.playerHero->cards.deck_to_hand(1);
+					effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player2.playerHero->cards, 1));
 				}
 				else
 				{
 					players.player2.playerHero->heros[0]->decrease_HP(2);
+					effect.undo_system_list.back().push_back(make_unique<undo_hp>(1, 2, players.player2.playerHero->heros[0].get()));
 				}
 				vector <int> foggyCells1 = players.mapmanager.get_foggy_cells();
 				update_loc(players);
@@ -351,6 +360,7 @@ void Attack::do_attack(PlayerInformation& players)
 						if (players.mapmanager.is_foggy(x->get_position()))
 						{
 							x->decrease_HP(1);
+							effect.undo_system_list.back().push_back(make_unique<undo_hp>(1, 1, x.get()));
 						}
 						update_loc(players);
 					}
@@ -379,10 +389,12 @@ void Attack::do_attack(PlayerInformation& players)
 				if (players.player2.playerHero->cards.can_deck_to_hand(1))
 				{
 					players.player2.playerHero->cards.deck_to_hand(1);
+					effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player2.playerHero->cards, 1));
 				}
 				else
 				{
 					players.player2.playerHero->heros[0]->decrease_HP(2);
+					effect.undo_system_list.back().push_back(make_unique<undo_hp>(1, 2, players.player2.playerHero->heros[0].get()));
 				}
 				update_loc(players);
 				int yn = view.yes_or_no(3);
@@ -391,6 +403,7 @@ void Attack::do_attack(PlayerInformation& players)
 					vector <int> foggyCells = players.mapmanager.get_foggy_cells();
 					update_loc(players);
 					int chosenCell = view.get_foggy_cell(players.mapmanager.get_cells(foggyCells));
+					effect.undo_system_list.back().push_back(make_unique<undo_move_hero>(players.mapmanager, players.player2.playerHero->heros[0]->get_position(), players.player2.playerHero->heros[0].get()));
 					players.mapmanager.move(foggyCells[chosenCell], players.player2.playerHero->heros[0].get());
 				}
 				else
@@ -430,6 +443,7 @@ void Attack::do_attack(PlayerInformation& players)
 				view.show_hand(players.card_to_photo(players.player2.playerHero->cards.hand));
 				int choiceCard = view.get_card_target(players.card_to_photo(players.player2.playerHero->cards.hand));
 				players.player2.playerHero->cards.hand_to_null_card(players.player2.playerHero->cards.hand[choiceCard].get_id());
+				effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player2.playerHero->cards, 0, choiceCard));
 			}
 			else
 			{
@@ -440,6 +454,7 @@ void Attack::do_attack(PlayerInformation& players)
 				vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells_fog();
 				int chosenCell2 = view.movement1(5, current_cells, "", 0);
 				players.mapmanager.set_foggy(current_cells[chosenCell2].num, foggyCells[chosenCell1]);
+				effect.undo_system_list.back().push_back(make_unique<undo_move_fog>(players.mapmanager, current_cells[chosenCell2].num, foggyCells[chosenCell1]));
 			}
 			view.backCardsMan = 0;
 		}
@@ -448,10 +463,12 @@ void Attack::do_attack(PlayerInformation& players)
 			if (players.player1.playerHero->cards.can_deck_to_hand(1))
 			{
 				players.player1.playerHero->cards.deck_to_hand(1);
+				effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player1.playerHero->cards, 1));
 			}
 			else
 			{
 				players.player1.playerHero->heros[0]->decrease_HP(2);
+				effect.undo_system_list.back().push_back(make_unique<undo_hp>(1, 2, players.player1.playerHero->heros[0].get()));
 			}
 			vector <int> foggyCells1 = players.mapmanager.get_foggy_cells();
 			update_loc(players);
@@ -474,6 +491,7 @@ void Attack::do_attack(PlayerInformation& players)
 					if (players.mapmanager.is_foggy(x->get_position()))
 					{
 						x->decrease_HP(1);
+						effect.undo_system_list.back().push_back(make_unique<undo_hp>(1, 1, x.get()));
 					}
 					update_loc(players);
 				}
@@ -499,14 +517,18 @@ void Attack::do_attack(PlayerInformation& players)
 			update_loc(players);
 			int chosenCell2 = view.movement1(5, current_cells, "", 0);
 			players.mapmanager.set_foggy(current_cells[chosenCell2].num, foggyCells[chosenCell1]);
+			effect.undo_system_list.back().push_back(make_unique<undo_move_fog>(players.mapmanager, current_cells[chosenCell2].num, foggyCells[chosenCell1]));
+			effect.undo_system_list.back().push_back(make_unique<undo_move_hero>(players.mapmanager, players.player1.playerHero->heros[0]->get_position(), players.player1.playerHero->heros[0].get()));
 			players.mapmanager.move(current_cells[chosenCell2].num, players.player1.playerHero->heros[0].get());
 		}
 
 	}
 	players.player1.playerHero->cards.hand_to_null_card(Card1[ca1].get_id());
+	effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player1.playerHero->cards, 0, 0));
 	if (df)
 	{
 		players.player2.playerHero->cards.hand_to_null_card(card2[ca2].get_id());
+		effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player2.playerHero->cards, 0, 0));
 	}
 
 	view.action_menu.action.is_thiscard = 0;
@@ -572,4 +594,3 @@ int Attack::can_attack(PlayerInformation& players)
 	}
 	return 1;
 }
-

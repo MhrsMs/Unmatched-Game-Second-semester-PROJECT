@@ -1,7 +1,8 @@
 #include "GameManager.h"
-
+#include "Effect.h"
 void GameManager::do_at_fisrt()
 {
+	Effect effect;
 	Action ac(view);
 	view.turn = players.player1.which;
 	players.player1.action = 2;
@@ -19,6 +20,7 @@ void GameManager::do_at_fisrt()
 		players.mapmanager.move(allCells[chosenCell].num, players.player1.playerHero->heros[0].get());
 		players.player1.vanish = 0;
 	}
+	effect.undo_system_list.clear();
 }
 
 void GameManager::check_every_round()
@@ -442,6 +444,20 @@ void GameManager::match_heros(int nameOfHero1, int nameOfHero2)
 	view.action_menu.player2 = photo2;
 }
 
+void GameManager::undo()
+{
+	Effect effect;
+	if (!effect.undo_system_list.empty())
+	{
+		for (int i = effect.undo_system_list.back().size() - 1; i >= 0; i--)
+		{
+			effect.undo_system_list.back()[i]->undo_function();
+		}
+		effect.undo_system_list.pop_back();
+		++players.player1.action;
+	}
+}
+
 void GameManager::run_game_action()
 {
 	bool exit = false;
@@ -461,6 +477,12 @@ void GameManager::run_game_action()
 					view.help();
 					continue;
 				}
+				if (choice == 2)
+				{
+					undo();
+					ac.update_loc(players);
+					continue;
+				}
 				switch (choice)
 				{
 				case 1:
@@ -470,6 +492,8 @@ void GameManager::run_game_action()
 				}
 				case 3:
 				{
+					Effect effect;
+					effect.undo_system_list.push_back({});
 					Maneuver maneuver(view);
 					maneuver.do_maneuver(players);
 					--players.player1.action;
@@ -477,6 +501,8 @@ void GameManager::run_game_action()
 				}
 				case 4:
 				{
+					Effect effect;
+					effect.undo_system_list.push_back({});
 					Scheme scheme(view);
 					scheme.do_scheme(players);
 					--players.player1.action;
@@ -485,6 +511,8 @@ void GameManager::run_game_action()
 
 				case 5:
 				{
+					Effect effect;
+					effect.undo_system_list.push_back({});
 					Attack attack(view);
 					attack.do_attack(players);
 					--players.player1.action;
@@ -506,6 +534,15 @@ void GameManager::run_game_action()
 				if (exit)
 				{
 					break;
+				}
+				if (players.player1.action == 0)
+				{
+					int turn = view.end_turn();
+					if (turn == 1)
+					{
+						++players.player1.action;
+						undo();
+					}
 				}
 			}
 			check_every_round();

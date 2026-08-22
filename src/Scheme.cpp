@@ -1,4 +1,5 @@
 #include "Scheme.h"
+#include "Effect.h"
 Scheme::Scheme(Graphics& view) : Action(view)
 {
 }
@@ -46,6 +47,7 @@ void Scheme::do_scheme(PlayerInformation& players)
 	if (secondCard[v].get_id() == 2 || secondCard[v].get_id() == 35)
 	{
 		players.player1.action++;
+		effect.undo_system_list.back().push_back(make_unique<undo_action>(players));
 		if (secondCard[v].get_id() == 35)
 		{
 			vector <int> foggyCells = players.mapmanager.get_foggy_cells();
@@ -54,6 +56,7 @@ void Scheme::do_scheme(PlayerInformation& players)
 			vector <ActionMenu::cell> current_cells = players.mapmanager.all_cells_fog();
 			int chosenCell2 = view.movement1(5, current_cells, "", 0);
 			players.mapmanager.set_foggy(current_cells[chosenCell2].num, foggyCells[chosenCell]);
+			effect.undo_system_list.back().push_back(make_unique<undo_move_fog>(players.mapmanager, current_cells[chosenCell2].num, foggyCells[chosenCell]));
 		}
 	}
 	if (secondCard[v].get_id() == 16)
@@ -77,7 +80,9 @@ void Scheme::do_scheme(PlayerInformation& players)
 			update_loc(players);
 			int c = view.get_card_target(players.card_to_photo(card1));
 			complet.targetPerson->decrease_HP(card1[c].get_boost());
+			effect.undo_system_list.back().push_back(make_unique<undo_hp>(1, card1[c].get_boost(), complet.targetPerson));
 			players.player2.playerHero->cards.hand_to_null_card(card1[c].get_id());
+			effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player2.playerHero->cards, 0, c));
 			view.backCardsSher = 0;
 		}
 	}
@@ -93,11 +98,14 @@ void Scheme::do_scheme(PlayerInformation& players)
 	if (secondCard[v].get_id() == 38)
 	{
 		players.player1.playerHero->heros[0]->increase_HP(1);
+		effect.undo_system_list.back().push_back(make_unique<undo_hp>(0, 1, players.player1.playerHero->heros[0].get()));
+		effect.undo_system_list.back().push_back(make_unique<undo_move_hero>(players.mapmanager, players.player1.playerHero->heros[0]->get_position(), players.player1.playerHero->heros[0].get()));
 		players.mapmanager.move(0, players.player1.playerHero->heros[0].get());
 		players.player1.vanish = 1;
 		players.player1.action = 0;
 	}
 	players.player1.playerHero->cards.hand_to_null_card(secondCard[v].get_id());
+	effect.undo_system_list.back().push_back(make_unique<undo_card>(players.player1.playerHero->cards, 0, v));
 	view.action_menu.action.is_thiscard = 0;
 }
 int Scheme::can_scheme(PlayerInformation& players)

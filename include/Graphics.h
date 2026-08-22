@@ -27,7 +27,7 @@ public:
 	int yes_or_no(int a);
 	int get_foggy_cell(std::vector<ActionMenu::cell> cells);
 	int get_save(int a, std::vector <std::string> time);
-
+	int end_turn();
 private:
 	void is_in_action();
 	InputMenu input;

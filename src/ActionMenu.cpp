@@ -232,8 +232,8 @@ void ActionMenu::draw_action()
 	}
 
 	DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 859,753,225,67 }, { 0,0 }, 0, WHITE);
-	Vector2 t4 = MeasureTextEx(font, "BACK", 25, 2);
-	DrawTextEx(font, "BACK", { 859 + (225 - t4.x) / 2,753 + (67 - t4.y) / 2 }, 25, 2, WHITE);
+	Vector2 t4 = MeasureTextEx(font, "UNDO", 25, 2);
+	DrawTextEx(font, "UNDO", { 859 + (225 - t4.x) / 2,753 + (67 - t4.y) / 2 }, 25, 2, WHITE);
 
 	DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1084,753,225,67 }, { 0,0 }, 0, WHITE);
 	Vector2 t5 = MeasureTextEx(font, "SAVE GAME", 25, 2);
@@ -389,6 +389,33 @@ int ActionMenu::checkAction()
 		else if (CheckCollisionPointRec(mouse, { 769,5,63,45 }))
 		{
 			return 7; //help
+		}
+	}
+	return -1;
+}
+
+void ActionMenu::draw_end_turn()
+{
+	DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 942,723,237,69 }, { 0,0 }, 0, WHITE);
+	Vector2 t1 = MeasureTextEx(font, "END TURN", 25, 2);
+	DrawTextEx(font, "END TURN", { 943 + (237 - t1.x) / 2,723 + (69 - t1.y) / 2 }, 25, 2, WHITE);
+	DrawTexturePro(button, { 0,0,(float)button.width,(float)button.height }, { 1221,723,237,69 }, { 0,0 }, 0, WHITE);
+	Vector2 t2 = MeasureTextEx(font, "UNDO", 25, 2);
+	DrawTextEx(font, "UNDO", { 1221 + (237 - t2.x) / 2,723 + (69 - t2.y) / 2 }, 25, 2, WHITE);
+}
+
+int ActionMenu::check_end_turn()
+{
+	Vector2 mouse = GetMousePosition();
+	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	{
+		if (CheckCollisionPointRec(mouse, { 942,723,237,69 }))
+		{
+			return 0;
+		}
+		else if (CheckCollisionPointRec(mouse, { 1221,723,237,69 }))
+		{
+			return 1;
 		}
 	}
 	return -1;

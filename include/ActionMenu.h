@@ -60,6 +60,8 @@ public:
 	void draw_cards_action(std::vector <Texture2D> cards);
 	ShowActionMenu action;
 	int checkAction();
+	void draw_end_turn();
+	int check_end_turn();
 private:
 
 	std::vector <Texture2D> player1photo;

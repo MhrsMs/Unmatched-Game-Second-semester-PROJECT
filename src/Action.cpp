@@ -1,4 +1,5 @@
 #include "Action.h"
+#include "Effect.h"
 Action::Action(Graphics& view) : view(view)
 {
 }
@@ -182,6 +183,7 @@ Complet_Needs Action::take_needs(PlayerInformation& players, Card& card, Hero* h
 
 void Action::movement(PlayerInformation& players, Hero* hero, int moveMax, int moveMin)
 {
+	Effect effect;
 	bool which_text = 0;
 	if (hero == nullptr)
 	{
@@ -191,6 +193,7 @@ void Action::movement(PlayerInformation& players, Hero* hero, int moveMax, int m
 		moveMax += hero->get_move();
 		which_text = 1;
 	}
+	effect.undo_system_list.back().push_back(make_unique<undo_move_hero>(players.mapmanager, hero->get_position(), hero));
 	if (moveMax == 0)
 	{
 		moveMax = hero->get_move();
@@ -277,6 +280,7 @@ void Action::movement_fog(PlayerInformation& players, int cell, int movementnum)
 {
 	int move = 0;
 	int position = cell;
+	Effect effect;
 	while (move < movementnum)
 	{
 		vector <int> cell1 = players.mapmanager.all_adjacent_cells(position);
@@ -325,6 +329,7 @@ void Action::movement_fog(PlayerInformation& players, int cell, int movementnum)
 		++move;
 		position = cell2[c].num;
 	}
+	effect.undo_system_list.back().push_back(make_unique<undo_move_fog>(players.mapmanager, position, cell));
 }
 void Action::update_loc(PlayerInformation& players)
 {

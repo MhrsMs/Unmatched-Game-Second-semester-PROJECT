@@ -718,6 +718,37 @@ int Graphics::get_save(int a, std::vector<std::string> time)
     return result;
 }
 
+int Graphics::end_turn()
+{
+    action_menu.load_run();
+    action_menu.load_map(map);
+    action_menu.load_cards();
+    action_menu.load_action();
+    int result = -1;
+    while (!WindowShouldClose())
+    {
+        if (is_new_click())
+        {
+            result = action_menu.check_end_turn();
+        }
+        if (result != -1)
+        {
+            break;
+        }
+        BeginDrawing();
+        action_menu.draw_run(turn);
+        action_menu.draw_map(map);
+        action_menu.draw_cards();
+        action_menu.draw_end_turn();
+        EndDrawing();
+    }
+    action_menu.unload_action();
+    action_menu.unload_run();
+    action_menu.unload_map(map);
+    action_menu.unload_cards();
+    return result;
+}
+
 
 void Graphics::is_in_action()
 {
